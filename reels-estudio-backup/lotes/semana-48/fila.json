@@ -5,7 +5,7 @@
   "redes": [
     "instagram"
   ],
-  "aprovadoEm": "2026-11-24T10:54:46.124Z",
+  "aprovadoEm": null,
   "itens": [
     {
       "n": 1,
@@ -17,7 +17,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-25T12:00:00.000Z",
-      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-01-seu-site-bonito-nao-vende-nada.mp4",
+      "hospedado": null,
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -37,7 +37,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-25T14:30:00.000Z",
-      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-02-3-sinais-de-que-precisa-de-sis.mp4",
+      "hospedado": null,
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -57,7 +57,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-25T17:00:00.000Z",
-      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-03-voce-nao-precisa-de-um-app.mp4",
+      "hospedado": null,
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -77,7 +77,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-25T19:30:00.000Z",
-      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-04-planilha-demais-esta-travando.mp4",
+      "hospedado": null,
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -97,7 +97,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-25T22:00:00.000Z",
-      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-05-quanto-custa-tirar-sua-ideia-d.mp4",
+      "hospedado": null,
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -117,7 +117,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-26T00:30:00.000Z",
-      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-06-como-comeco-todo-projeto-de-cl.mp4",
+      "hospedado": null,
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -137,7 +137,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-26T12:00:00.000Z",
-      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-07-da-planilha-ao-sistema-proprio.mp4",
+      "hospedado": null,
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -157,7 +157,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-26T14:30:00.000Z",
-      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-08-ia-nao-vai-fazer-seu-app-sozin.mp4",
+      "hospedado": null,
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -177,7 +177,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-26T17:00:00.000Z",
-      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-09-cliente-pergunta-preco-e-some.mp4",
+      "hospedado": null,
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -197,7 +197,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-26T19:30:00.000Z",
-      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-10-5-perguntas-antes-de-contratar.mp4",
+      "hospedado": null,
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -217,7 +217,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-26T22:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-11-nao-comece-pelo-design-do-app.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -237,7 +237,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-27T00:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-12-sem-dominio-proprio-voce-perde.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -257,7 +257,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-27T12:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-13-por-que-ter-site-se-tenho-inst.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -277,7 +277,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-27T14:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-14-antes-da-primeira-linha-de-cod.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -297,7 +297,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-27T17:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-15-atendimento-manual-vs-atendime.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -317,7 +317,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-27T19:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-16-sistema-proprio-e-so-para-empr.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -337,7 +337,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-27T22:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-17-perde-horas-respondendo-as-mes.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -357,7 +357,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-28T00:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-18-3-erros-que-matam-uma-landing.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -377,7 +377,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-28T12:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-19-seu-mvp-deveria-fazer-menos-co.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -397,7 +397,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-28T14:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-20-site-lento-espanta-cliente-ant.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -417,7 +417,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-28T17:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-21-no-code-ou-codigo-qual-escolhe.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -437,7 +437,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-28T19:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-22-como-uso-ia-para-entregar-mais.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -457,7 +457,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-28T22:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-23-briefing-vago-vs-briefing-que.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -477,7 +477,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-29T00:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-24-ter-app-nao-garante-clientes.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -497,7 +497,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-29T12:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-25-sua-ideia-esta-parada-ha-meses.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -517,7 +517,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-29T14:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-26-4-coisas-que-todo-site-precisa.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -537,7 +537,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-29T17:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-27-nao-peca-orcamento-so-com-a-id.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -557,7 +557,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-29T19:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-28-o-codigo-do-seu-app-e-seu.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -577,7 +577,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-29T22:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-29-chatbot-com-ia-serve-para-seu.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -597,7 +597,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-30T00:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-30-as-ferramentas-que-uso-em-todo.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -617,7 +617,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-30T12:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-31-agenda-no-whatsapp-vs-agendame.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -637,7 +637,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-30T14:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-32-site-pronto-nao-precisa-de-man.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -657,7 +657,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-30T17:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-33-seu-sistema-atual-ninguem-cons.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -677,7 +677,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-30T19:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-34-3-automacoes-com-ia-para-peque.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -697,7 +697,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-11-30T22:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-35-copiar-o-concorrente-e-o-pior.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -717,7 +717,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-12-01T00:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-36-botao-errado-custa-clientes-to.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -737,7 +737,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-12-01T12:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-37-quanto-tempo-leva-para-criar-u.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -757,7 +757,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-12-01T14:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-38-o-que-eu-pergunto-na-primeira.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -777,7 +777,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-12-01T17:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-39-portfolio-em-pdf-vs-portfolio.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -797,7 +797,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-12-01T19:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-40-integrar-ia-e-caro-e-complicad.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -817,7 +817,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-12-01T22:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-41-cliente-nao-confia-no-seu-nego.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -837,7 +837,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-12-02T00:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-42-3-perguntas-para-validar-sua-i.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -857,7 +857,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-12-02T12:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-43-seu-site-nao-e-para-voce.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -877,7 +877,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-12-02T14:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-44-dados-espalhados-geram-decisoe.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -897,7 +897,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-12-02T17:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-45-freelancer-agencia-ou-desenvol.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -917,7 +917,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-12-02T19:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-46-como-transformo-ideia-em-proto.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -937,7 +937,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-12-02T22:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-47-sistema-sob-medida-demora-anos.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -957,7 +957,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-12-03T00:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-48-2-telas-que-todo-app-precisa-a.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -977,7 +977,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-12-03T12:00:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-49-pagando-ferramenta-que-nao-con.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
@@ -997,7 +997,7 @@
       "cta": "PORTFÓLIO",
       "etapa": "pronto",
       "horario": "2026-12-03T14:30:00.000Z",
-      "hospedado": null,
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-50-landing-page-e-so-um-site-meno.mp4",
       "redes": {
         "instagram": {
           "status": "pendente"
