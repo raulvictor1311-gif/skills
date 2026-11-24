@@ -1,0 +1,66 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Copiar o concorrente: o pior briefing",
+      "destaque": "pior briefing",
+      "fala": "Copiar o concorrente: o pior briefing."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Briefing é o seu pedido",
+      "subtitulo": "O que você passa para quem vai criar o projeto.",
+      "fala": "Briefing é o pedido que você passa pra quem vai criar seu site ou aplicativo."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Quem copia leva junto",
+      "itens": [
+        "Os erros dele",
+        "A mesma cara dele",
+        "O cliente dele, não o seu"
+      ],
+      "fala": "E quando o pedido é fazer igual ao concorrente, você leva três problemas junto."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Você não vê o que falha lá dentro",
+      "subtitulo": "Copia o que funciona e o que não funciona.",
+      "fala": "Primeiro, você não sabe o que funciona lá dentro, então copia os erros dele junto."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Igual não é escolhido",
+      "subtitulo": "Sem diferença, falta motivo para escolher você.",
+      "destaque": "não é escolhido",
+      "fala": "Depois, você fica igual, e quem é igual não dá ao cliente nenhum motivo pra escolher você."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Parta do seu cliente",
+      "subtitulo": "O que faz ele comprar de você.",
+      "destaque": "seu cliente",
+      "fala": "O público dele não é o seu: comece pelo que faz o seu cliente comprar de você."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

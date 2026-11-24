@@ -1,0 +1,59 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Atendimento manual vs atendimento com IA",
+      "destaque": "com IA",
+      "fala": "Atendimento manual ou atendimento com IA?"
+    },
+    {
+      "tipo": "antes-depois",
+      "antes": "Equipe repetindo horário e preço",
+      "depois": "IA responde as dúvidas frequentes",
+      "rotuloAntes": "Manual",
+      "rotuloDepois": "Com IA",
+      "fala": "No manual, a equipe repete horário e preço o dia todo; com IA, isso sai na hora."
+    },
+    {
+      "tipo": "antes-depois",
+      "antes": "Mensagem da noite espera o outro dia",
+      "depois": "Resposta a qualquer hora",
+      "rotuloAntes": "Manual",
+      "rotuloDepois": "Com IA",
+      "fala": "Quem manda mensagem à noite espera até o outro dia; com IA, recebe resposta a qualquer hora."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Gente fica com o que precisa de gente",
+      "subtitulo": "Negociação, problema, caso especial",
+      "fala": "E a equipe fica com o que precisa de gente: negociação, problema e caso especial."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "A IA tira a repetição",
+      "subtitulo": "Com as respostas que você definiu",
+      "destaque": "repetição",
+      "fala": "A IA não substitui seu atendimento: ela tira a repetição, com as respostas que você definiu."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

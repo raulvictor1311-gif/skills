@@ -1,0 +1,53 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "3 perguntas para validar sua ideia",
+      "destaque": "validar",
+      "fala": "3 perguntas para validar sua ideia."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Pergunte antes de investir.",
+      "subtitulo": "Para possíveis clientes, não para amigos.",
+      "fala": "Antes de investir em desenvolvimento, faça estas perguntas para possíveis clientes, não para amigos e família."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "As 3 perguntas",
+      "itens": [
+        "Quem tem esse problema?",
+        "Como resolve hoje?",
+        "Pagaria para resolver melhor?"
+      ],
+      "fala": "Quem tem esse problema de verdade? Como essa pessoa resolve isso hoje, mesmo que de um jeito ruim? E ela pagaria para resolver melhor?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Resposta vaga é sinal de alerta.",
+      "subtitulo": "Mudar no papel custa menos que no código.",
+      "destaque": "sinal de alerta",
+      "fala": "Se a resposta vier vaga, ajuste a ideia agora: mudar no papel custa menos que no código."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

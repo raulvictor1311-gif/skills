@@ -1,0 +1,60 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": true,
+  "narracao": "narracao.mp3",
+  "palavras": "palavras.json",
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "IA não faz seu app sozinha",
+      "destaque": "sozinha",
+      "fala": "IA não faz seu app sozinha"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Ela acelera muito.",
+      "subtitulo": "Mas não decide por você.",
+      "destaque": "acelera",
+      "fala": "Ela acelera bastante o trabalho, eu uso todo dia, mas três coisas ainda exigem experiência."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "O que ainda exige experiência",
+      "itens": [
+        "Arquitetura",
+        "Segurança",
+        "Decisões de produto"
+      ],
+      "fala": "A arquitetura, que é como o sistema se organiza para crescer sem quebrar; a segurança, para não deixar dados dos seus clientes expostos; e as decisões de produto, o que construir e o que deixar de fora."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Funcionar no teste não é estar pronto.",
+      "destaque": "não é estar pronto",
+      "fala": "Um app feito só com IA pode funcionar no teste e quebrar quando chegam usuários de verdade."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "IA + experiência.",
+      "subtitulo": "IA acelera. Experiência decide.",
+      "destaque": "experiência",
+      "fala": "O caminho que funciona é IA para acelerar e alguém experiente revisando cada decisão."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

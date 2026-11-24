@@ -1,0 +1,68 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": true,
+  "narracao": "narracao.mp3",
+  "palavras": "palavras.json",
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Da planilha ao sistema próprio",
+      "destaque": "sistema próprio",
+      "fala": "Da planilha ao sistema próprio"
+    },
+    {
+      "tipo": "antes-depois",
+      "antes": "Pedido copiado à mão",
+      "depois": "Pedido já entra registrado",
+      "rotuloAntes": "Antes",
+      "rotuloDepois": "Depois",
+      "fala": "Antes, o pedido chega no WhatsApp e alguém copia na planilha. Com sistema, ele já entra registrado."
+    },
+    {
+      "tipo": "antes-depois",
+      "antes": "Estoque avisado por mensagem",
+      "depois": "Estoque baixa sozinho",
+      "rotuloAntes": "Antes",
+      "rotuloDepois": "Depois",
+      "fala": "Antes, você avisa o estoque por mensagem; depois, a baixa acontece sozinha quando o pedido é confirmado."
+    },
+    {
+      "tipo": "antes-depois",
+      "antes": "Cobrança montada uma por uma",
+      "depois": "Cobrança sai do pedido",
+      "rotuloAntes": "Antes",
+      "rotuloDepois": "Depois",
+      "fala": "A cobrança, que era montada uma por uma, passa a ser gerada a partir do próprio pedido."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Menos copiar, mais atender.",
+      "subtitulo": "O tempo volta para o cliente.",
+      "destaque": "atender",
+      "fala": "E o tempo de copiar e conferir volta para o que importa, que é atender cliente."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Feito em cima da sua rotina.",
+      "subtitulo": "Não de um modelo pronto.",
+      "destaque": "sua rotina",
+      "fala": "É só um exemplo: sistema sob medida nasce da rotina da sua empresa."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

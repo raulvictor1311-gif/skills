@@ -1,0 +1,63 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": true,
+  "narracao": "narracao.mp3",
+  "palavras": "palavras.json",
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "5 perguntas antes de contratar um dev",
+      "destaque": "5 perguntas",
+      "fala": "5 perguntas antes de contratar um dev"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Antes de comparar preço.",
+      "subtitulo": "Compare as respostas.",
+      "destaque": "preço",
+      "fala": "Antes de comparar orçamento de desenvolvedor, faça essas perguntas."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Sobre o trabalho",
+      "itens": [
+        "Posso ver projetos parecidos?",
+        "Como é o seu processo?",
+        "Qual o prazo de cada fase?"
+      ],
+      "fala": "Primeiro, posso ver projetos parecidos com o meu? Depois, como é o seu processo do começo ao fim? E qual o prazo de cada fase, não só do total?"
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Sobre o depois",
+      "itens": [
+        "O código fica no meu nome?",
+        "Como é o suporte?"
+      ],
+      "fala": "Quarta, o código e os acessos ficam no meu nome? E quinta, como funciona o suporte depois da entrega?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Resposta vaga é um sinal.",
+      "subtitulo": "Quem tem processo responde fácil.",
+      "destaque": "sinal",
+      "fala": "Se a resposta vier vaga, desconfie, porque quem tem processo responde isso sem pensar."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

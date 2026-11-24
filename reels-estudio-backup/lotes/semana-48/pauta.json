@@ -1,0 +1,352 @@
+[
+ {
+  "gancho": "Seu site bonito não vende nada?",
+  "angulo": "dor",
+  "formato": "lista",
+  "ideia": "3 motivos de site bonito que não converte: sem CTA claro, sem prova, lento no celular",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "3 sinais de que precisa de sistema",
+  "angulo": "número",
+  "formato": "lista",
+  "ideia": "retrabalho, informação perdida, dependência de uma pessoa",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Você não precisa de um app",
+  "angulo": "contra o senso comum",
+  "formato": "titulo+lista",
+  "ideia": "comece por site responsivo/PWA; app nativo quando faz sentido",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Planilha demais está travando sua empresa",
+  "angulo": "consequência",
+  "formato": "antes-depois",
+  "ideia": "planilhas soltas vs sistema com dados num lugar só",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Quanto custa tirar sua ideia do papel?",
+  "angulo": "pergunta",
+  "formato": "lista",
+  "ideia": "o que define o preço: escopo, integrações, design, manutenção",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Como começo todo projeto de cliente",
+  "angulo": "bastidor",
+  "formato": "lista",
+  "ideia": "diagnóstico, escopo, protótipo, desenvolvimento, entrega",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Da planilha ao sistema próprio",
+  "angulo": "antes-depois",
+  "formato": "antes-depois",
+  "ideia": "rotina antes e depois de um sistema sob medida",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "IA não vai fazer seu app sozinha",
+  "angulo": "mito",
+  "formato": "titulo+lista",
+  "ideia": "IA acelera, mas arquitetura, segurança e produto exigem experiência",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Cliente pergunta preço e some no direct?",
+  "angulo": "dor",
+  "formato": "lista",
+  "ideia": "catálogo/landing com informação clara, agendamento, qualificação",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "5 perguntas antes de contratar um dev",
+  "angulo": "número",
+  "formato": "lista",
+  "ideia": "portfólio, processo, prazo por fase, quem fica com o código, suporte",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Não comece pelo design do app",
+  "angulo": "contra o senso comum",
+  "formato": "titulo+lista",
+  "ideia": "comece pelo problema e pelo fluxo do usuário",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Sem domínio próprio, você perde credibilidade",
+  "angulo": "consequência",
+  "formato": "antes-depois",
+  "ideia": "email e site genéricos vs marca com domínio",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Por que ter site se tenho Instagram?",
+  "angulo": "pergunta",
+  "formato": "lista",
+  "ideia": "você não controla o algoritmo; site é seu, aparece no Google, centraliza",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Antes da primeira linha de código",
+  "angulo": "bastidor",
+  "formato": "lista",
+  "ideia": "o que acontece antes de programar: entender negócio, usuários, prioridades",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Atendimento manual vs atendimento com IA",
+  "angulo": "antes-depois",
+  "formato": "antes-depois",
+  "ideia": "respostas repetidas à mão vs IA respondendo dúvidas frequentes 24h",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Sistema próprio é só para empresa grande",
+  "angulo": "mito",
+  "formato": "titulo+lista",
+  "ideia": "pequenos negócios também se beneficiam; comece pelo essencial",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Perde horas respondendo as mesmas perguntas?",
+  "angulo": "dor",
+  "formato": "lista",
+  "ideia": "FAQ, chatbot com IA, formulário inteligente",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "3 erros que matam uma landing page",
+  "angulo": "número",
+  "formato": "lista",
+  "ideia": "promessa vaga, muitos botões, formulário longo",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Seu MVP deveria fazer menos coisas",
+  "angulo": "contra o senso comum",
+  "formato": "titulo+lista",
+  "ideia": "uma função principal bem feita para validar",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Site lento espanta cliente antes de carregar",
+  "angulo": "consequência",
+  "formato": "lista",
+  "ideia": "imagens pesadas, hospedagem ruim, excesso de plugins",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "No-code ou código: qual escolher?",
+  "angulo": "pergunta",
+  "formato": "antes-depois",
+  "ideia": "no-code para validar rápido; código para escalar e personalizar",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Como uso IA para entregar mais rápido",
+  "angulo": "bastidor",
+  "formato": "lista",
+  "ideia": "protótipo, código repetitivo, testes; revisão humana sempre",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Briefing vago vs briefing que funciona",
+  "angulo": "antes-depois",
+  "formato": "antes-depois",
+  "ideia": "'quero um app tipo Uber' vs problema, público, prioridade",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Ter app não garante clientes",
+  "angulo": "mito",
+  "formato": "titulo+lista",
+  "ideia": "produto precisa de proposta clara e divulgação",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Sua ideia está parada há meses?",
+  "angulo": "dor",
+  "formato": "lista",
+  "ideia": "3 passos para tirar do papel: definir problema, validar, protótipo",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "4 coisas que todo site precisa ter",
+  "angulo": "número",
+  "formato": "lista",
+  "ideia": "proposta clara, contato fácil, prova social, versão mobile",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Não peça orçamento só com a ideia",
+  "angulo": "contra o senso comum",
+  "formato": "titulo+lista",
+  "ideia": "leve o problema, o público e o que é prioridade",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "O código do seu app é seu?",
+  "angulo": "consequência",
+  "formato": "antes-depois",
+  "ideia": "sem acesso ao código, domínio e hospedagem, você fica refém",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Chatbot com IA serve para seu negócio?",
+  "angulo": "pergunta",
+  "formato": "lista",
+  "ideia": "quando faz sentido: muitas dúvidas repetidas, agendamento, triagem",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "As ferramentas que uso em todo projeto",
+  "angulo": "bastidor",
+  "formato": "lista",
+  "ideia": "design, versionamento, banco de dados, IA como assistente",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Agenda no WhatsApp vs agendamento online",
+  "angulo": "antes-depois",
+  "formato": "antes-depois",
+  "ideia": "marcação manual e esquecimentos vs agenda online com lembrete",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Site pronto não precisa de manutenção",
+  "angulo": "mito",
+  "formato": "titulo+lista",
+  "ideia": "atualizações, segurança, backup, melhorias",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Seu sistema atual ninguém consegue usar?",
+  "angulo": "dor",
+  "formato": "lista",
+  "ideia": "telas confusas, fluxo longo, falta de feedback",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "3 automações com IA para pequenas empresas",
+  "angulo": "número",
+  "formato": "lista",
+  "ideia": "respostas a dúvidas, resumo de atendimentos, geração de propostas",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Copiar o concorrente é o pior briefing",
+  "angulo": "contra o senso comum",
+  "formato": "titulo+lista",
+  "ideia": "copiar traz os erros dele; parta do seu cliente",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Botão errado custa clientes todo dia",
+  "angulo": "consequência",
+  "formato": "antes-depois",
+  "ideia": "'saiba mais' genérico vs ação clara e específica",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Quanto tempo leva para criar um app?",
+  "angulo": "pergunta",
+  "formato": "lista",
+  "ideia": "depende do escopo; fases: descoberta, protótipo, desenvolvimento, testes",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "O que eu pergunto na primeira reunião",
+  "angulo": "bastidor",
+  "formato": "lista",
+  "ideia": "qual problema, quem usa, como resolve hoje, o que é sucesso",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Portfólio em PDF vs portfólio em site",
+  "angulo": "antes-depois",
+  "formato": "antes-depois",
+  "ideia": "PDF que ninguém abre vs site com link, cases e contato",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Integrar IA é caro e complicado?",
+  "angulo": "mito",
+  "formato": "titulo+lista",
+  "ideia": "dá para começar pequeno com APIs prontas e um caso de uso",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Cliente não confia no seu negócio online?",
+  "angulo": "dor",
+  "formato": "lista",
+  "ideia": "site profissional, prova social, contato e informações claras",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "3 perguntas para validar sua ideia",
+  "angulo": "número",
+  "formato": "lista",
+  "ideia": "quem tem o problema, como resolve hoje, pagaria por isso",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Seu site não é para você",
+  "angulo": "contra o senso comum",
+  "formato": "titulo+lista",
+  "ideia": "é para o cliente: linguagem, dúvidas e próximos passos dele",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Dados espalhados geram decisões erradas",
+  "angulo": "consequência",
+  "formato": "antes-depois",
+  "ideia": "informação em vários lugares vs dashboard único",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Freelancer, agência ou desenvolvedor sênior?",
+  "angulo": "pergunta",
+  "formato": "lista",
+  "ideia": "como escolher: tamanho do projeto, autonomia, responsabilidade técnica",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Como transformo ideia em protótipo",
+  "angulo": "bastidor",
+  "formato": "lista",
+  "ideia": "fluxo, wireframe, protótipo clicável, teste com usuário",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Sistema sob medida demora anos",
+  "angulo": "mito",
+  "formato": "titulo+lista",
+  "ideia": "entregas por fases; primeira versão útil antes do sistema completo",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "2 telas que todo app precisa acertar",
+  "angulo": "número",
+  "formato": "lista",
+  "ideia": "primeira experiência e tela principal",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Pagando ferramenta que não conversa com nada?",
+  "angulo": "dor",
+  "formato": "antes-depois",
+  "ideia": "ferramentas isoladas vs integração entre elas",
+  "cta": "PORTFÓLIO"
+ },
+ {
+  "gancho": "Landing page é só um site menor",
+  "angulo": "mito",
+  "formato": "titulo+lista",
+  "ideia": "tem um objetivo só e cada parte leva a ele",
+  "cta": "PORTFÓLIO"
+ }
+]

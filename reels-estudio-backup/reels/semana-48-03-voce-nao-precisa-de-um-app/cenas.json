@@ -1,0 +1,61 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": true,
+  "narracao": "narracao.mp3",
+  "palavras": "palavras.json",
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Você não precisa de um app",
+      "destaque": "não precisa",
+      "fala": "Você não precisa de um app"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Pelo menos não para começar.",
+      "subtitulo": "Site responsivo: o que se adapta ao celular.",
+      "destaque": "não para começar",
+      "fala": "Pelo menos não para começar: um site que se adapta bem ao celular já resolve muita coisa."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "PWA: o site que vira ícone.",
+      "subtitulo": "Instala no celular, sem loja de apps.",
+      "destaque": "PWA",
+      "fala": "Quer ícone na tela? O PWA é um site que se instala no celular, sem loja."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Quando o app de loja faz sentido",
+      "itens": [
+        "Usa muito câmera e GPS",
+        "Precisa funcionar offline",
+        "O cliente abre todo dia"
+      ],
+      "fala": "O app de loja faz sentido quando depende muito de câmera e localização, precisa funcionar bem sem internet ou vai ser aberto pelo cliente todo dia."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Comece pelo que valida a ideia.",
+      "subtitulo": "E deixe o app para quando ele fizer falta.",
+      "destaque": "valida",
+      "fala": "Fora isso, comece pelo site: em geral sai mais barato e já valida a ideia."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

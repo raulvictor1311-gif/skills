@@ -1,0 +1,62 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "No-code ou código: qual escolher?",
+      "destaque": "qual escolher?",
+      "fala": "No-code ou código: qual escolher?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "No-code: montar sem programar",
+      "subtitulo": "Ferramentas prontas, com blocos de arrastar.",
+      "fala": "No-code são ferramentas em que você monta o sistema arrastando blocos, sem escrever código."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Ótimo para validar uma ideia",
+      "subtitulo": "Testar antes de investir pesado.",
+      "fala": "Para validar uma ideia antes de investir pesado, em geral ele resolve muito bem."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Até o negócio crescer",
+      "subtitulo": "Aí a plataforma começa a limitar.",
+      "fala": "O problema aparece quando o negócio cresce e você esbarra nos limites da plataforma."
+    },
+    {
+      "tipo": "antes-depois",
+      "rotuloAntes": "Para testar",
+      "antes": "No-code",
+      "rotuloDepois": "Para crescer",
+      "depois": "Código sob medida",
+      "fala": "Por isso eu penso assim: no-code para testar rápido, código sob medida para crescer do seu jeito."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "A pergunta certa",
+      "subtitulo": "Em que fase está o seu projeto?",
+      "fala": "Então a pergunta não é qual é melhor, e sim em que fase o seu projeto está."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

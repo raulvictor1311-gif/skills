@@ -1,0 +1,68 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Site pronto não precisa de manutenção?",
+      "destaque": "manutenção?",
+      "fala": "Site pronto não precisa de manutenção?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Site no ar é carro rodando",
+      "subtitulo": "Precisa de revisão de tempos em tempos.",
+      "destaque": "carro rodando",
+      "fala": "Isso é mito, e costuma sair caro: site no ar é como carro rodando, precisa de revisão."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "O que a manutenção cobre",
+      "itens": [
+        "Atualizações",
+        "Segurança",
+        "Backup",
+        "Melhorias"
+      ],
+      "fala": "Ela cobre quatro coisas: atualizar o que roda por trás do site, cuidar da segurança, fazer backup e melhorar o que já existe."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Sem atualização, abre brecha",
+      "subtitulo": "Site fora do ar ou dados de clientes expostos.",
+      "fala": "Sem atualização, uma brecha pode tirar o site do ar ou expor dados dos seus clientes."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Backup é o seu seguro",
+      "subtitulo": "Uma cópia guardada de tudo.",
+      "destaque": "seguro",
+      "fala": "E backup, que é uma cópia guardada de tudo, é o que salva quando algo dá errado."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Manutenção também é evolução",
+      "subtitulo": "Ajustar o site ao que o cliente mais usa.",
+      "destaque": "evolução",
+      "fala": "E manutenção também é a hora de ajustar o site ao que o seu cliente mais usa."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

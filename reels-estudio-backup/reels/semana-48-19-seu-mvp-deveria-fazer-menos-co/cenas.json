@@ -1,0 +1,61 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Seu MVP deveria fazer menos coisas",
+      "destaque": "menos coisas",
+      "fala": "Seu MVP deveria fazer menos coisas"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "MVP é a primeira versão para testar",
+      "subtitulo": "A ideia, com gente de verdade",
+      "destaque": "primeira versão",
+      "fala": "MVP é a primeira versão do produto, feita para testar a ideia com gente de verdade."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "O que costuma sobrar",
+      "itens": [
+        "Login com redes sociais",
+        "Chat interno",
+        "Relatórios",
+        "Notificações"
+      ],
+      "fala": "O erro comum é querer tudo nela: login com redes sociais, chat, relatórios, notificações, e cada função a mais é mais tempo, mais custo e mais coisa para dar errado."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Uma função principal, bem feita",
+      "subtitulo": "A que resolve o problema central",
+      "destaque": "bem feita",
+      "fala": "Eu prefiro uma função principal, muito bem feita, que resolva o problema central."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "As pessoas usam? Aí você cresce.",
+      "destaque": "Aí você cresce.",
+      "fala": "Se as pessoas usam essa, você sabe com segurança o que construir depois."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

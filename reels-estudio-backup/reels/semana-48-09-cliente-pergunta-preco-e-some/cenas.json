@@ -1,0 +1,54 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": true,
+  "narracao": "narracao.mp3",
+  "palavras": "palavras.json",
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Cliente pergunta preço e some?",
+      "destaque": "some",
+      "fala": "Cliente pergunta preço e some?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Muitas vezes, não é o preço.",
+      "subtitulo": "É um número sem contexto.",
+      "destaque": "não é o preço",
+      "fala": "Muitas vezes não é o preço, é que ele recebeu no direct um número sem nenhum contexto."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "3 ajustes",
+      "itens": [
+        "Página com tudo explicado",
+        "Link para agendar",
+        "Formulário que qualifica"
+      ],
+      "fala": "Primeiro, uma página com o que está incluso e como funciona, para mandar no lugar do número solto. Segundo, um link para a pessoa já agendar. E terceiro, um formulário curto que mostra quem está pronto para fechar."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "O direct vira o último passo.",
+      "subtitulo": "Não o primeiro.",
+      "destaque": "último passo",
+      "fala": "Assim o direct deixa de ser onde tudo começa e vira onde a venda fecha."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

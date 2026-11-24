@@ -1,0 +1,52 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Perde horas respondendo as mesmas perguntas?",
+      "destaque": "mesmas perguntas?",
+      "fala": "Perde horas respondendo as mesmas perguntas?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "3 níveis de solução",
+      "subtitulo": "Do mais simples ao mais completo",
+      "destaque": "3 níveis",
+      "fala": "Dá para resolver isso em 3 níveis, do mais simples ao mais completo."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Do simples ao completo",
+      "itens": [
+        "Página de perguntas frequentes",
+        "Chatbot com IA",
+        "Formulário inteligente"
+      ],
+      "fala": "Primeiro, uma página de perguntas frequentes com link pronto para mandar. Depois, um chatbot com IA, que responde na hora com as suas informações. E um formulário inteligente, que já te entrega o pedido organizado."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Depende do volume e do tipo de dúvida",
+      "fala": "Qual usar depende de quantas mensagens chegam e do tipo de dúvida que se repete."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

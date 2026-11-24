@@ -1,0 +1,59 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": true,
+  "narracao": "narracao.mp3",
+  "palavras": "palavras.json",
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Planilha demais está travando sua empresa",
+      "destaque": "travando",
+      "fala": "Planilha demais está travando sua empresa"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Cada setor tem a sua versão.",
+      "subtitulo": "E nenhuma bate com a outra.",
+      "destaque": "sua versão",
+      "fala": "Cada setor tem a sua planilha, e ninguém sabe qual versão é a certa."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "O erro mora no copia e cola.",
+      "subtitulo": "E só aparece quando o cliente reclama.",
+      "destaque": "copia e cola",
+      "fala": "Alguém copia de uma para outra, erra uma linha, e só descobre quando o cliente reclama."
+    },
+    {
+      "tipo": "antes-depois",
+      "antes": "Várias planilhas, várias versões",
+      "depois": "Um sistema, um dado só",
+      "rotuloAntes": "Hoje",
+      "rotuloDepois": "Com sistema",
+      "fala": "Num sistema, o dado entra uma vez, fica num lugar só e todos veem o mesmo número."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Planilha é ótima para começar.",
+      "subtitulo": "Não para segurar a operação inteira.",
+      "destaque": "começar",
+      "fala": "Planilha é ótima para começar, só não foi feita para segurar a operação inteira."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

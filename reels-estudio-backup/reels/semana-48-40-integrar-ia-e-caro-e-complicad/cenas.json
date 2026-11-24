@@ -1,0 +1,68 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Integrar IA é caro e complicado?",
+      "destaque": "caro e complicado?",
+      "fala": "Integrar IA é caro e complicado?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Você não cria IA do zero",
+      "subtitulo": "Depende de como você começa.",
+      "destaque": "do zero",
+      "fala": "Depende de como você começa, e ninguém precisa criar uma inteligência artificial do zero."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Existem APIs prontas",
+      "subtitulo": "Serviços que o seu sistema chama, como uma tomada.",
+      "destaque": "APIs prontas",
+      "fala": "Existem APIs prontas, serviços que o seu sistema chama como quem liga um aparelho na tomada."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Em geral, você paga pelo uso",
+      "subtitulo": "Não por uma estrutura gigante.",
+      "destaque": "pelo uso",
+      "fala": "E em geral você paga pelo que usa, não por uma estrutura gigante montada antes."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Como começar pequeno",
+      "itens": [
+        "Uma tarefa repetitiva",
+        "Testar a IA só nela",
+        "Ver se poupou tempo"
+      ],
+      "fala": "O começo tem três passos: escolher uma tarefa repetitiva, testar a IA só nela e ver se poupou tempo."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Funcionou? Aí você expande",
+      "subtitulo": "Caro é tentar fazer tudo de uma vez.",
+      "destaque": "expande",
+      "fala": "Funcionou? Aí sim você expande. Caro e complicado é tentar fazer tudo de uma vez."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

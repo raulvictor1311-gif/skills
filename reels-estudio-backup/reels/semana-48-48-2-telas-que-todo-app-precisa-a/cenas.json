@@ -1,0 +1,51 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Todo app precisa acertar 2 telas",
+      "destaque": "2 telas",
+      "fala": "Todo app precisa acertar 2 telas."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "As 2 telas",
+      "itens": [
+        "A primeira experiência",
+        "A tela principal"
+      ],
+      "fala": "A primeira experiência, que é o que a pessoa vê quando abre o app pela primeira vez, e a tela principal, onde ela passa a maior parte do tempo."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Primeira vez: peça só o essencial.",
+      "destaque": "só o essencial",
+      "fala": "Na primeira, peça só o essencial e mostre logo para que o app serve."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Tela principal: a ação mais usada à vista.",
+      "destaque": "à vista",
+      "fala": "Na principal, a ação que a pessoa mais faz precisa estar à vista, sem procurar em menu."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

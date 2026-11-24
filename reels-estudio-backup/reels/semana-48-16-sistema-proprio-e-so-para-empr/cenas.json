@@ -1,0 +1,59 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Sistema próprio só para empresa grande?",
+      "destaque": "empresa grande?",
+      "fala": "Sistema próprio só para empresa grande?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Não precisa nascer gigante",
+      "subtitulo": "Comece por um processo só",
+      "destaque": "gigante",
+      "fala": "Não precisa: um sistema feito para o seu negócio pode começar resolvendo um único processo."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Bons pontos de partida",
+      "itens": [
+        "Agenda e horários",
+        "Pedidos e orçamentos",
+        "Cadastro de clientes"
+      ],
+      "fala": "Escolha o que hoje mais toma o seu tempo, como a agenda, os pedidos e orçamentos, ou o cadastro de clientes."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "O resto entra depois",
+      "subtitulo": "Quando o negócio mostrar o que falta",
+      "fala": "O resto entra depois, conforme o próprio negócio mostra o que faz falta."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Menor, mais simples, fácil de ajustar",
+      "destaque": "fácil de ajustar",
+      "fala": "Começar pelo essencial deixa o projeto menor, mais simples de usar e mais fácil de ajustar."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

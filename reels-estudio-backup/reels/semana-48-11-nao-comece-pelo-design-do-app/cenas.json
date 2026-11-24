@@ -1,0 +1,52 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Não comece pelo design do app",
+      "destaque": "design do app",
+      "fala": "Não comece pelo design do app"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Tela bonita sem caminho vira retrabalho",
+      "subtitulo": "Cada ajuste obriga a redesenhar tudo",
+      "fala": "Tela bonita sem um caminho claro vira retrabalho, porque cada ajuste obriga a redesenhar tudo."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Antes da tela, defina",
+      "itens": [
+        "O problema que o app resolve",
+        "Quem vai usar",
+        "O caminho do início ao fim"
+      ],
+      "fala": "Antes de pensar em cor e botão, eu defino três coisas: o problema que o app resolve, quem vai usar e o caminho que essa pessoa faz do início ao fim."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Aí o design veste o que já funciona",
+      "destaque": "já funciona",
+      "fala": "Com isso no papel, o design só veste uma estrutura que já funciona."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

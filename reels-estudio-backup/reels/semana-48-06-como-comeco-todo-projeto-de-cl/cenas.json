@@ -1,0 +1,56 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": true,
+  "narracao": "narracao.mp3",
+  "palavras": "palavras.json",
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Como começo todo projeto de cliente",
+      "destaque": "todo projeto",
+      "fala": "Como começo todo projeto de cliente"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Não começa pelo código.",
+      "subtitulo": "Começa pelo seu negócio.",
+      "destaque": "código",
+      "fala": "Ele não começa pelo código, começa entendendo o seu negócio."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Meu processo",
+      "itens": [
+        "Diagnóstico do problema",
+        "Escopo: o que entra",
+        "Protótipo para aprovar",
+        "Desenvolvimento",
+        "Entrega"
+      ],
+      "fala": "Primeiro, o diagnóstico do problema. Depois, o escopo, que é o que entra nessa versão. Aí um protótipo, uma prévia clicável para você aprovar. Só então o desenvolvimento, e por fim a entrega."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Você aprova antes de eu programar.",
+      "subtitulo": "Mudar no protótipo é simples. No código, não.",
+      "destaque": "aprova",
+      "fala": "Assim você aprova antes de eu programar, e mudar no protótipo é mais simples que no código."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

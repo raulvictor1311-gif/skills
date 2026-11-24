@@ -1,0 +1,54 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": true,
+  "narracao": "narracao.mp3",
+  "palavras": "palavras.json",
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "3 sinais de que falta sistema",
+      "destaque": "falta sistema",
+      "fala": "3 sinais de que falta sistema"
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Os 3 sinais",
+      "itens": [
+        "Retrabalho todo dia",
+        "Informação que se perde",
+        "Tudo depende de alguém"
+      ],
+      "fala": "O primeiro é retrabalho, a mesma informação digitada em vários lugares. O segundo é informação perdida, num áudio ou num papel que ninguém acha. E o terceiro é o mais perigoso:"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Tudo depende de uma pessoa.",
+      "subtitulo": "Ela sai de férias e a empresa trava.",
+      "destaque": "uma pessoa",
+      "fala": "tudo depende de uma pessoa só, e quando ela sai de férias, a empresa trava."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "O processo sai da cabeça de alguém.",
+      "subtitulo": "E passa a morar num lugar só.",
+      "destaque": "num lugar só",
+      "fala": "Um sistema sob medida resolve isso, porque o processo passa a morar num lugar só."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

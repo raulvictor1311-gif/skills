@@ -1,0 +1,53 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Landing page não é site menor",
+      "destaque": "não é",
+      "fala": "Landing page não é site menor."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "É uma página com um objetivo só.",
+      "subtitulo": "Agendar, comprar ou deixar contato.",
+      "destaque": "um objetivo só",
+      "fala": "Landing page é uma página feita para um objetivo só, como agendar, comprar ou deixar o contato."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Tudo leva ao objetivo",
+      "itens": [
+        "Título com a promessa",
+        "Prova de que funciona",
+        "Respostas às dúvidas",
+        "Um botão, uma ação"
+      ],
+      "fala": "E cada parte trabalha para esse objetivo: o título traz a promessa, depois vem a prova, as respostas às dúvidas comuns e um botão com uma ação só."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Menu e links extras tiram a atenção.",
+      "fala": "Por isso ela costuma não ter menu cheio nem links para fora, que só distraem quem chegou."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

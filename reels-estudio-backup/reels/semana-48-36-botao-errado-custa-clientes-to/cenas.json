@@ -1,0 +1,66 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Botão errado custa clientes todo dia",
+      "destaque": "custa clientes",
+      "fala": "Botão errado custa clientes todo dia."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "\"Saiba mais\" não diz nada",
+      "subtitulo": "Na dúvida, ninguém clica.",
+      "destaque": "não diz nada",
+      "fala": "Botão de saiba mais não diz o que vem depois do clique, e na dúvida ninguém clica."
+    },
+    {
+      "tipo": "antes-depois",
+      "rotuloAntes": "Genérico",
+      "rotuloDepois": "Ação clara",
+      "antes": "Saiba mais",
+      "depois": "Agendar minha avaliação",
+      "fala": "Troca por uma ação clara: em vez de saiba mais, agendar minha avaliação."
+    },
+    {
+      "tipo": "antes-depois",
+      "rotuloAntes": "Genérico",
+      "rotuloDepois": "Ação clara",
+      "antes": "Enviar",
+      "depois": "Receber meu orçamento",
+      "fala": "E no formulário, em vez de enviar, receber meu orçamento."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Diga o que a pessoa ganha",
+      "subtitulo": "E o que acontece depois do clique.",
+      "destaque": "ganha",
+      "fala": "O botão bom diz o que a pessoa ganha e o que acontece depois do clique."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Teste agora: leia seus botões",
+      "subtitulo": "Não dá para saber o que vem depois? Troque.",
+      "fala": "Abre seu site e lê os botões: se não dá pra saber o que vem depois, troca."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

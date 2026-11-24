@@ -1,0 +1,62 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "O código do app é seu?",
+      "destaque": "é seu?",
+      "fala": "O código do app é seu?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Não está no seu nome?",
+      "subtitulo": "Você depende de quem fez.",
+      "fala": "Se código, domínio e hospedagem não estão no seu nome, você depende de quem fez."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Domínio e hospedagem",
+      "subtitulo": "O endereço do site e o lugar onde ele fica no ar.",
+      "fala": "Domínio é o endereço do seu site, e hospedagem é o lugar onde ele fica no ar."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Refém do fornecedor",
+      "subtitulo": "Qualquer mudança vira negociação.",
+      "fala": "Quando tudo fica na conta de outra pessoa, qualquer mudança ou troca de fornecedor vira negociação."
+    },
+    {
+      "tipo": "antes-depois",
+      "rotuloAntes": "Refém",
+      "antes": "Tudo na conta de quem fez",
+      "rotuloDepois": "Dono",
+      "depois": "Tudo na sua conta, com acesso",
+      "fala": "O certo é o contrário: tudo registrado na sua conta, e quem desenvolve recebe acesso para trabalhar."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Combine no contrato",
+      "subtitulo": "Código, domínio e hospedagem.",
+      "fala": "Vale combinar isso por escrito no contrato, antes de começar o projeto."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

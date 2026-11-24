@@ -1,0 +1,53 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Seu site não é para você",
+      "destaque": "não é para você",
+      "fala": "Seu site não é para você."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "É para o seu cliente.",
+      "subtitulo": "Ele chega com pressa e com uma dúvida.",
+      "destaque": "cliente",
+      "fala": "Ele é para o seu cliente, que chega com pressa e com uma dúvida na cabeça."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "O site certo mostra",
+      "itens": [
+        "As palavras do cliente",
+        "As dúvidas que ele tem",
+        "O próximo passo dele"
+      ],
+      "fala": "Então escreva com as palavras que ele usa, sem jargão do seu setor, responda as dúvidas que ele sempre manda no direct e deixe claro o próximo passo, seja chamar no WhatsApp ou agendar."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Seu gosto vem depois.",
+      "subtitulo": "Primeiro, ele entender o que você faz.",
+      "fala": "Sua cor favorita importa menos do que o cliente entender rápido o que você faz."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

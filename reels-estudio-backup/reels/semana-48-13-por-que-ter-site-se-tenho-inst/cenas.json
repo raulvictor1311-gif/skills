@@ -1,0 +1,53 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Pra que site se tenho Instagram?",
+      "destaque": "se tenho Instagram?",
+      "fala": "Pra que site se tenho Instagram?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Instagram é terreno alugado",
+      "subtitulo": "Ótimo para ser descoberto, mas não é seu",
+      "destaque": "terreno alugado",
+      "fala": "O Instagram é ótimo para ser descoberto, mas ele não é seu: é um terreno alugado."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "O que o site faz que o perfil não faz",
+      "itens": [
+        "Não depende do algoritmo",
+        "Aparece quando buscam no Google",
+        "Junta tudo num lugar só"
+      ],
+      "fala": "Um site faz 3 coisas que o perfil não faz: não depende do algoritmo nem de conta bloqueada, aparece quando alguém procura seu serviço no Google e junta num lugar só tudo que o cliente precisa para decidir."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Instagram atrai. Site dá confiança.",
+      "destaque": "Site dá confiança.",
+      "fala": "Na prática, os dois se completam: o Instagram atrai, e o site passa a confiança para fechar."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}
