@@ -79,8 +79,10 @@ alvo.forEach((it, i) => {
   if (r.status || !fs.existsSync(arquivoMp4(it.slug))) falhas.push({ slug: it.slug, etapa: 'render' });
 });
 
-for (const it of fila.itens) it.etapa = etapaProducao(it);
-salvarFila(lote, fila);
+// relê a fila: outro comando pode ter gravado nela enquanto o render rodava
+const atual = lerFila(lote);
+for (const it of atual.itens) it.etapa = etapaProducao(it);
+salvarFila(lote, atual);
 
 const min = ((Date.now() - inicio) / 60000).toFixed(1);
 console.log(`\n✔ ${alvo.length - falhas.length} de ${alvo.length} renderizados em ${min} min.`);
