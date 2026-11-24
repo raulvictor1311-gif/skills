@@ -1,0 +1,58 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Sua ideia está parada há meses?",
+      "destaque": "parada há meses?",
+      "fala": "Sua ideia está parada há meses?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Não falta vontade",
+      "subtitulo": "Falta saber o próximo passo.",
+      "fala": "Em geral, o que trava não é falta de vontade, é não saber o próximo passo."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "3 passos para destravar",
+      "itens": [
+        "Definir o problema",
+        "Validar com pessoas reais",
+        "Fazer um protótipo"
+      ],
+      "fala": "São três passos: definir em uma frase o problema que a ideia resolve, conversar com quem tem esse problema e montar um protótipo."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Protótipo = versão de teste",
+      "subtitulo": "Telas clicáveis, antes de programar tudo.",
+      "fala": "Protótipo é uma versão de teste, com telas clicáveis, para ver a ideia funcionando antes de programar."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Comece pelo passo 1",
+      "subtitulo": "Hoje, em uma frase.",
+      "fala": "Se a sua está parada, comece hoje pelo primeiro passo: escreva o problema em uma frase."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

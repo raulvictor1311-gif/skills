@@ -1,0 +1,57 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Sem domínio próprio, você perde credibilidade",
+      "destaque": "perde credibilidade",
+      "fala": "Sem domínio próprio, você perde credibilidade"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Domínio é o endereço da sua marca",
+      "subtitulo": "No site e no e-mail",
+      "fala": "Domínio é o endereço com o nome da sua marca, que aparece no site e no e-mail."
+    },
+    {
+      "tipo": "antes-depois",
+      "antes": "seunegocio123@gmail.com",
+      "depois": "contato@seunegocio.com.br",
+      "rotuloAntes": "Genérico",
+      "rotuloDepois": "Com domínio",
+      "fala": "Um orçamento chega de e-mail genérico cheio de números, o outro com o nome da sua marca."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "O segundo parece empresa",
+      "subtitulo": "antes de qualquer conversa",
+      "destaque": "parece empresa",
+      "fala": "Os dois podem ser ótimos profissionais, mas o segundo parece empresa antes mesmo da primeira conversa."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "O endereço é seu",
+      "subtitulo": "Trocou de plataforma? O endereço vai junto",
+      "fala": "E o domínio é seu: se um dia você trocar de plataforma, o endereço continua o mesmo."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

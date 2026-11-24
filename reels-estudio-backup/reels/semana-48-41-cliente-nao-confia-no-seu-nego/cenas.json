@@ -1,0 +1,54 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Cliente desconfia do seu negócio online?",
+      "destaque": "desconfia",
+      "fala": "Cliente desconfia do seu negócio online?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Ele decide em segundos.",
+      "subtitulo": "E procura sinais de que você é de verdade.",
+      "fala": "Quem te encontra na internet decide rápido se você parece confiável, e procura sinais bem simples."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "O que passa confiança",
+      "itens": [
+        "Site próprio e profissional",
+        "Avaliações reais de clientes",
+        "Contato e endereço visíveis",
+        "Quem está por trás do negócio"
+      ],
+      "fala": "Primeiro, um site próprio e bem feito. Depois, avaliações reais de clientes, nunca inventadas. Contato e endereço fáceis de achar. E mostrar quem está por trás do negócio."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Quem desconfia não reclama.",
+      "subtitulo": "Só fecha a página.",
+      "destaque": "não reclama",
+      "fala": "Quando falta isso, muita gente nem reclama: simplesmente fecha a página e procura outra opção."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

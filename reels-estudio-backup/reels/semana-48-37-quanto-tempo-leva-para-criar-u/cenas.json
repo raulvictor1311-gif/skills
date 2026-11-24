@@ -1,0 +1,68 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Quanto tempo leva criar um app?",
+      "destaque": "Quanto tempo",
+      "fala": "Quanto tempo leva criar um app?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Depende do escopo",
+      "subtitulo": "Escopo é a lista do que o app precisa fazer.",
+      "destaque": "escopo",
+      "fala": "A resposta honesta é: depende do escopo, a lista de tudo que o app precisa fazer."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "As 4 fases",
+      "itens": [
+        "Descoberta",
+        "Protótipo",
+        "Desenvolvimento",
+        "Testes"
+      ],
+      "fala": "O que define o tempo são quatro fases: descoberta, protótipo, desenvolvimento e testes."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Antes da descoberta, é chute",
+      "subtitulo": "É nela que se decide o que entra na primeira versão.",
+      "destaque": "chute",
+      "fala": "Na descoberta, decidimos o que entra na primeira versão; antes disso, qualquer prazo é chute."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Protótipo, código e testes",
+      "subtitulo": "Ver as telas antes, construir, corrigir antes de lançar.",
+      "fala": "Depois vem o protótipo, pra você ver as telas antes do código, e então desenvolvimento e testes."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Quer lançar antes? Corte escopo",
+      "subtitulo": "Menos funções na primeira versão.",
+      "destaque": "Corte escopo",
+      "fala": "E se você quer lançar antes, o caminho mais seguro é tirar funções da primeira versão."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

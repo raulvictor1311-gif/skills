@@ -1,0 +1,52 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Site lento espanta antes de carregar",
+      "destaque": "antes de carregar",
+      "fala": "Site lento espanta antes de carregar"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Página branca, cliente no concorrente",
+      "destaque": "concorrente",
+      "fala": "A pessoa clica, a página fica em branco, e ela volta pro Google e abre o concorrente."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "De onde vem a lentidão",
+      "itens": [
+        "Imagens pesadas",
+        "Hospedagem fraca",
+        "Plugins demais"
+      ],
+      "fala": "Em geral, a lentidão vem de 3 lugares: imagens pesadas, enviadas direto da câmera; hospedagem fraca para o tamanho do site; e plugins demais, aqueles complementos instalados para cada detalhe."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Dá para medir e corrigir",
+      "subtitulo": "Muitas vezes sem refazer o site",
+      "fala": "A boa notícia: dá para medir e, muitas vezes, corrigir sem refazer o site do zero."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

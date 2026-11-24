@@ -1,0 +1,65 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Pequena empresa? 3 automações com IA",
+      "destaque": "3 automações",
+      "fala": "Pequena empresa? 3 automações com IA."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "3 automações com IA",
+      "itens": [
+        "Rascunho de respostas",
+        "Resumo de atendimentos",
+        "Primeira versão da proposta"
+      ],
+      "fala": "São elas: rascunho de respostas, resumo de atendimentos e primeira versão de propostas, e você continua no controle."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "1. Rascunho de respostas",
+      "subtitulo": "A IA escreve, você revisa e envia.",
+      "fala": "Na primeira, a IA escreve a resposta das perguntas que chegam, e você só revisa e envia."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "2. Resumo de atendimentos",
+      "subtitulo": "O que o cliente pediu e o próximo passo.",
+      "fala": "Na segunda, ela resume cada atendimento: o que o cliente pediu e qual é o próximo passo."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "3. Primeira versão da proposta",
+      "subtitulo": "No seu modelo, com os dados da conversa.",
+      "fala": "Na terceira, ela monta a primeira versão da proposta no seu modelo, com os dados da conversa."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Quem decide é você",
+      "subtitulo": "A IA tira o trabalho repetitivo.",
+      "destaque": "você",
+      "fala": "Em todas, quem decide é você; a IA só tira do seu caminho o trabalho repetitivo."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

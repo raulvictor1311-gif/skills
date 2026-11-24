@@ -1,0 +1,53 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "3 erros que matam landing pages",
+      "destaque": "matam",
+      "fala": "3 erros que matam landing pages"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Uma página, um objetivo",
+      "subtitulo": "Pedir orçamento, agendar, comprar",
+      "destaque": "um objetivo",
+      "fala": "Landing page é uma página com um objetivo só, como pedir orçamento ou agendar uma conversa."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Os 3 erros",
+      "itens": [
+        "Promessa vaga",
+        "Botão demais",
+        "Formulário longo"
+      ],
+      "fala": "Primeiro, promessa vaga: a pessoa lê o título, não entende o que você faz e vai embora. Segundo, botão demais, que divide a atenção. Terceiro, formulário longo: peça só o necessário para o primeiro contato."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Ajuste antes de refazer",
+      "subtitulo": "Muitas vezes o problema é pontual",
+      "fala": "Na prática, corrigir esses 3 costuma ser bem mais simples do que refazer a página inteira."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

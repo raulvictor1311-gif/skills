@@ -1,0 +1,58 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Como uso IA para entregar rápido",
+      "destaque": "entregar rápido",
+      "fala": "Como uso IA para entregar rápido"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "A IA é minha assistente",
+      "subtitulo": "Ela não toma as decisões.",
+      "fala": "Nos meus projetos, a IA funciona como uma assistente, e não como quem toma as decisões."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Onde ela entra",
+      "itens": [
+        "Protótipo das primeiras telas",
+        "Código repetitivo",
+        "Testes automáticos"
+      ],
+      "fala": "Eu uso em três pontos: para rascunhar o protótipo das primeiras telas, para escrever código repetitivo e para criar testes que conferem se tudo funciona."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Revisão humana, sempre",
+      "subtitulo": "Nada vai direto para o seu projeto.",
+      "fala": "Mas tudo que ela gera passa pela minha revisão antes de chegar no seu projeto."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Sobra tempo para o que importa",
+      "subtitulo": "Entender o seu negócio.",
+      "fala": "Com isso sobra mais tempo para o que nenhuma ferramenta faz por mim: entender o seu negócio."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

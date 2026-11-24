@@ -1,0 +1,65 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Ferramentas que uso em todo projeto",
+      "destaque": "todo projeto",
+      "fala": "Ferramentas que uso em todo projeto"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "1. Design antes do código",
+      "subtitulo": "Telas desenhadas para você aprovar.",
+      "fala": "Primeiro, uma ferramenta de design, onde desenho as telas para você aprovar antes de programar."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "2. Versionamento",
+      "subtitulo": "O histórico de cada mudança no código.",
+      "fala": "Depois, versionamento, que guarda cada mudança no código e permite voltar atrás se algo der errado."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "3. Banco de dados",
+      "subtitulo": "Onde ficam clientes, pedidos e cadastros.",
+      "fala": "Também um banco de dados, que é onde ficam guardadas as informações, como clientes, pedidos e cadastros."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "4. IA como assistente",
+      "subtitulo": "Acelera tarefas, sempre com revisão.",
+      "fala": "E a IA como assistente, para acelerar tarefas repetitivas, sempre com a minha revisão."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Em todo projeto",
+      "itens": [
+        "Design",
+        "Versionamento",
+        "Banco de dados",
+        "IA como assistente"
+      ],
+      "fala": "Pode ser um site simples ou um sistema grande, essas quatro estão sempre lá."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

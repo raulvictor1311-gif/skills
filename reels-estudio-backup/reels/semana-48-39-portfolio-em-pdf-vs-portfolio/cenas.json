@@ -1,0 +1,68 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Portfólio em PDF ou em site?",
+      "destaque": "em site?",
+      "fala": "Portfólio em PDF ou em site?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "PDF é anexo pesado",
+      "subtitulo": "No celular, muita gente nem abre.",
+      "destaque": "anexo pesado",
+      "fala": "O PDF vai como anexo, fica pesado no celular, e muita gente nem chega a abrir."
+    },
+    {
+      "tipo": "antes-depois",
+      "rotuloAntes": "PDF",
+      "rotuloDepois": "Site",
+      "antes": "Versão antiga circulando",
+      "depois": "Link sempre na versão nova",
+      "fala": "Quem recebeu o PDF antigo fica com ele; no site, o link abre sempre a versão nova."
+    },
+    {
+      "tipo": "antes-depois",
+      "rotuloAntes": "PDF",
+      "rotuloDepois": "Site",
+      "antes": "Imagens soltas",
+      "depois": "Estudos de caso por trabalho",
+      "fala": "E cada trabalho vira um estudo de caso: o problema, o que você fez e o resultado."
+    },
+    {
+      "tipo": "antes-depois",
+      "rotuloAntes": "PDF",
+      "rotuloDepois": "Site",
+      "antes": "Contato escondido no fim",
+      "depois": "Contato a um toque",
+      "fala": "E o contato fica a um toque em toda página, não escondido no fim do arquivo."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Arquivo ou próximo passo",
+      "subtitulo": "O site leva a pessoa direto a falar com você.",
+      "destaque": "próximo passo",
+      "fala": "É a diferença entre mandar um arquivo e levar a pessoa direto pro próximo passo."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

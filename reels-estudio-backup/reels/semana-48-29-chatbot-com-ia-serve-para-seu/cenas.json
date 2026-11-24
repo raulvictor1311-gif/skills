@@ -1,0 +1,58 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Chatbot com IA serve para você?",
+      "destaque": "serve",
+      "fala": "Chatbot com IA serve para você?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Depende da sua rotina",
+      "subtitulo": "Não é para todo negócio.",
+      "fala": "Depende da sua rotina, porque chatbot com IA não faz sentido para todo negócio."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Faz sentido quando há",
+      "itens": [
+        "Muitas dúvidas repetidas",
+        "Agendamento de horários",
+        "Triagem de pedidos"
+      ],
+      "fala": "Ele faz sentido quando você recebe muitas dúvidas repetidas, quando precisa marcar horários ou quando quer separar os pedidos antes de chegar na equipe."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Cada conversa é única?",
+      "subtitulo": "Talvez o atendimento humano seja melhor.",
+      "fala": "Agora, se cada conversa é única e depende de negociação, talvez o atendimento humano funcione melhor."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Faça este teste",
+      "subtitulo": "Quais perguntas você responde toda semana?",
+      "fala": "Um bom teste é olhar suas conversas e ver quais perguntas você responde toda semana."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

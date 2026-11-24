@@ -1,0 +1,53 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Sistema sob medida demora anos?",
+      "destaque": "demora anos",
+      "fala": "Sistema sob medida demora anos?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Não precisa ser assim.",
+      "subtitulo": "Dá para construir em fases.",
+      "destaque": "em fases",
+      "fala": "Na prática, não precisa ser assim: dá para construir o sistema em fases, uma parte por vez."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Como funciona",
+      "itens": [
+        "Escolher a dor mais urgente",
+        "Entregar uma primeira versão",
+        "Usar, ajustar e seguir"
+      ],
+      "fala": "Você escolhe a dor mais urgente do negócio, recebe uma primeira versão que já resolve isso e, enquanto usa, a gente ajusta e parte para a próxima fase."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "O prazo depende do projeto.",
+      "subtitulo": "Mas você não espera tudo ficar pronto.",
+      "fala": "O prazo total depende do tamanho do projeto, mas você usa bem antes de tudo ficar pronto."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": true,
+  "narracao": "narracao.mp3",
+  "palavras": "palavras.json",
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Quanto custa tirar sua ideia do papel?",
+      "destaque": "do papel",
+      "fala": "Quanto custa tirar sua ideia do papel?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Depende. E eu te digo do quê.",
+      "subtitulo": "4 coisas mexem no preço.",
+      "destaque": "Depende",
+      "fala": "A resposta honesta é depende, e não é para fugir: são quatro coisas que mexem no preço."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "O que define o preço",
+      "itens": [
+        "Escopo: quantas funções",
+        "Conexão com outras ferramentas",
+        "Design do zero ou modelo",
+        "Manutenção depois do ar"
+      ],
+      "fala": "O escopo, que é quantas funções ele tem; as integrações com pagamento, WhatsApp ou outros sistemas; o design, do zero ou a partir de um modelo; e a manutenção depois que vai ao ar."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Comece pelo essencial.",
+      "subtitulo": "E cresça a partir do que funcionou.",
+      "destaque": "essencial",
+      "fala": "Por isso, o jeito mais seguro de gastar bem é lançar o essencial primeiro e crescer depois."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

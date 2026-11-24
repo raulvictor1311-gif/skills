@@ -1,0 +1,66 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Seu sistema atual ninguém consegue usar?",
+      "destaque": "ninguém consegue usar?",
+      "fala": "Seu sistema atual ninguém consegue usar?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Não é preguiça da equipe",
+      "subtitulo": "Quase sempre, o problema é o sistema.",
+      "fala": "Se a equipe foge dele e volta pra planilha, quase nunca é preguiça: é o sistema."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "3 sinais de sistema ruim",
+      "itens": [
+        "Telas confusas",
+        "Passos demais",
+        "Nenhuma resposta ao clicar"
+      ],
+      "fala": "Os sinais costumam ser três: telas confusas, tarefas com passos demais e nenhuma resposta quando você clica."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Tarefa simples, telas demais",
+      "subtitulo": "E a equipe perde tempo o dia inteiro.",
+      "fala": "Se lançar um pedido exige passar por várias telas, a equipe perde tempo o dia inteiro."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Clicou em salvar. Salvou?",
+      "subtitulo": "Sem aviso, a pessoa clica de novo e duplica.",
+      "destaque": "Salvou?",
+      "fala": "E o clássico: sem aviso depois de salvar, a pessoa clica de novo e duplica o cadastro."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Sistema bom não pede manual",
+      "subtitulo": "Quem usa olha e entende o próximo passo.",
+      "destaque": "não pede manual",
+      "fala": "Sistema bem feito não precisa de manual: quem usa olha a tela e entende o próximo passo."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

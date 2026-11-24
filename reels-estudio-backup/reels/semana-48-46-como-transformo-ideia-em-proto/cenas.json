@@ -1,0 +1,53 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Como transformo ideia em protótipo",
+      "destaque": "protótipo",
+      "fala": "Como transformo ideia em protótipo."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Antes do código, quatro etapas.",
+      "destaque": "quatro etapas",
+      "fala": "Antes de qualquer código, eu passo por quatro etapas para a ideia virar algo testável."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Meu processo",
+      "itens": [
+        "Fluxo: o caminho do usuário",
+        "Wireframe: rascunho das telas",
+        "Protótipo clicável",
+        "Teste com usuário real"
+      ],
+      "fala": "Primeiro o fluxo, o caminho que a pessoa faz. Depois o wireframe, um rascunho de cada tela. Então um protótipo clicável, que parece o app mas ainda não tem programação. E por fim, teste com usuários reais."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Errar no protótipo custa pouco.",
+      "subtitulo": "Errar no código custa caro.",
+      "fala": "Assim os ajustes acontecem enquanto mudar ainda é rápido e barato, antes de programar."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

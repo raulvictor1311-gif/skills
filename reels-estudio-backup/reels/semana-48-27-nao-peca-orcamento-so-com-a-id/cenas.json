@@ -1,0 +1,58 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Não peça orçamento só com ideia",
+      "destaque": "só com ideia",
+      "fala": "Não peça orçamento só com ideia"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Só a ideia = chute",
+      "subtitulo": "Cada um imagina um projeto diferente.",
+      "fala": "Com só a ideia, cada desenvolvedor imagina um projeto diferente, e o orçamento vira um chute."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Orçamento no escuro",
+      "subtitulo": "Alto por segurança ou baixo demais.",
+      "fala": "Aí vem um valor alto para cobrir incertezas, ou baixo demais para o que você queria."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Leve isto na conversa",
+      "itens": [
+        "O problema a resolver",
+        "Quem vai usar",
+        "O que é prioridade agora"
+      ],
+      "fala": "Por isso, leve três coisas: o problema que você quer resolver, quem vai usar e o que precisa estar pronto primeiro."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Orçamentos comparáveis",
+      "subtitulo": "Todo mundo orçando o mesmo projeto.",
+      "fala": "Assim, todo mundo que te passar orçamento vai estar orçando o mesmo projeto, e dá para comparar."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

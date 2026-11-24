@@ -1,0 +1,56 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Pagando ferramentas que não se conversam?",
+      "destaque": "não se conversam",
+      "fala": "Pagando ferramentas que não se conversam?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Quem faz a ponte é você.",
+      "subtitulo": "Copiando dado de um lugar para outro.",
+      "fala": "Aí quem faz a ponte é você, copiando dado de uma ferramenta para outra todo santo dia."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Cada cópia é uma chance de erro.",
+      "destaque": "chance de erro",
+      "fala": "Cada cópia feita à mão gasta tempo e abre chance de errar um nome ou valor."
+    },
+    {
+      "tipo": "antes-depois",
+      "antes": "Copiar e colar entre sistemas",
+      "depois": "Dados passando sozinhos",
+      "rotuloAntes": "Isoladas",
+      "rotuloDepois": "Integradas",
+      "fala": "Integrar é ligar uma ferramenta na outra: a venda entra e o financeiro já recebe sozinho."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Nem sempre precisa trocar.",
+      "subtitulo": "Às vezes basta conectar.",
+      "fala": "Muitas vezes nem precisa trocar de ferramenta, só fazer as que você já paga conversarem."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

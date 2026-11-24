@@ -1,0 +1,69 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "O que pergunto na primeira reunião",
+      "destaque": "primeira reunião",
+      "fala": "O que pergunto na primeira reunião."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Antes de falar de tela",
+      "itens": [
+        "Qual é o problema?",
+        "Quem vai usar?",
+        "Como resolve hoje?",
+        "O que é sucesso?"
+      ],
+      "fala": "Antes de falar de tela, cor ou tecnologia, eu faço sempre estas quatro perguntas."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Qual é o problema?",
+      "subtitulo": "Ele define o projeto, não a ideia de app.",
+      "destaque": "problema?",
+      "fala": "Qual problema você quer resolver, porque é ele que define o projeto, não a ideia de app."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Quem vai usar?",
+      "subtitulo": "Equipe interna e cliente final pedem coisas diferentes.",
+      "destaque": "usar?",
+      "fala": "Quem vai usar, porque sistema pra equipe e app pro cliente final são coisas bem diferentes."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Como resolve hoje?",
+      "subtitulo": "O processo atual mostra onde se perde tempo.",
+      "destaque": "hoje?",
+      "fala": "Como você resolve isso hoje, porque o processo atual mostra onde está se perdendo tempo."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "O que é sucesso?",
+      "subtitulo": "Sem isso, ninguém sabe se deu certo.",
+      "destaque": "sucesso?",
+      "fala": "E o que é sucesso pra você, porque sem isso ninguém sabe se o projeto deu certo."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Dados espalhados geram decisões erradas",
+      "destaque": "decisões erradas",
+      "fala": "Dados espalhados geram decisões erradas."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Cada lugar mostra um número diferente.",
+      "fala": "Vendas numa planilha, estoque em outra e financeiro no caderno: cada lugar mostra um número diferente."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Você decide pelo primeiro número que acha.",
+      "destaque": "primeiro número",
+      "fala": "Na hora de decidir o que comprar ou cortar, você usa o número que achou primeiro."
+    },
+    {
+      "tipo": "antes-depois",
+      "antes": "Informação em vários lugares",
+      "depois": "Um painel com tudo junto",
+      "rotuloAntes": "Hoje",
+      "rotuloDepois": "Com painel",
+      "fala": "A saída é um painel único, o chamado dashboard, com os números atualizados num lugar só."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Menos achismo, mesmo dado para todos.",
+      "fala": "Assim a decisão deixa de ser achismo e parte do mesmo dado para todo mundo da equipe."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

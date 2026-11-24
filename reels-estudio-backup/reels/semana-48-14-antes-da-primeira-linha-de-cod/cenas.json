@@ -1,0 +1,59 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Antes da primeira linha de código",
+      "destaque": "primeira linha",
+      "fala": "Antes da primeira linha de código,"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Tem um trabalho que ninguém vê",
+      "subtitulo": "E é ele que segura o projeto",
+      "fala": "tem um trabalho que quase ninguém vê, e é ele que segura o projeto inteiro."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "O que eu entendo primeiro",
+      "itens": [
+        "Como o negócio funciona hoje",
+        "Quem vai usar no dia a dia",
+        "O que precisa vir primeiro"
+      ],
+      "fala": "Eu começo entendendo como o seu negócio funciona hoje, quem vai usar o sistema no dia a dia e o que precisa ficar pronto primeiro."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Prioridade é a parte difícil",
+      "subtitulo": "Toda ideia boa quer entrar na primeira versão",
+      "destaque": "parte difícil",
+      "fala": "Essa última é a mais difícil, porque toda ideia boa quer entrar na primeira versão."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Aí programar fica previsível",
+      "destaque": "previsível",
+      "fala": "Com isso claro, programar vira a parte mais previsível do projeto."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

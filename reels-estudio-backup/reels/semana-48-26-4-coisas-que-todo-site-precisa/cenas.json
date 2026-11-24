@@ -1,0 +1,65 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Todo site precisa destas 4 coisas",
+      "destaque": "4 coisas",
+      "fala": "Todo site precisa destas 4 coisas"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "1. Proposta clara",
+      "subtitulo": "O que você faz e para quem, logo no topo.",
+      "fala": "Primeiro, proposta clara: logo no topo, a pessoa entende o que você faz e para quem."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "2. Contato fácil",
+      "subtitulo": "WhatsApp ou formulário curto, sempre à vista.",
+      "fala": "A segunda é contato fácil, com um botão de WhatsApp ou um formulário curto sempre à vista."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "3. Prova social",
+      "subtitulo": "Depoimentos reais, fotos de trabalhos, avaliações.",
+      "fala": "A terceira é prova social, ou seja, depoimentos reais, fotos de trabalhos e avaliações de clientes."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "4. Bom no celular",
+      "subtitulo": "É por ele que muita gente vai chegar.",
+      "fala": "E a quarta é funcionar bem no celular, porque é por ele que muita gente vai chegar."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Confira no seu site",
+      "itens": [
+        "Proposta clara",
+        "Contato fácil",
+        "Prova social",
+        "Bom no celular"
+      ],
+      "fala": "Abre o seu site agora e confere se ele tem as quatro."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

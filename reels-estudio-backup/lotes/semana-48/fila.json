@@ -1,0 +1,1011 @@
+{
+  "lote": "semana-48",
+  "criadoEm": "2026-11-24T00:31:59.656Z",
+  "fuso": "America/Sao_Paulo",
+  "redes": [
+    "instagram"
+  ],
+  "aprovadoEm": "2026-11-24T11:29:43.933Z",
+  "itens": [
+    {
+      "n": 1,
+      "slug": "semana-48-01-seu-site-bonito-nao-vende-nada",
+      "gancho": "Seu site bonito não vende nada?",
+      "ideia": "3 motivos de site bonito que não converte: sem CTA claro, sem prova, lento no celular",
+      "angulo": "dor",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-25T12:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-01-seu-site-bonito-nao-vende-nada.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 2,
+      "slug": "semana-48-02-3-sinais-de-que-precisa-de-sis",
+      "gancho": "3 sinais de que precisa de sistema",
+      "ideia": "retrabalho, informação perdida, dependência de uma pessoa",
+      "angulo": "número",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-25T14:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-02-3-sinais-de-que-precisa-de-sis.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 3,
+      "slug": "semana-48-03-voce-nao-precisa-de-um-app",
+      "gancho": "Você não precisa de um app",
+      "ideia": "comece por site responsivo/PWA; app nativo quando faz sentido",
+      "angulo": "contra o senso comum",
+      "formato": "titulo+lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-25T17:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-03-voce-nao-precisa-de-um-app.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 4,
+      "slug": "semana-48-04-planilha-demais-esta-travando",
+      "gancho": "Planilha demais está travando sua empresa",
+      "ideia": "planilhas soltas vs sistema com dados num lugar só",
+      "angulo": "consequência",
+      "formato": "antes-depois",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-25T19:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-04-planilha-demais-esta-travando.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 5,
+      "slug": "semana-48-05-quanto-custa-tirar-sua-ideia-d",
+      "gancho": "Quanto custa tirar sua ideia do papel?",
+      "ideia": "o que define o preço: escopo, integrações, design, manutenção",
+      "angulo": "pergunta",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-25T22:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-05-quanto-custa-tirar-sua-ideia-d.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 6,
+      "slug": "semana-48-06-como-comeco-todo-projeto-de-cl",
+      "gancho": "Como começo todo projeto de cliente",
+      "ideia": "diagnóstico, escopo, protótipo, desenvolvimento, entrega",
+      "angulo": "bastidor",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-26T00:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-06-como-comeco-todo-projeto-de-cl.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 7,
+      "slug": "semana-48-07-da-planilha-ao-sistema-proprio",
+      "gancho": "Da planilha ao sistema próprio",
+      "ideia": "rotina antes e depois de um sistema sob medida",
+      "angulo": "antes-depois",
+      "formato": "antes-depois",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-26T12:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-07-da-planilha-ao-sistema-proprio.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 8,
+      "slug": "semana-48-08-ia-nao-vai-fazer-seu-app-sozin",
+      "gancho": "IA não vai fazer seu app sozinha",
+      "ideia": "IA acelera, mas arquitetura, segurança e produto exigem experiência",
+      "angulo": "mito",
+      "formato": "titulo+lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-26T14:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-08-ia-nao-vai-fazer-seu-app-sozin.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 9,
+      "slug": "semana-48-09-cliente-pergunta-preco-e-some",
+      "gancho": "Cliente pergunta preço e some no direct?",
+      "ideia": "catálogo/landing com informação clara, agendamento, qualificação",
+      "angulo": "dor",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-26T17:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-09-cliente-pergunta-preco-e-some.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 10,
+      "slug": "semana-48-10-5-perguntas-antes-de-contratar",
+      "gancho": "5 perguntas antes de contratar um dev",
+      "ideia": "portfólio, processo, prazo por fase, quem fica com o código, suporte",
+      "angulo": "número",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-26T19:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-10-5-perguntas-antes-de-contratar.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 11,
+      "slug": "semana-48-11-nao-comece-pelo-design-do-app",
+      "gancho": "Não comece pelo design do app",
+      "ideia": "comece pelo problema e pelo fluxo do usuário",
+      "angulo": "contra o senso comum",
+      "formato": "titulo+lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-26T22:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-11-nao-comece-pelo-design-do-app.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 12,
+      "slug": "semana-48-12-sem-dominio-proprio-voce-perde",
+      "gancho": "Sem domínio próprio, você perde credibilidade",
+      "ideia": "email e site genéricos vs marca com domínio",
+      "angulo": "consequência",
+      "formato": "antes-depois",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-27T00:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-12-sem-dominio-proprio-voce-perde.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 13,
+      "slug": "semana-48-13-por-que-ter-site-se-tenho-inst",
+      "gancho": "Por que ter site se tenho Instagram?",
+      "ideia": "você não controla o algoritmo; site é seu, aparece no Google, centraliza",
+      "angulo": "pergunta",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-27T12:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-13-por-que-ter-site-se-tenho-inst.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 14,
+      "slug": "semana-48-14-antes-da-primeira-linha-de-cod",
+      "gancho": "Antes da primeira linha de código",
+      "ideia": "o que acontece antes de programar: entender negócio, usuários, prioridades",
+      "angulo": "bastidor",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-27T14:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-14-antes-da-primeira-linha-de-cod.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 15,
+      "slug": "semana-48-15-atendimento-manual-vs-atendime",
+      "gancho": "Atendimento manual vs atendimento com IA",
+      "ideia": "respostas repetidas à mão vs IA respondendo dúvidas frequentes 24h",
+      "angulo": "antes-depois",
+      "formato": "antes-depois",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-27T17:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-15-atendimento-manual-vs-atendime.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 16,
+      "slug": "semana-48-16-sistema-proprio-e-so-para-empr",
+      "gancho": "Sistema próprio é só para empresa grande",
+      "ideia": "pequenos negócios também se beneficiam; comece pelo essencial",
+      "angulo": "mito",
+      "formato": "titulo+lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-27T19:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-16-sistema-proprio-e-so-para-empr.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 17,
+      "slug": "semana-48-17-perde-horas-respondendo-as-mes",
+      "gancho": "Perde horas respondendo as mesmas perguntas?",
+      "ideia": "FAQ, chatbot com IA, formulário inteligente",
+      "angulo": "dor",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-27T22:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-17-perde-horas-respondendo-as-mes.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 18,
+      "slug": "semana-48-18-3-erros-que-matam-uma-landing",
+      "gancho": "3 erros que matam uma landing page",
+      "ideia": "promessa vaga, muitos botões, formulário longo",
+      "angulo": "número",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-28T00:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-18-3-erros-que-matam-uma-landing.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 19,
+      "slug": "semana-48-19-seu-mvp-deveria-fazer-menos-co",
+      "gancho": "Seu MVP deveria fazer menos coisas",
+      "ideia": "uma função principal bem feita para validar",
+      "angulo": "contra o senso comum",
+      "formato": "titulo+lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-28T12:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-19-seu-mvp-deveria-fazer-menos-co.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 20,
+      "slug": "semana-48-20-site-lento-espanta-cliente-ant",
+      "gancho": "Site lento espanta cliente antes de carregar",
+      "ideia": "imagens pesadas, hospedagem ruim, excesso de plugins",
+      "angulo": "consequência",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-28T14:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-20-site-lento-espanta-cliente-ant.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 21,
+      "slug": "semana-48-21-no-code-ou-codigo-qual-escolhe",
+      "gancho": "No-code ou código: qual escolher?",
+      "ideia": "no-code para validar rápido; código para escalar e personalizar",
+      "angulo": "pergunta",
+      "formato": "antes-depois",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-28T17:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-21-no-code-ou-codigo-qual-escolhe.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 22,
+      "slug": "semana-48-22-como-uso-ia-para-entregar-mais",
+      "gancho": "Como uso IA para entregar mais rápido",
+      "ideia": "protótipo, código repetitivo, testes; revisão humana sempre",
+      "angulo": "bastidor",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-28T19:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-22-como-uso-ia-para-entregar-mais.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 23,
+      "slug": "semana-48-23-briefing-vago-vs-briefing-que",
+      "gancho": "Briefing vago vs briefing que funciona",
+      "ideia": "'quero um app tipo Uber' vs problema, público, prioridade",
+      "angulo": "antes-depois",
+      "formato": "antes-depois",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-28T22:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-23-briefing-vago-vs-briefing-que.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 24,
+      "slug": "semana-48-24-ter-app-nao-garante-clientes",
+      "gancho": "Ter app não garante clientes",
+      "ideia": "produto precisa de proposta clara e divulgação",
+      "angulo": "mito",
+      "formato": "titulo+lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-29T00:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-24-ter-app-nao-garante-clientes.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 25,
+      "slug": "semana-48-25-sua-ideia-esta-parada-ha-meses",
+      "gancho": "Sua ideia está parada há meses?",
+      "ideia": "3 passos para tirar do papel: definir problema, validar, protótipo",
+      "angulo": "dor",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-29T12:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-25-sua-ideia-esta-parada-ha-meses.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 26,
+      "slug": "semana-48-26-4-coisas-que-todo-site-precisa",
+      "gancho": "4 coisas que todo site precisa ter",
+      "ideia": "proposta clara, contato fácil, prova social, versão mobile",
+      "angulo": "número",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-29T14:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-26-4-coisas-que-todo-site-precisa.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 27,
+      "slug": "semana-48-27-nao-peca-orcamento-so-com-a-id",
+      "gancho": "Não peça orçamento só com a ideia",
+      "ideia": "leve o problema, o público e o que é prioridade",
+      "angulo": "contra o senso comum",
+      "formato": "titulo+lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-29T17:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-27-nao-peca-orcamento-so-com-a-id.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 28,
+      "slug": "semana-48-28-o-codigo-do-seu-app-e-seu",
+      "gancho": "O código do seu app é seu?",
+      "ideia": "sem acesso ao código, domínio e hospedagem, você fica refém",
+      "angulo": "consequência",
+      "formato": "antes-depois",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-29T19:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-28-o-codigo-do-seu-app-e-seu.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 29,
+      "slug": "semana-48-29-chatbot-com-ia-serve-para-seu",
+      "gancho": "Chatbot com IA serve para seu negócio?",
+      "ideia": "quando faz sentido: muitas dúvidas repetidas, agendamento, triagem",
+      "angulo": "pergunta",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-29T22:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-29-chatbot-com-ia-serve-para-seu.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 30,
+      "slug": "semana-48-30-as-ferramentas-que-uso-em-todo",
+      "gancho": "As ferramentas que uso em todo projeto",
+      "ideia": "design, versionamento, banco de dados, IA como assistente",
+      "angulo": "bastidor",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-30T00:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-30-as-ferramentas-que-uso-em-todo.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 31,
+      "slug": "semana-48-31-agenda-no-whatsapp-vs-agendame",
+      "gancho": "Agenda no WhatsApp vs agendamento online",
+      "ideia": "marcação manual e esquecimentos vs agenda online com lembrete",
+      "angulo": "antes-depois",
+      "formato": "antes-depois",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-30T12:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-31-agenda-no-whatsapp-vs-agendame.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 32,
+      "slug": "semana-48-32-site-pronto-nao-precisa-de-man",
+      "gancho": "Site pronto não precisa de manutenção",
+      "ideia": "atualizações, segurança, backup, melhorias",
+      "angulo": "mito",
+      "formato": "titulo+lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-30T14:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-32-site-pronto-nao-precisa-de-man.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 33,
+      "slug": "semana-48-33-seu-sistema-atual-ninguem-cons",
+      "gancho": "Seu sistema atual ninguém consegue usar?",
+      "ideia": "telas confusas, fluxo longo, falta de feedback",
+      "angulo": "dor",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-30T17:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-33-seu-sistema-atual-ninguem-cons.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 34,
+      "slug": "semana-48-34-3-automacoes-com-ia-para-peque",
+      "gancho": "3 automações com IA para pequenas empresas",
+      "ideia": "respostas a dúvidas, resumo de atendimentos, geração de propostas",
+      "angulo": "número",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-30T19:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-34-3-automacoes-com-ia-para-peque.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 35,
+      "slug": "semana-48-35-copiar-o-concorrente-e-o-pior",
+      "gancho": "Copiar o concorrente é o pior briefing",
+      "ideia": "copiar traz os erros dele; parta do seu cliente",
+      "angulo": "contra o senso comum",
+      "formato": "titulo+lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-11-30T22:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-35-copiar-o-concorrente-e-o-pior.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 36,
+      "slug": "semana-48-36-botao-errado-custa-clientes-to",
+      "gancho": "Botão errado custa clientes todo dia",
+      "ideia": "'saiba mais' genérico vs ação clara e específica",
+      "angulo": "consequência",
+      "formato": "antes-depois",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-12-01T00:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-36-botao-errado-custa-clientes-to.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 37,
+      "slug": "semana-48-37-quanto-tempo-leva-para-criar-u",
+      "gancho": "Quanto tempo leva para criar um app?",
+      "ideia": "depende do escopo; fases: descoberta, protótipo, desenvolvimento, testes",
+      "angulo": "pergunta",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-12-01T12:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-37-quanto-tempo-leva-para-criar-u.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 38,
+      "slug": "semana-48-38-o-que-eu-pergunto-na-primeira",
+      "gancho": "O que eu pergunto na primeira reunião",
+      "ideia": "qual problema, quem usa, como resolve hoje, o que é sucesso",
+      "angulo": "bastidor",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-12-01T14:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-38-o-que-eu-pergunto-na-primeira.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 39,
+      "slug": "semana-48-39-portfolio-em-pdf-vs-portfolio",
+      "gancho": "Portfólio em PDF vs portfólio em site",
+      "ideia": "PDF que ninguém abre vs site com link, cases e contato",
+      "angulo": "antes-depois",
+      "formato": "antes-depois",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-12-01T17:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-39-portfolio-em-pdf-vs-portfolio.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 40,
+      "slug": "semana-48-40-integrar-ia-e-caro-e-complicad",
+      "gancho": "Integrar IA é caro e complicado?",
+      "ideia": "dá para começar pequeno com APIs prontas e um caso de uso",
+      "angulo": "mito",
+      "formato": "titulo+lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-12-01T19:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-40-integrar-ia-e-caro-e-complicad.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 41,
+      "slug": "semana-48-41-cliente-nao-confia-no-seu-nego",
+      "gancho": "Cliente não confia no seu negócio online?",
+      "ideia": "site profissional, prova social, contato e informações claras",
+      "angulo": "dor",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-12-01T22:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-41-cliente-nao-confia-no-seu-nego.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 42,
+      "slug": "semana-48-42-3-perguntas-para-validar-sua-i",
+      "gancho": "3 perguntas para validar sua ideia",
+      "ideia": "quem tem o problema, como resolve hoje, pagaria por isso",
+      "angulo": "número",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-12-02T00:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-42-3-perguntas-para-validar-sua-i.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 43,
+      "slug": "semana-48-43-seu-site-nao-e-para-voce",
+      "gancho": "Seu site não é para você",
+      "ideia": "é para o cliente: linguagem, dúvidas e próximos passos dele",
+      "angulo": "contra o senso comum",
+      "formato": "titulo+lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-12-02T12:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-43-seu-site-nao-e-para-voce.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 44,
+      "slug": "semana-48-44-dados-espalhados-geram-decisoe",
+      "gancho": "Dados espalhados geram decisões erradas",
+      "ideia": "informação em vários lugares vs dashboard único",
+      "angulo": "consequência",
+      "formato": "antes-depois",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-12-02T14:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-44-dados-espalhados-geram-decisoe.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 45,
+      "slug": "semana-48-45-freelancer-agencia-ou-desenvol",
+      "gancho": "Freelancer, agência ou desenvolvedor sênior?",
+      "ideia": "como escolher: tamanho do projeto, autonomia, responsabilidade técnica",
+      "angulo": "pergunta",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-12-02T17:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-45-freelancer-agencia-ou-desenvol.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 46,
+      "slug": "semana-48-46-como-transformo-ideia-em-proto",
+      "gancho": "Como transformo ideia em protótipo",
+      "ideia": "fluxo, wireframe, protótipo clicável, teste com usuário",
+      "angulo": "bastidor",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-12-02T19:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-46-como-transformo-ideia-em-proto.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 47,
+      "slug": "semana-48-47-sistema-sob-medida-demora-anos",
+      "gancho": "Sistema sob medida demora anos",
+      "ideia": "entregas por fases; primeira versão útil antes do sistema completo",
+      "angulo": "mito",
+      "formato": "titulo+lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-12-02T22:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-47-sistema-sob-medida-demora-anos.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 48,
+      "slug": "semana-48-48-2-telas-que-todo-app-precisa-a",
+      "gancho": "2 telas que todo app precisa acertar",
+      "ideia": "primeira experiência e tela principal",
+      "angulo": "número",
+      "formato": "lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-12-03T00:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-48-2-telas-que-todo-app-precisa-a.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 49,
+      "slug": "semana-48-49-pagando-ferramenta-que-nao-con",
+      "gancho": "Pagando ferramenta que não conversa com nada?",
+      "ideia": "ferramentas isoladas vs integração entre elas",
+      "angulo": "dor",
+      "formato": "antes-depois",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-12-03T12:00:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-49-pagando-ferramenta-que-nao-con.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    },
+    {
+      "n": 50,
+      "slug": "semana-48-50-landing-page-e-so-um-site-meno",
+      "gancho": "Landing page é só um site menor",
+      "ideia": "tem um objetivo só e cada parte leva a ele",
+      "angulo": "mito",
+      "formato": "titulo+lista",
+      "cta": "PORTFÓLIO",
+      "etapa": "pronto",
+      "horario": "2026-12-03T14:30:00.000Z",
+      "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-50-landing-page-e-so-um-site-meno.mp4",
+      "redes": {
+        "instagram": {
+          "status": "pendente"
+        }
+      },
+      "metricas": {
+        "instagram": []
+      }
+    }
+  ]
+}

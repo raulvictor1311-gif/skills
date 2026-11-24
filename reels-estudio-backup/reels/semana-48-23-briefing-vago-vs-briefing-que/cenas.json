@@ -1,0 +1,62 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Briefing vago vs briefing que funciona",
+      "destaque": "que funciona",
+      "fala": "Briefing vago contra briefing que funciona."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Briefing é o seu pedido",
+      "subtitulo": "A descrição do que você quer construir.",
+      "fala": "Briefing é a descrição que você passa para quem vai construir o seu projeto."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "“Quero um app tipo Uber”",
+      "subtitulo": "Tipo Uber em quê, exatamente?",
+      "fala": "Quando alguém me diz quero um app tipo Uber, eu ainda não sei qual parte importa."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Referência não é descrição",
+      "subtitulo": "Ela mostra o estilo, não a função.",
+      "fala": "A referência ajuda a mostrar o estilo, mas não diz o que o seu app precisa fazer."
+    },
+    {
+      "tipo": "antes-depois",
+      "rotuloAntes": "Vago",
+      "antes": "“Um app tipo Uber”",
+      "rotuloDepois": "Claro",
+      "depois": "“Clientes chamam diarista pelo celular”",
+      "fala": "Compare com isto: quero que clientes do bairro chamem uma diarista pelo celular e paguem no app."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Quem usa + o que faz",
+      "subtitulo": "Com as suas palavras, sem termo técnico.",
+      "fala": "A frase diz quem usa e o que faz, sem precisar de nenhum termo técnico."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

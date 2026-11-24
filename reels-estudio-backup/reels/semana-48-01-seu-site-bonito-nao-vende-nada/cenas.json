@@ -1,0 +1,53 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": true,
+  "narracao": "narracao.mp3",
+  "palavras": "palavras.json",
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Seu site bonito não vende nada?",
+      "destaque": "não vende nada",
+      "fala": "Seu site bonito não vende nada?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "O problema não é o visual.",
+      "subtitulo": "É o que falta nele.",
+      "fala": "Em geral, o problema não é o visual, é o que está faltando nele."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "3 motivos",
+      "itens": [
+        "Sem um botão claro",
+        "Sem prova",
+        "Lento no celular"
+      ],
+      "fala": "Primeiro, não tem um botão claro dizendo o próximo passo. Segundo, não tem prova de que você já resolveu isso para alguém. E terceiro, no celular ele demora para abrir, e a pessoa desiste antes."
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "Bonito chama atenção.",
+      "subtitulo": "Clareza é o que faz agir.",
+      "destaque": "Clareza",
+      "fala": "Bonito chama atenção, mas o que faz o cliente agir é a clareza."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}

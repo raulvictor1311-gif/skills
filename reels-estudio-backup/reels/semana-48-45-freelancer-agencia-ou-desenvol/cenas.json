@@ -1,0 +1,57 @@
+{
+  "cores": {
+    "fundo": "#120D1C",
+    "texto": "#F5F2FA",
+    "destaque": "#FF7A1A",
+    "suave": "#A99BC9",
+    "sobreDestaque": "#120D1C"
+  },
+  "fonte": "Inter",
+  "fonteItalica": "JetBrains Mono",
+  "legenda": false,
+  "narracao": null,
+  "palavras": null,
+  "trilha": "trilha.mp3",
+  "cenas": [
+    {
+      "tipo": "gancho",
+      "titulo": "Freelancer, agência ou desenvolvedor sênior?",
+      "destaque": "sênior",
+      "fala": "Freelancer, agência ou desenvolvedor sênior?"
+    },
+    {
+      "tipo": "titulo",
+      "titulo": "A resposta honesta: depende.",
+      "subtitulo": "Eu olho para três coisas.",
+      "destaque": "depende",
+      "fala": "A resposta honesta é que depende, e eu olho para três coisas antes de indicar um caminho."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "O que pesa na escolha",
+      "itens": [
+        "Tamanho do projeto",
+        "Quanto você quer decidir",
+        "Quem responde pelo técnico"
+      ],
+      "fala": "O tamanho do projeto, quanta autonomia você quer ter nas decisões e quem vai responder pela parte técnica quando algo der errado."
+    },
+    {
+      "tipo": "lista",
+      "titulo": "Em geral",
+      "itens": [
+        "Freelancer: tarefa pontual",
+        "Agência: várias frentes juntas",
+        "Sênior: produto do início ao fim"
+      ],
+      "fala": "Em geral, freelancer resolve bem uma tarefa pontual, agência cuida de várias frentes ao mesmo tempo, e um desenvolvedor sênior assume o produto do começo ao fim."
+    },
+    {
+      "tipo": "cta",
+      "chamada": "Comenta",
+      "palavra": "PORTFÓLIO",
+      "promessa": "que eu te mando meu portfólio e uma conversa gratuita sobre o seu projeto",
+      "fala": "Comenta PORTFÓLIO que eu te mando meu portfólio e marco uma conversa gratuita sobre o seu projeto."
+    }
+  ]
+}
