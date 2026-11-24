@@ -38,7 +38,9 @@ if (!alvo.length) { console.log('Nada para renderizar: todo reel com cenas.json 
 
 const node = process.execPath;
 const rodar = (cmd, argv, mostrar = true) => {
-  const r = spawnSync(cmd, argv, { cwd: ESTUDIO, encoding: 'utf8', stdio: mostrar ? 'inherit' : 'pipe', shell: process.platform === 'win32' });
+  // NODE_USE_ENV_PROXY: o fetch do Node só respeita HTTPS_PROXY com isso (máquinas atrás de proxy).
+  const env = { ...process.env, ...(process.env.HTTPS_PROXY ? { NODE_USE_ENV_PROXY: '1' } : {}) };
+  const r = spawnSync(cmd, argv, { cwd: ESTUDIO, env, encoding: 'utf8', stdio: mostrar ? 'inherit' : 'pipe', shell: process.platform === 'win32' });
   return r;
 };
 
