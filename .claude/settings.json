@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Windsor_ai_for_Social_Media__execute_action",
+      "mcp__Windsor_ai_for_Social_Media__get_data",
+      "mcp__composio__COMPOSIO_SEARCH_TOOLS",
+      "mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL",
+      "SendUserFile",
+      "ReadNotifications",
+      "Bash(node /home/user/skills/.claude/skills/fabrica-reels/scripts/*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
+    ]
+  }
+}
