@@ -45,9 +45,10 @@
       "redes": {
         "instagram": {
           "status": "postado",
-          "id": "A-CONFIRMAR-timeout",
+          "id": null,
           "url": null,
-          "em": "2026-11-25T15:04:20.681Z"
+          "em": "2026-11-25T15:04:20.681Z",
+          "confirmado": "pelo usuário (timeout no envio)"
         }
       },
       "metricas": {
