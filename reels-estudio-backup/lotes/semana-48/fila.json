@@ -44,7 +44,10 @@
       "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-02-3-sinais-de-que-precisa-de-sis.mp4",
       "redes": {
         "instagram": {
-          "status": "pendente"
+          "status": "postado",
+          "id": "A-CONFIRMAR-timeout",
+          "url": null,
+          "em": "2026-11-25T15:04:20.681Z"
         }
       },
       "metricas": {
