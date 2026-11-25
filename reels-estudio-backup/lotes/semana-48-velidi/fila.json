@@ -20,7 +20,11 @@
       "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-01-seu-site-bonito-nao-vende-nada.mp4",
       "redes": {
         "instagram": {
-          "status": "pendente"
+          "status": "postado",
+          "id": "18099420572449851",
+          "url": "https://www.instagram.com/reel/DgK3BbHBxFO/",
+          "em": "2026-11-25T15:33:25.637Z",
+          "confirmado": "2026-11-25T15:33:53.205Z"
         }
       },
       "metricas": {
