@@ -1,0 +1,45 @@
+{
+  "nome": "",
+  "oQueVende": "",
+  "publico": "",
+  "ofertas": [
+    { "nome": "", "preco": 0, "paraQuem": "", "link": "" }
+  ],
+  "tom": "próximo, direto, sem gíria forçada",
+  "fusoHorario": "America/Sao_Paulo",
+  "horarioAtendimento": "seg a sex, 09:00 às 18:00",
+  "agenda": { "calendario": "primary", "duracaoReuniaoMin": 30, "janelas": ["seg-sex 10:00-12:00", "seg-sex 14:00-17:00"], "linkReuniao": "" },
+  "qualificacao": {
+    "perguntas": ["Qual o tamanho do seu negócio hoje?", "Qual problema você quer resolver primeiro?", "Para quando você precisa disso?"],
+    "criterioQualificado": "",
+    "desqualifica": ""
+  },
+  "faq": [
+    { "pergunta": "", "resposta": "" }
+  ],
+  "politicas": { "troca": "", "reembolso": "", "prazoEntrega": "", "naoPrometer": [] },
+  "financeiro": { "diasParaCobrar": [1, 3, 7], "chavePix": "", "linkPagamento": "" },
+  "marketing": { "roasMinimo": 2, "gastoMinimoParaJulgar": 50, "perfilInstagram": "", "postsPorSemana": 3 },
+  "assistente": { "emailDono": "", "horaResumo": "07:30" },
+  "conectores": {
+    "whatsapp": "nenhum",
+    "email": "Gmail",
+    "agenda": "Google Calendar",
+    "anuncios": "Windsor.ai (facebook)",
+    "instagram": "Composio",
+    "pagamentos": "Stripe",
+    "banco": "extrato CSV em financeiro/extratos/"
+  },
+  "autonomia": {
+    "sdr-ia": [],
+    "qualificador": [],
+    "agendador": [],
+    "gestor-trafego": [],
+    "social-media": [],
+    "caixa-do-dia": [],
+    "cobranca": [],
+    "atendente-ia": [],
+    "pos-venda": [],
+    "assistente-pessoal": []
+  }
+}
