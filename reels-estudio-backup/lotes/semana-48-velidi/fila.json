@@ -68,7 +68,11 @@
       "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-03-voce-nao-precisa-de-um-app.mp4",
       "redes": {
         "instagram": {
-          "status": "pendente"
+          "status": "postado",
+          "id": "18120823742041483",
+          "url": "https://www.instagram.com/reel/DgNHPVoJLDZ/",
+          "em": "2026-11-26T12:33:40.558Z",
+          "confirmado": "2026-11-26T12:33:56.715Z"
         }
       },
       "metricas": {
