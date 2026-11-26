@@ -92,7 +92,11 @@
       "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-04-planilha-demais-esta-travando.mp4",
       "redes": {
         "instagram": {
-          "status": "pendente"
+          "status": "postado",
+          "id": "18013097399990659",
+          "url": "https://www.instagram.com/reel/DgNkRWwzjtc/",
+          "em": "2026-11-26T16:47:00.357Z",
+          "confirmado": "2026-11-26T16:47:18.947Z"
         }
       },
       "metricas": {
