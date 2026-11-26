@@ -140,7 +140,11 @@
       "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-06-como-comeco-todo-projeto-de-cl.mp4",
       "redes": {
         "instagram": {
-          "status": "pendente"
+          "status": "postado",
+          "id": "17910233592669703",
+          "url": "https://www.instagram.com/reel/DgOIafiBv5i/",
+          "em": "2026-11-26T22:03:08.635Z",
+          "confirmado": "2026-11-26T22:03:08.670Z"
         }
       },
       "metricas": {
