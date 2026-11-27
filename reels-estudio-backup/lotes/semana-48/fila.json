@@ -188,7 +188,11 @@
       "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-08-ia-nao-vai-fazer-seu-app-sozin.mp4",
       "redes": {
         "instagram": {
-          "status": "pendente"
+          "status": "postado",
+          "id": "18150698629584830",
+          "url": "https://www.instagram.com/reel/DgP9ShVh_ue/",
+          "em": "2026-11-27T15:07:54.132Z",
+          "confirmado": "2026-11-27T15:07:54.164Z"
         }
       },
       "metricas": {
