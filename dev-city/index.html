@@ -1,0 +1,624 @@
+<title>Dev City</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&family=Yellowtail&display=swap">
+<style>
+/* Layout: tela de carregamento de jogo de mundo aberto → HUD fixo → carrossel de protagonistas → missões → golpes (faculdade). Visual único e noturno, por escolha. */
+:root{
+  color-scheme: dark;
+  --asphalt:#0c0a12;      /* fundo: asfalto à noite */
+  --asphalt-2:#16121f;
+  --panel:#1c1727;
+  --line:#2e2640;
+  --fg:#f3eefb;
+  --muted:#a69cba;
+  --neon:#ff2d95;         /* letreiro rosa */
+  --cyan:#29e3ff;
+  --sunset:#ffb02e;
+  --cash:#7bdc4a;         /* verde do dinheiro do HUD */
+  --star:#ffd23f;
+  --ink:#000;
+  --f-display:"Anton","Impact","Arial Narrow Bold",sans-serif;
+  --f-script:"Yellowtail","Brush Script MT",cursive;
+  --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-hud:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{background:var(--asphalt);color:var(--fg)}
+body{font-family:var(--f-body);font-size:16px;line-height:1.55;overflow-x:hidden}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* ---------- HUD ---------- */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:rgba(12,10,18,.92)}
+.hud{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(12,10,18,.86);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hud .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:10px}
+.brand{font-family:var(--f-display);font-size:24px;letter-spacing:.02em;text-decoration:none;line-height:1;-webkit-text-stroke:1px var(--ink);text-shadow:2px 2px 0 var(--ink)}
+.brand span{color:var(--neon)}
+.hud-stats{display:flex;align-items:center;gap:18px;font-family:var(--f-hud);font-weight:700}
+.cash{font-size:26px;color:var(--cash);letter-spacing:.02em;font-variant-numeric:tabular-nums;-webkit-text-stroke:1px #0b2a05;text-shadow:2px 2px 0 var(--ink)}
+.stars{display:flex;gap:2px}
+.stars svg{width:20px;height:20px}
+.stars .on path{fill:var(--star);stroke:var(--ink)}
+.stars .off path{fill:transparent;stroke:#6b6280}
+.rank{font-size:13px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+@media (max-width:560px){.rank{display:none}.cash{font-size:22px}.stars svg{width:16px;height:16px}.brand{font-size:20px}}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;overflow:hidden;border-bottom:4px solid var(--ink)}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero .wrap{position:relative;padding-block:72px 96px;display:grid;gap:18px;justify-items:start}
+.eyebrow{font-family:var(--f-hud);font-weight:700;font-size:14px;letter-spacing:.22em;text-transform:uppercase;background:var(--ink);color:var(--sunset);padding:4px 10px}
+.title{position:relative;margin:0;line-height:.86}
+.title .big{display:block;font-family:var(--f-display);font-weight:400;font-size:clamp(76px,15vw,184px);color:#fff;letter-spacing:.01em;-webkit-text-stroke:3px var(--ink);text-shadow:6px 6px 0 var(--ink)}
+.title .script{position:absolute;right:-6%;bottom:-22%;font-family:var(--f-script);font-weight:400;font-size:clamp(40px,7vw,86px);color:var(--neon);transform:rotate(-8deg);text-shadow:0 0 12px rgba(255,45,149,.75),0 0 28px rgba(255,45,149,.45),3px 3px 0 var(--ink);white-space:nowrap}
+.lede{max-width:34em;margin:26px 0 0;font-size:18px;font-weight:500;background:rgba(12,10,18,.78);padding:12px 14px;border-left:4px solid var(--neon)}
+.btn{display:inline-flex;align-items:center;gap:10px;border:3px solid var(--ink);background:var(--sunset);color:var(--ink);font-family:var(--f-display);font-size:20px;letter-spacing:.04em;text-transform:uppercase;padding:10px 20px;box-shadow:5px 5px 0 var(--ink);text-decoration:none;transition:transform .12s ease,box-shadow .12s ease}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.btn:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink)}
+.btn.pink{background:var(--neon);color:#fff;text-shadow:1px 1px 0 var(--ink)}
+.btn.ghost{background:transparent;color:var(--fg);border-color:var(--line);box-shadow:none;font-size:16px}
+.btn[disabled]{background:#2a2436;color:#7d7391;cursor:not-allowed;box-shadow:none;transform:none}
+
+/* ---------- SECTIONS ---------- */
+section.block{padding-block:72px 24px}
+.sec-head{display:grid;gap:6px;margin-bottom:28px}
+.sec-head .kicker{font-family:var(--f-script);font-size:34px;color:var(--cyan);line-height:1;text-shadow:0 0 14px rgba(41,227,255,.45)}
+.sec-head h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(40px,6vw,68px);line-height:.95;text-transform:uppercase;text-wrap:balance;-webkit-text-stroke:2px var(--ink);text-shadow:4px 4px 0 var(--ink)}
+.sec-head p{margin:6px 0 0;color:var(--muted);max-width:40em}
+
+/* ---------- CHARACTER SELECT ---------- */
+.select{position:relative}
+.reel{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(200px,230px);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 4px 22px;scrollbar-width:thin;scrollbar-color:var(--neon) transparent}
+.char{scroll-snap-align:start;text-align:left;border:3px solid var(--ink);background:var(--panel);padding:0;box-shadow:5px 5px 0 var(--ink);transition:transform .15s ease,box-shadow .15s ease;display:grid;grid-template-rows:auto 1fr}
+.char:hover{transform:translateY(-4px)}
+.char[aria-pressed="true"]{box-shadow:0 0 0 3px var(--star),7px 7px 0 var(--ink);transform:translateY(-6px)}
+.art{position:relative;aspect-ratio:4/5;max-width:100%;overflow:hidden;background:linear-gradient(160deg,var(--a) 0 48%,var(--b) 48% 100%);border-bottom:3px solid var(--ink)}
+.art::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(0,0,0,.35) 1.2px,transparent 1.6px);background-size:7px 7px;mix-blend-mode:multiply}
+.art .code{position:absolute;left:10px;bottom:2px;font-family:var(--f-display);font-size:96px;line-height:1;color:#fff;-webkit-text-stroke:3px var(--ink);text-shadow:5px 5px 0 var(--ink)}
+.art .sil{position:absolute;right:-8px;bottom:0;width:62%;height:auto;opacity:.92}
+.art .lock{position:absolute;top:10px;left:10px;font-family:var(--f-hud);font-weight:700;font-size:12px;letter-spacing:.14em;background:var(--ink);color:var(--star);padding:2px 8px;text-transform:uppercase}
+.char .meta{padding:10px 12px 12px;display:grid;gap:2px}
+.char .area{font-family:var(--f-display);font-size:22px;text-transform:uppercase;letter-spacing:.02em;line-height:1.05}
+.char .nick{font-size:14px;color:var(--muted);line-height:1.3}
+.char .prog{margin-top:8px;height:6px;background:#2a2436;border:1px solid var(--ink)}
+.char .prog i{display:block;height:100%;background:var(--cash)}
+.reel-nav{display:flex;gap:10px;justify-content:flex-end;margin-bottom:10px}
+.icon-btn{width:46px;height:46px;border:3px solid var(--ink);background:var(--fg);color:var(--ink);font-family:var(--f-display);font-size:22px;box-shadow:3px 3px 0 var(--ink);display:grid;place-items:center}
+
+/* ---------- MISSION BOARD ---------- */
+.board{margin-top:34px;border:3px solid var(--ink);background:var(--asphalt-2);box-shadow:8px 8px 0 var(--ink)}
+.board-top{display:grid;grid-template-columns:auto 1fr;gap:20px;padding:22px;border-bottom:3px solid var(--ink);background:linear-gradient(90deg,color-mix(in srgb,var(--a) 30%,transparent),transparent 70%)}
+.board-top .portrait{width:104px;aspect-ratio:4/5;border:3px solid var(--ink)}
+.board-top .portrait .code{font-size:54px}
+.board-top h3{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(32px,5vw,52px);line-height:1;text-transform:uppercase;-webkit-text-stroke:1.5px var(--ink);text-shadow:3px 3px 0 var(--ink)}
+.board-top .nick{font-family:var(--f-script);font-size:28px;color:var(--neon);line-height:1.1}
+.board-top .info{min-width:0;display:grid;gap:6px;align-content:center}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-bottom:3px solid var(--ink)}
+.stat{padding:14px 18px;border-right:1px solid var(--line);font-family:var(--f-hud)}
+.stat:last-child{border-right:0}
+.stat b{display:block;font-size:30px;line-height:1.05;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.stat .cashv{color:var(--cash)}
+@media (max-width:640px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid var(--line)}.board-top{grid-template-columns:1fr}.board-top .portrait{width:84px}}
+.respect{padding:14px 18px;border-bottom:3px solid var(--ink);display:grid;gap:6px}
+.respect .lbl{display:flex;justify-content:space-between;font-family:var(--f-hud);font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.bar{height:14px;background:#231d30;border:2px solid var(--ink)}
+.bar i{display:block;height:100%;width:0;background:repeating-linear-gradient(90deg,var(--cash) 0 18px,#5fbf32 18px 20px);transition:width .6s ease}
+
+.missions{list-style:none;margin:0;padding:0}
+.mission{display:grid;grid-template-columns:56px 1fr auto;gap:16px;align-items:start;padding:18px;border-bottom:1px solid var(--line)}
+.mission:last-child{border-bottom:0}
+.marker{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-size:22px;border:3px solid var(--ink);background:var(--star);color:var(--ink);box-shadow:0 0 0 3px rgba(255,210,63,.25)}
+.mission.done .marker{background:var(--cash)}
+.mission.locked .marker{background:#2a2436;color:#6b6280;box-shadow:none}
+.mission h4{margin:0;font-family:var(--f-display);font-weight:400;font-size:24px;letter-spacing:.01em;text-transform:uppercase;line-height:1.1}
+.mission.locked h4{color:#8a809d}
+.mission .course{margin:2px 0 0;font-weight:600}
+.mission .brief{margin:6px 0 0;color:var(--muted);font-style:italic;max-width:56ch}
+.tags{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:8px;align-items:center;font-family:var(--f-hud);font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase}
+.tag-cash{color:var(--cash)}
+.diff{display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
+.diff .stars svg{width:15px;height:15px}
+.status{font-family:var(--f-hud);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:2px 8px;border:2px solid var(--ink)}
+.status.active{background:var(--star);color:var(--ink)}
+.status.done{background:var(--cash);color:var(--ink)}
+.status.locked{background:#2a2436;color:#8a809d}
+.actions{display:grid;gap:8px;justify-items:end}
+.actions .btn{font-size:15px;padding:7px 12px;box-shadow:3px 3px 0 var(--ink)}
+.actions .hint{font-family:var(--f-hud);font-size:13px;color:#8a809d;text-align:right;max-width:14em}
+@media (max-width:640px){.mission{grid-template-columns:46px 1fr}.actions{grid-column:1/-1;justify-items:start;grid-auto-flow:column;justify-content:start}.actions .hint{text-align:left}}
+.board-foot{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;padding:14px 18px;border-top:3px solid var(--ink);font-family:var(--f-hud);font-size:14px;color:var(--muted)}
+
+/* ---------- HEISTS ---------- */
+.heists{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+@media (max-width:900px){.heists{grid-template-columns:1fr}}
+.heist{border:3px solid var(--ink);background:var(--panel);box-shadow:6px 6px 0 var(--ink);display:grid;grid-template-rows:auto 1fr}
+.heist .poster{position:relative;padding:18px 18px 16px;background:linear-gradient(135deg,var(--a),var(--b));border-bottom:3px solid var(--ink);overflow:hidden;min-height:170px;display:grid;align-content:end}
+.heist .poster::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(0,0,0,.33) 1.2px,transparent 1.6px);background-size:7px 7px}
+.heist .stamp{position:absolute;top:14px;right:-34px;transform:rotate(18deg);background:var(--ink);color:var(--star);font-family:var(--f-display);font-size:14px;letter-spacing:.14em;padding:4px 40px}
+.heist .poster h3{position:relative;margin:0;font-family:var(--f-display);font-weight:400;font-size:38px;line-height:.95;text-transform:uppercase;color:#fff;-webkit-text-stroke:2px var(--ink);text-shadow:4px 4px 0 var(--ink)}
+.heist .poster .course{position:relative;margin-top:6px;font-weight:700;background:var(--ink);justify-self:start;padding:2px 8px;font-size:14px}
+.heist .body{padding:16px 18px 18px;display:grid;gap:12px;align-content:start}
+.heist dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-family:var(--f-hud);font-size:15px}
+.heist dt{color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;font-size:13px;align-self:center}
+.heist dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums}
+.heist .btn{justify-self:start;font-size:17px}
+.plan{margin-top:26px;border:3px solid var(--ink);background:var(--asphalt-2);box-shadow:8px 8px 0 var(--ink)}
+.plan-head{padding:18px 20px;border-bottom:3px solid var(--ink);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}
+.plan-head h3{margin:0;font-family:var(--f-display);font-weight:400;font-size:32px;text-transform:uppercase}
+.phases{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0}
+.phase{padding:16px 18px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.phase h4{margin:0 0 8px;font-family:var(--f-hud);font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;display:flex;justify-content:space-between;gap:8px}
+.phase h4 em{font-style:normal;color:var(--cash);font-variant-numeric:tabular-nums}
+.phase label{display:flex;gap:10px;align-items:flex-start;padding:5px 0;cursor:pointer;line-height:1.35}
+.phase input{appearance:none;-webkit-appearance:none;flex:none;width:20px;height:20px;margin-top:1px;border:2px solid var(--muted);background:transparent;display:grid;place-items:center;cursor:pointer}
+.phase input:checked{background:var(--cash);border-color:var(--ink)}
+.phase input:checked::after{content:"";width:8px;height:12px;border:solid var(--ink);border-width:0 3px 3px 0;transform:translateY(-2px) rotate(45deg)}
+.phase input:checked + span{color:var(--muted);text-decoration:line-through}
+
+footer{margin-top:72px;border-top:3px solid var(--ink);background:var(--asphalt-2)}
+footer .wrap{padding-block:22px;display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between;font-family:var(--f-hud);font-size:14px;color:var(--muted);letter-spacing:.06em}
+footer button{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;font-family:var(--f-hud);font-size:14px}
+
+/* ---------- MISSÃO CUMPRIDA ---------- */
+.passed{position:fixed;inset:0;z-index:50;display:grid;place-items:center;pointer-events:none;background:radial-gradient(ellipse at center,rgba(0,0,0,.55),transparent 70%)}
+.passed[hidden]{display:none}
+.passed .inner{text-align:center;animation:pop 2.4s ease forwards}
+.passed .t{font-family:var(--f-display);font-size:clamp(48px,10vw,118px);line-height:.95;color:var(--star);-webkit-text-stroke:3px var(--ink);text-shadow:6px 6px 0 var(--ink);text-transform:uppercase}
+.passed .s{font-family:var(--f-hud);font-weight:700;font-size:clamp(22px,4vw,34px);color:#fff;text-shadow:3px 3px 0 var(--ink);letter-spacing:.06em}
+.passed .s b{color:var(--cash)}
+@keyframes pop{0%{opacity:0;transform:scale(1.35)}12%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.passed .inner{animation:none}.btn,.char,.bar i{transition:none}}
+</style>
+
+<header class="hud">
+  <div class="wrap">
+    <a class="brand" href="#topo">DEV <span>CITY</span></a>
+    <div class="hud-stats" aria-label="Seu progresso geral">
+      <span class="rank" id="hudRank">Novato</span>
+      <span class="stars" id="hudStars" aria-label="Reputação"></span>
+      <span class="cash" id="hudCash">$0</span>
+    </div>
+  </div>
+</header>
+
+<main id="topo">
+  <section class="hero" aria-label="Abertura">
+    <canvas id="city" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <span class="eyebrow">Trilhas gratuitas de programação · PT-BR</span>
+      <h1 class="title"><span class="big">DEV CITY</span><span class="script">Modo Carreira</span></h1>
+      <p class="lede">Escolha um protagonista, cumpra as missões em ordem e junte grana até virar lenda da cidade. Todo curso indicado é gratuito e está no YouTube.</p>
+      <a class="btn" href="#personagens">Escolher protagonista ▸</a>
+    </div>
+  </section>
+
+  <section class="block" id="personagens">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">escolha seu corre</span>
+        <h2>Selecione o protagonista</h2>
+        <p>Cada protagonista é uma trilha de estudo. Arraste para o lado ou use as setas e toque em quem você quer ser.</p>
+      </div>
+      <div class="select">
+        <div class="reel-nav">
+          <button class="icon-btn" id="prev" aria-label="Protagonistas anteriores">‹</button>
+          <button class="icon-btn" id="next" aria-label="Próximos protagonistas">›</button>
+        </div>
+        <div class="reel" id="reel" role="list"></div>
+      </div>
+      <div class="board" id="board" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="block" id="golpes">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">os grandes golpes</span>
+        <h2>Golpes de faculdade</h2>
+        <p>Grades completas de graduação, fase por fase. Marque cada matéria que você estudou e acompanhe quanto falta para fechar o golpe.</p>
+      </div>
+      <div class="heists" id="heists"></div>
+      <div class="plan" id="plan" hidden></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Progresso salvo só neste navegador.</span>
+    <button id="reset" type="button">Zerar progresso</button>
+  </div>
+</footer>
+
+<div class="passed" id="passed" hidden aria-live="assertive">
+  <div class="inner"><div class="t">Missão cumprida</div><div class="s" id="passedSub"></div></div>
+</div>
+
+<script>
+(() => {
+/* ---------- BIBLIOTECA DE MISSÕES ---------- */
+const M = {
+  logica:["Lógica de Programação","curso algoritmos e lógica de programação gratuito","Todo chefão começou com corre pequeno. Aprenda a pensar em passos."],
+  git:["Git e GitHub","curso git e github gratuito","Sem histórico, sem álibi. Versione tudo."],
+  sql:["SQL","curso sql mysql completo gratuito","O cofre da cidade fica no banco de dados. Aprenda a abrir."],
+  python:["Python","curso python do zero gratuito","A ferramenta que todo mundo da cidade carrega no porta-luvas."],
+  linux:["Linux","curso linux para iniciantes","Todo esconderijo sério roda Linux. Aprenda o terminal."],
+  redes:["Redes de Computadores","curso redes de computadores gratuito","Conheça as ruas antes de dirigir por elas."],
+  docker:["Docker","curso docker essencial gratuito","Tudo empacotado e pronto pra mudar de esconderijo."],
+  js:["JavaScript","curso javascript do zero gratuito","A linguagem que domina as ruas do navegador."],
+  java:["Java","curso java completo gratuito","A arma pesada do back end. Difícil de carregar, impossível de ignorar."],
+  api:["APIs REST","curso api rest do zero","Toda negociação passa por um intermediário. Construa o seu."],
+  spring:["Spring Boot","curso spring boot gratuito","Organize a operação inteira num lugar só."],
+  aws:["AWS","curso aws para iniciantes gratuito","Hora de expandir os negócios pra fora da cidade."],
+  htmlcss:["HTML e CSS","curso html5 css3 gratuito","Antes de pilotar, conheça a lataria."],
+  layout:["Flexbox e Grid","curso css flexbox e grid","Estacione cada elemento na vaga certa."],
+  react:["React","curso react gratuito","Componentes reaproveitáveis. Monte, desmonte, reaproveite."],
+  ts:["TypeScript","curso typescript gratuito","Tipos são o seguro do carro. Você só lembra deles na batida."],
+  next:["Next.js","curso nextjs gratuito","Rota de fuga rápida: renderiza no servidor e entrega pronto."],
+  node:["Node.js","curso node js gratuito","JavaScript fora do navegador. O corre agora é no servidor."],
+  deploy:["Deploy na nuvem","como fazer deploy de aplicação fullstack","Projeto parado na garagem não vale nada. Põe na rua."],
+  estat:["Estatística","estatística para ciência de dados curso","Quem entende os números sabe quando a casa vai cair."],
+  pandas:["Pandas","curso pandas python gratuito","Tabelas enormes, filtradas em segundos."],
+  dataviz:["Visualização de Dados","curso matplotlib seaborn python","Mostre o mapa do tesouro de um jeito que todo mundo entende."],
+  ml:["Machine Learning","curso machine learning gratuito português","Ensine a máquina a prever o próximo movimento."],
+  algebra:["Álgebra Linear","álgebra linear para machine learning","Vetores e matrizes: a planta baixa de toda IA."],
+  dl:["Deep Learning","curso deep learning gratuito português","Redes neurais: o cérebro por trás da operação."],
+  llm:["LLMs e APIs de IA","como usar api de llm em python","Coloque um modelo de linguagem pra trabalhar pra você."],
+  agentes:["Agentes de IA","criar agentes de ia do zero","Monte uma equipe que executa o plano sozinha."],
+  discreta:["Matemática Discreta","curso matemática discreta","Lógica, conjuntos e grafos: a contabilidade da computação."],
+  calculo:["Cálculo I","curso cálculo 1 completo","Taxas de variação. Saiba quanto o caixa cresce por segundo."],
+  prob:["Probabilidade","curso probabilidade e estatística","Calcule as chances antes de entrar no jogo."],
+  eda:["Estruturas de Dados","curso estruturas de dados gratuito","Cada coisa no seu cofre, do jeito certo."],
+  algo:["Algoritmos e Complexidade","análise de algoritmos complexidade big o","Rota mais curta, menos tempo, menos risco."],
+  so:["Sistemas Operacionais","curso sistemas operacionais gratuito","Quem manda na máquina por baixo dos panos."],
+  arq:["Arquitetura de Software","curso arquitetura de software","Planeje a cidade antes de levantar os prédios."],
+  sysdesign:["System Design","system design em português","O golpe grande: sistemas para milhões de pessoas."],
+  csharp:["C#","curso c# gratuito","A linguagem preferida dos estúdios de jogos indie."],
+  unity:["Unity","curso unity para iniciantes","Monte seu próprio mapa e solte o jogador nele."],
+  godot:["Godot","curso godot engine gratuito","Engine aberta, leve e sem taxa. Liberdade total."],
+  fisica:["Física para Jogos","física para jogos programação","Carro que capota direito é carro que convence."],
+  publicar:["Publicar um Jogo","como publicar jogo na itch.io","Jogo bom é jogo que alguém jogou."],
+  pentest:["Pentest Básico","curso pentest para iniciantes","Teste as portas da sua própria casa. Só com autorização."],
+  ctf:["CTFs","ctf para iniciantes como começar","Competições de captura de bandeira: treino legal e valendo pontos."],
+  owasp:["OWASP Top 10","owasp top 10 explicado","As 10 falhas mais exploradas da web. Conheça para fechar."],
+  shell:["Shell Script","curso shell script gratuito","Automatize o trabalho sujo no terminal."],
+  cicd:["CI/CD com GitHub Actions","curso github actions ci cd","Cada commit testado e entregue sem ninguém encostar."],
+  k8s:["Kubernetes","curso kubernetes gratuito","Controle uma frota inteira de containers."],
+  terraform:["Terraform","curso terraform gratuito","A cidade inteira descrita em código."],
+  segfund:["Fundamentos de Segurança","fundamentos de segurança da informação curso","Confidencialidade, integridade, disponibilidade. As três regras da casa."],
+  cripto:["Criptografia","criptografia explicada curso","Mensagens que só o destinatário consegue ler."],
+  soc:["SOC e Monitoramento","analista soc curso gratuito","Fique de olho nas câmeras e pegue a invasão no ato."],
+  c:["Linguagem C","curso linguagem c completo","Perto do metal. Aqui cada byte conta."],
+  eletronica:["Eletrônica Básica","curso eletrônica básica","Tensão, corrente e resistência antes de mexer na fiação."],
+  arduino:["Arduino","curso arduino gratuito","Primeiro carro montado na garagem."],
+  esp32:["ESP32 e IoT","curso esp32 iot","Coloque qualquer objeto da cidade na internet."],
+  rtos:["FreeRTOS","curso freertos","Várias tarefas no mesmo chip, sem atraso."],
+  autopy:["Automação com Python","automação com python curso","Deixe o script fazer o trabalho repetitivo."],
+  n8n:["n8n","curso n8n gratuito","Fluxos de automação arrastando bloquinhos."],
+  webhooks:["APIs e Webhooks","webhooks explicado na prática","Aviso automático quando algo acontece do outro lado da cidade."],
+  scraping:["Web Scraping","web scraping python curso","Colete informação pública da web de forma organizada."],
+  agentn8n:["Agentes de IA no n8n","agente de ia no n8n tutorial","Um funcionário digital que trabalha 24 horas."],
+  modelagem:["Modelagem de Dados","curso modelagem de dados","Desenhe o esquema antes de mover a carga."],
+  etl:["Pipelines ETL","pipeline etl python","Extrair, transformar, carregar. A rota da carga."],
+  spark:["Apache Spark","curso pyspark gratuito","Carga pesada demais pra um caminhão só."],
+  airflow:["Apache Airflow","curso apache airflow","Agende cada entrega no horário certo."],
+  bcfund:["Fundamentos de Blockchain","blockchain explicado do zero","Um livro-caixa que ninguém consegue adulterar."],
+  solidity:["Solidity","curso solidity gratuito","Contratos que se cumprem sozinhos."],
+  bcsec:["Segurança de Smart Contracts","segurança smart contracts solidity","Um bug aqui custa dinheiro de verdade."],
+  dapp:["Criar um dApp","criar dapp web3 do zero","Junte front end e contrato num app de verdade."],
+  qafund:["Fundamentos de Testes","fundamentos de teste de software","Todo detetive começa aprendendo a procurar pistas."],
+  casos:["Casos de Teste","como escrever casos de teste","Documente o crime antes que ele aconteça."],
+  apitest:["Testes de API","testes de api com postman","Interrogue cada endpoint até ele confessar."],
+  cypress:["Cypress","curso cypress gratuito","Um robô que clica no site inteiro por você."],
+  playwright:["Playwright","curso playwright gratuito","Testes em vários navegadores ao mesmo tempo."],
+  qaci:["Testes no CI","testes automatizados github actions","Nenhum bug passa pela portaria sem ser revistado."],
+  uxfund:["Fundamentos de UX","fundamentos de ux design curso","Entenda quem vai usar antes de desenhar."],
+  figma:["Figma","curso figma gratuito","A prancheta onde o estilo nasce."],
+  ui:["Design de Interfaces","curso ui design gratuito","Cor, tipografia e espaço com intenção."],
+  pesquisa:["Pesquisa com Usuários","pesquisa com usuários ux","Pergunte para a rua antes de decidir pela rua."],
+  ds:["Design System","criar design system no figma","Um padrão visual para a cidade inteira."],
+  portfolio:["Portfólio","como montar portfólio ux ui","Mostre seus melhores trabalhos para quem contrata."],
+  cloudfund:["Fundamentos de Cloud","computação em nuvem para iniciantes","Servidores alugados por hora, em qualquer lugar do mundo."],
+  ccp:["AWS Cloud Practitioner","aws cloud practitioner curso gratuito","A primeira licença de voo na nuvem."],
+  az900:["Azure Fundamentals","az-900 curso gratuito","Conheça o outro aeroporto da cidade."],
+  serverless:["Serverless","aws lambda curso","Código que roda só quando chamado. Sem servidor pra cuidar."],
+  rn:["React Native","curso react native gratuito","Um código, dois sistemas: Android e iOS."],
+  flutter:["Flutter","curso flutter gratuito","Interfaces rápidas e bonitas em qualquer celular."],
+  kotlin:["Kotlin","curso kotlin android gratuito","A língua oficial das ruas do Android."],
+  loja:["Publicar na Loja","como publicar app na play store","Entrega final: seu app no bolso das pessoas."]
+};
+
+/* ---------- PROTAGONISTAS ---------- */
+const T = [
+  {id:"backend",area:"Back End",nick:"O Chefão do Servidor",code:"BE",a:"#ff2d95",b:"#5a1bd6",m:[["logica",1],["java",4],["git",2],["sql",3],["api",3],["spring",5],["docker",3],["aws",3]]},
+  {id:"frontend",area:"Front End",nick:"O Piloto de Fuga da Interface",code:"FE",a:"#29e3ff",b:"#ff2d95",m:[["htmlcss",1],["js",2],["git",2],["layout",2],["react",4],["ts",3],["next",4]]},
+  {id:"fullstack",area:"Full Stack",nick:"O Faz-Tudo da Quebrada",code:"FS",a:"#ffb02e",b:"#e2264d",m:[["logica",1],["htmlcss",1],["js",2],["node",3],["sql",3],["react",4],["docker",3],["deploy",4]]},
+  {id:"dados",area:"Ciência de Dados",nick:"O Informante dos Dados",code:"DS",a:"#7bdc4a",b:"#14706a",m:[["python",1],["estat",3],["pandas",2],["sql",3],["dataviz",2],["ml",5]]},
+  {id:"ia",area:"Inteligência Artificial",nick:"O Cérebro da Operação",code:"IA",a:"#b05cff",b:"#29e3ff",m:[["python",1],["algebra",4],["ml",4],["dl",5],["llm",3],["agentes",4]]},
+  {id:"avancado",area:"Avançado",nick:"O Veterano da Cidade",code:"AV",a:"#ffd23f",b:"#8a1c1c",m:[["eda",4],["algo",4],["so",4],["redes",3],["arq",5],["sysdesign",5]]},
+  {id:"matematica",area:"Matemática",nick:"O Contador da Máfia",code:"MT",a:"#d8d0e8",b:"#3a2f52",m:[["discreta",3],["calculo",4],["algebra",4],["prob",4],["algo",5]]},
+  {id:"gamedev",area:"GameDev",nick:"O Arquiteto da Cidade",code:"GD",a:"#ff7a1a",b:"#2b2bd9",m:[["logica",1],["csharp",2],["unity",3],["godot",3],["fisica",4],["publicar",2]]},
+  {id:"hacker",area:"Hacker Ético",nick:"O Fantasma da Rede",code:"HK",a:"#1aff8c",b:"#0b0b0b",m:[["linux",2],["redes",3],["python",2],["pentest",4],["ctf",4],["owasp",4]]},
+  {id:"devops",area:"DevOps",nick:"O Mecânico da Garagem",code:"DO",a:"#ff9e2e",b:"#24476b",m:[["linux",2],["shell",2],["git",2],["docker",3],["cicd",3],["k8s",5],["terraform",4]]},
+  {id:"cyber",area:"CyberSecurity",nick:"O Segurança da Boate",code:"CS",a:"#e2264d",b:"#1a1a40",m:[["redes",3],["linux",2],["segfund",2],["cripto",3],["owasp",4],["soc",4]]},
+  {id:"embarcados",area:"Embarcados",nick:"O Rei do Desmanche",code:"EM",a:"#c9c9c9",b:"#a83b12",m:[["c",3],["eletronica",2],["arduino",2],["esp32",3],["rtos",5]]},
+  {id:"automacao",area:"Automação",nick:"O Esquema Automático",code:"AU",a:"#ff5fd2",b:"#ffb02e",m:[["python",1],["autopy",2],["n8n",2],["webhooks",3],["scraping",3],["agentn8n",4]]},
+  {id:"engdados",area:"Eng. de Dados",nick:"O Contrabandista de Dados",code:"ED",a:"#29e3ff",b:"#0f3d2e",m:[["sql",2],["python",2],["modelagem",3],["etl",3],["spark",4],["airflow",4]]},
+  {id:"blockchain",area:"Blockchain",nick:"O Doleiro da Web3",code:"BC",a:"#ffd23f",b:"#3d1a6b",m:[["bcfund",1],["js",2],["solidity",4],["bcsec",5],["dapp",4]]},
+  {id:"qa",area:"QA",nick:"O Detetive da Qualidade",code:"QA",a:"#e8e1c4",b:"#2a4a7a",m:[["qafund",1],["casos",2],["apitest",3],["cypress",3],["playwright",3],["qaci",4]]},
+  {id:"uiux",area:"UI / UX",nick:"O Estilista da Rua",code:"UX",a:"#ff8fb8",b:"#5b2fd6",m:[["uxfund",1],["figma",2],["ui",2],["pesquisa",3],["ds",4],["portfolio",3]]},
+  {id:"cloud",area:"Cloud",nick:"O Piloto de Helicóptero",code:"CL",a:"#8fd8ff",b:"#1f3b8a",m:[["cloudfund",1],["linux",2],["redes",3],["ccp",3],["az900",3],["serverless",4]]},
+  {id:"mobile",area:"Mobile",nick:"O Motoboy dos Apps",code:"MB",a:"#7bdc4a",b:"#ff2d95",m:[["js",2],["rn",4],["flutter",4],["kotlin",3],["loja",3]]}
+];
+
+/* ---------- GOLPES (FACULDADE) ---------- */
+const H = [
+  {id:"ads",name:"Operação Rápida",course:"Análise e Desenv. de Sistemas",a:"#29e3ff",b:"#ff2d95",pay:150000,crew:"Iniciante",phases:[
+    ["Algoritmos e Lógica","Fundamentos de Sistemas de Informação","Matemática para Computação","Arquitetura de Computadores"],
+    ["Programação Orientada a Objetos","Banco de Dados","Engenharia de Software","Redes de Computadores"],
+    ["Desenvolvimento Web","Estruturas de Dados","Sistemas Operacionais","Análise de Requisitos"],
+    ["Desenvolvimento Mobile","Testes de Software","Segurança da Informação","Gestão de Projetos"],
+    ["Computação em Nuvem","DevOps","Projeto Integrador","Empreendedorismo"]]},
+  {id:"es",name:"Cofre Central",course:"Engenharia de Software",a:"#ffb02e",b:"#e2264d",pay:420000,crew:"Experiente",phases:[
+    ["Algoritmos","Cálculo I","Introdução à Engenharia de Software","Matemática Discreta"],
+    ["Programação Orientada a Objetos","Cálculo II","Estruturas de Dados","Álgebra Linear"],
+    ["Banco de Dados","Engenharia de Requisitos","Arquitetura de Computadores","Probabilidade e Estatística"],
+    ["Modelagem de Software (UML)","Sistemas Operacionais","Redes de Computadores","Desenvolvimento Web"],
+    ["Arquitetura de Software","Testes e Qualidade","Interação Humano-Computador","Gerência de Configuração"],
+    ["Gerência de Projetos","Métodos Ágeis","Sistemas Distribuídos","Segurança de Software"],
+    ["Manutenção e Evolução de Software","DevOps","Projeto de Software em Equipe","TCC I"],
+    ["Empreendedorismo","Ética e Computação","Estágio Supervisionado","TCC II"]]},
+  {id:"cc",name:"Reserva Federal",course:"Ciência da Computação",a:"#b05cff",b:"#0f3d2e",pay:650000,crew:"Lendário",phases:[
+    ["Algoritmos e Programação","Cálculo I","Matemática Discreta","Circuitos Digitais"],
+    ["Estruturas de Dados I","Cálculo II","Álgebra Linear","Arquitetura de Computadores"],
+    ["Estruturas de Dados II","Programação Orientada a Objetos","Probabilidade e Estatística","Lógica Matemática"],
+    ["Projeto e Análise de Algoritmos","Banco de Dados","Sistemas Operacionais","Teoria da Computação"],
+    ["Compiladores","Redes de Computadores","Engenharia de Software","Cálculo Numérico"],
+    ["Inteligência Artificial","Computação Gráfica","Sistemas Distribuídos","Teoria dos Grafos"],
+    ["Aprendizado de Máquina","Segurança Computacional","Optativa","TCC I"],
+    ["Computação Paralela","Computadores e Sociedade","Optativa","TCC II"]]}
+];
+
+/* ---------- ESTADO ---------- */
+const KEY = "devcity.v1";
+let S = {sel:"backend", done:{}, heist:{}, openHeist:null};
+try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch(e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} };
+
+const reward = s => s * 100;
+const fmt = n => "$" + n.toLocaleString("pt-BR");
+const doneCount = t => (S.done[t.id] || 0);
+const trackCash = t => t.m.slice(0, doneCount(t)).reduce((a,[,s]) => a + reward(s), 0);
+const trackMax = t => t.m.reduce((a,[,s]) => a + reward(s), 0);
+const heistDone = h => h.phases.flat().filter((_,i) => (S.heist[h.id]||[]).includes(i)).length;
+const heistCash = h => Math.round(h.pay * heistDone(h) / h.phases.flat().length);
+
+const starSvg = on => `<svg viewBox="0 0 24 24" class="${on?'on':'off'}" aria-hidden="true"><path stroke-width="1.6" stroke-linejoin="round" d="M12 2.6l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 16.9l-5.8 3.2 1.4-6.4L2.7 9.3l6.5-.7z"/></svg>`;
+const stars = (n, max=5) => Array.from({length:max}, (_,i) => starSvg(i < n)).join("");
+const RANKS = ["Novato","Aviãozinho","Corre Firme","Respeitado","Chefão","Lenda da Cidade"];
+
+const silhouette = `<svg class="sil" viewBox="0 0 100 140" aria-hidden="true"><path fill="#000" d="M50 8c11 0 19 9 19 20 0 8-4 14-9 17l-1 6c14 3 26 11 30 24l7 38c1 5-2 9-7 9h-6l-4 18H21l-4-18h-6c-5 0-8-4-7-9l7-38c4-13 16-21 30-24l-1-6c-5-3-9-9-9-17 0-11 8-20 19-20z"/><path fill="var(--b)" opacity=".55" d="M36 14c4-5 9-7 14-7 9 0 16 5 19 13-6-3-20-4-33-6z"/></svg>`;
+const art = (t, extra="") => `<div class="art" style="--a:${t.a};--b:${t.b}">${extra}${silhouette}<span class="code">${t.code}</span></div>`;
+
+/* ---------- HUD ---------- */
+function renderHud(){
+  const total = T.reduce((a,t) => a + trackCash(t), 0) + H.reduce((a,h) => a + heistCash(h), 0);
+  const missions = T.reduce((a,t) => a + doneCount(t), 0);
+  const lvl = Math.min(5, Math.floor(missions / 6));
+  document.getElementById("hudCash").textContent = fmt(total);
+  document.getElementById("hudStars").innerHTML = stars(lvl);
+  document.getElementById("hudStars").setAttribute("aria-label", `Reputação ${lvl} de 5`);
+  document.getElementById("hudRank").textContent = RANKS[lvl];
+}
+
+/* ---------- CARROSSEL ---------- */
+const reel = document.getElementById("reel");
+function renderReel(){
+  reel.innerHTML = T.map(t => {
+    const pct = Math.round(doneCount(t) / t.m.length * 100);
+    const badge = pct === 100 ? `<span class="lock">Zerado</span>` : "";
+    return `<button class="char" role="listitem" data-id="${t.id}" aria-pressed="${S.sel===t.id}" style="--a:${t.a};--b:${t.b}">
+      ${art(t, badge)}
+      <span class="meta"><span class="area">${t.area}</span><span class="nick">${t.nick}</span>
+      <span class="prog" aria-label="${pct}% concluído"><i style="width:${pct}%"></i></span></span></button>`;
+  }).join("");
+}
+reel.addEventListener("click", e => {
+  const b = e.target.closest(".char"); if (!b) return;
+  S.sel = b.dataset.id; save();
+  reel.querySelectorAll(".char").forEach(c => c.setAttribute("aria-pressed", c.dataset.id === S.sel));
+  renderBoard();
+  document.getElementById("board").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"});
+});
+document.getElementById("prev").onclick = () => reel.scrollBy({left:-reel.clientWidth*.8, behavior:"smooth"});
+document.getElementById("next").onclick = () => reel.scrollBy({left: reel.clientWidth*.8, behavior:"smooth"});
+
+/* ---------- MISSÕES ---------- */
+const DIFF = ["","Fácil","Fácil","Moderado","Difícil","Lendário"];
+function renderBoard(){
+  const t = T.find(x => x.id === S.sel) || T[0];
+  const d = doneCount(t), n = t.m.length;
+  const cash = trackCash(t), max = trackMax(t);
+  const pct = Math.round(d / n * 100);
+  const lvl = pct === 100 ? "Lenda" : pct >= 60 ? "Respeitado" : pct > 0 ? "No corre" : "Novato";
+  const quote = pct === 100 ? "Trilha zerada. A cidade é sua." : d === 0 ? "Todo protagonista começa sem nada no bolso." : `Faltam ${n - d} missões. Não para agora.`;
+  const items = t.m.map(([k, s], i) => {
+    const [title, q, brief] = M[k];
+    const state = i < d ? "done" : i === d ? "active" : "locked";
+    const label = {done:"Cumprida", active:"Disponível", locked:"Bloqueada"}[state];
+    const url = "https://www.youtube.com/results?search_query=" + encodeURIComponent(q);
+    let act;
+    if (state === "done") act = `<span class="status done">Cumprida</span><button class="btn ghost" data-undo="${i}">Desfazer</button>`;
+    else if (state === "active") act = `<a class="btn ghost" href="${url}" target="_blank" rel="noopener">Ver aulas no YouTube</a><button class="btn pink" data-done="${i}">Cumprir missão</button>`;
+    else act = `<span class="hint">Cumpra a missão anterior para liberar</span>`;
+    return `<li class="mission ${state}">
+      <span class="marker" aria-hidden="true">${state==="done" ? "✓" : i+1}</span>
+      <div style="min-width:0">
+        <h4>${title}</h4>
+        <p class="course">${state==="locked" ? "Missão bloqueada" : "Busca sugerida: “" + q + "”"}</p>
+        <p class="brief">${brief}</p>
+        <div class="tags"><span class="status ${state}">${label}</span><span class="tag-cash">+${fmt(reward(s))}</span>
+        <span class="diff">${DIFF[s]} <span class="stars">${stars(s)}</span></span></div>
+      </div>
+      <div class="actions">${act}</div></li>`;
+  }).join("");
+  const board = document.getElementById("board");
+  board.style.setProperty("--a", t.a); board.style.setProperty("--b", t.b);
+  board.innerHTML = `
+    <div class="board-top">
+      <div class="portrait">${art(t)}</div>
+      <div class="info"><span class="eyebrow" style="justify-self:start">Trilha de ${t.area}</span>
+        <h3>${t.area}</h3><span class="nick">${t.nick}</span></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>${lvl}</b><span>Status</span></div>
+      <div class="stat"><b class="cashv">${fmt(cash)}</b><span>Grana</span></div>
+      <div class="stat"><b>${d}/${n}</b><span>Missões</span></div>
+      <div class="stat"><b>${pct}%</b><span>Progresso</span></div>
+    </div>
+    <div class="respect"><div class="lbl"><span>Respeito · ${quote}</span><span>${fmt(cash)} / ${fmt(max)}</span></div>
+      <div class="bar"><i style="width:${pct}%"></i></div></div>
+    <ol class="missions">${items}</ol>
+    <div class="board-foot"><span>Cada missão é um tema. Assista às aulas, pratique e só então marque como cumprida.</span>
+      <a class="btn ghost" href="#personagens">Trocar protagonista</a></div>`;
+}
+document.getElementById("board").addEventListener("click", e => {
+  const t = T.find(x => x.id === S.sel);
+  const dn = e.target.closest("[data-done]"), un = e.target.closest("[data-undo]");
+  if (dn) {
+    const i = +dn.dataset.done;
+    S.done[t.id] = i + 1; save();
+    passed(`<b>+${fmt(reward(t.m[i][1]))}</b> · Respeito +`);
+    refresh();
+  } else if (un) {
+    S.done[t.id] = +un.dataset.undo; save(); refresh();
+  }
+});
+
+/* ---------- GOLPES ---------- */
+function renderHeists(){
+  document.getElementById("heists").innerHTML = H.map(h => {
+    const total = h.phases.flat().length, d = heistDone(h);
+    const pct = Math.round(d/total*100);
+    return `<article class="heist">
+      <div class="poster" style="--a:${h.a};--b:${h.b}"><span class="stamp">${pct===100 ? "FECHADO" : "GOLPE"}</span>
+        <h3>${h.name}</h3><span class="course">${h.course}</span></div>
+      <div class="body">
+        <dl><dt>Fases</dt><dd>${h.phases.length} semestres</dd>
+          <dt>Alvos</dt><dd>${total} matérias</dd>
+          <dt>Equipe</dt><dd>${h.crew}</dd>
+          <dt>Pagamento</dt><dd style="color:var(--cash)">${fmt(heistCash(h))} / ${fmt(h.pay)}</dd></dl>
+        <div class="bar" aria-label="${pct}% do golpe"><i style="width:${pct}%"></i></div>
+        <button class="btn ${S.openHeist===h.id?'':'pink'}" data-heist="${h.id}">${S.openHeist===h.id ? "Fechar planejamento" : "Planejar golpe"}</button>
+      </div></article>`;
+  }).join("");
+  const plan = document.getElementById("plan");
+  const h = H.find(x => x.id === S.openHeist);
+  if (!h) { plan.hidden = true; plan.innerHTML = ""; return; }
+  plan.hidden = false;
+  const got = S.heist[h.id] || [];
+  let idx = 0;
+  plan.innerHTML = `<div class="plan-head"><h3>${h.name} · ${h.course}</h3>
+      <span class="cash" style="font-family:var(--f-hud);font-weight:700">${fmt(heistCash(h))}</span></div>
+    <div class="phases">${h.phases.map((p, pi) => {
+      const rows = p.map(s => { const i = idx++; return `<label><input type="checkbox" id="h-${h.id}-${i}" data-h="${h.id}" data-i="${i}" ${got.includes(i)?"checked":""}><span>${s}</span></label>`; }).join("");
+      const start = idx - p.length; const c = p.filter((_,k) => got.includes(start+k)).length;
+      return `<div class="phase"><h4>Fase ${pi+1}<em>${c}/${p.length}</em></h4>${rows}</div>`;
+    }).join("")}</div>`;
+}
+document.getElementById("heists").addEventListener("click", e => {
+  const b = e.target.closest("[data-heist]"); if (!b) return;
+  S.openHeist = S.openHeist === b.dataset.heist ? null : b.dataset.heist; save(); renderHeists();
+  if (S.openHeist) document.getElementById("plan").scrollIntoView({behavior:"smooth", block:"nearest"});
+});
+document.getElementById("plan").addEventListener("change", e => {
+  const c = e.target; if (!c.dataset.h) return;
+  const h = H.find(x => x.id === c.dataset.h);
+  const list = new Set(S.heist[h.id] || []); const i = +c.dataset.i;
+  c.checked ? list.add(i) : list.delete(i);
+  S.heist[h.id] = [...list]; save();
+  const total = h.phases.flat().length;
+  if (c.checked && list.size === total) passed(`Golpe fechado · <b>${fmt(h.pay)}</b>`);
+  renderHeists(); renderHud();
+});
+
+/* ---------- MISSÃO CUMPRIDA ---------- */
+let pt;
+function passed(html){
+  const el = document.getElementById("passed");
+  document.getElementById("passedSub").innerHTML = html;
+  el.hidden = true; void el.offsetWidth; el.hidden = false;
+  const inner = el.querySelector(".inner"); inner.style.animation = "none"; void inner.offsetWidth; inner.style.animation = "";
+  clearTimeout(pt); pt = setTimeout(() => el.hidden = true, 2400);
+}
+
+document.getElementById("reset").onclick = function(){
+  if (this.dataset.armed) { S = {sel:S.sel, done:{}, heist:{}, openHeist:null}; save(); refresh(); renderHeists(); this.textContent = "Zerar progresso"; delete this.dataset.armed; return; }
+  this.dataset.armed = "1"; this.textContent = "Toque de novo para confirmar";
+  setTimeout(() => { if (this.dataset.armed) { delete this.dataset.armed; this.textContent = "Zerar progresso"; } }, 4000);
+};
+
+function refresh(){ renderReel(); renderBoard(); renderHud(); }
+refresh(); renderHeists();
+requestAnimationFrame(() => { const c = reel.querySelector('[aria-pressed="true"]'); if (c) reel.scrollLeft = Math.max(0, c.offsetLeft - reel.offsetLeft - 8); });
+
+/* ---------- CIDADE AO PÔR DO SOL (canvas) ---------- */
+const cv = document.getElementById("city"), ctx = cv.getContext("2d");
+function rnd(seed){ return () => (seed = (seed * 16807) % 2147483647) / 2147483647; }
+function draw(){
+  const w = cv.clientWidth, h = cv.clientHeight, dpr = Math.min(2, window.devicePixelRatio || 1);
+  if (!w || !h) return;
+  cv.width = w*dpr; cv.height = h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  const g = ctx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0,"#1a0b33"); g.addColorStop(.38,"#6b1a6e"); g.addColorStop(.62,"#ff2d95"); g.addColorStop(.8,"#ffb02e"); g.addColorStop(1,"#ffb02e");
+  ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
+  // sol listrado
+  const sx = w*.7, sy = h*.66, r = Math.min(w,h)*.3;
+  const sg = ctx.createLinearGradient(0,sy-r,0,sy+r); sg.addColorStop(0,"#ffe46b"); sg.addColorStop(1,"#ff3d7f");
+  ctx.save(); ctx.beginPath(); ctx.arc(sx,sy,r,0,Math.PI*2); ctx.clip();
+  ctx.fillStyle = sg; ctx.fillRect(sx-r,sy-r,r*2,r*2);
+  ctx.fillStyle = "#c21f6a";
+  for (let i=0;i<7;i++){ const y = sy + i*r*.14; ctx.fillRect(sx-r, y, r*2, 2 + i*1.6); }
+  ctx.restore();
+  const R = rnd(42);
+  // prédios ao fundo
+  const base = h*.86;
+  ctx.fillStyle = "#3a1440";
+  for (let x=-10; x<w; ){ const bw = 30+R()*60, bh = 60+R()*h*.35; ctx.fillRect(x, base-bh, bw, bh+h); x += bw+4; }
+  // prédios da frente com janelas
+  for (let x=-10; x<w; ){
+    const bw = 40+R()*80, bh = 40+R()*h*.28;
+    ctx.fillStyle = "#120a1c"; ctx.fillRect(x, base-bh+20, bw, bh+h);
+    if (R() > .7) ctx.fillRect(x+bw*.45, base-bh, 3, 22); // antena
+    for (let wy = base-bh+30; wy < h; wy += 12) for (let wx = x+6; wx < x+bw-8; wx += 10) {
+      const k = R(); if (k > .78) { ctx.fillStyle = k > .93 ? "#29e3ff" : "#ffd27a"; ctx.fillRect(wx, wy, 4, 6); }
+    }
+    x += bw + 6;
+  }
+  // palmeiras
+  const palm = (px, ph, lean) => {
+    ctx.strokeStyle = "#07040c"; ctx.fillStyle = "#07040c"; ctx.lineWidth = 7; ctx.lineCap = "round";
+    const tx = px + lean, ty = h - ph;
+    ctx.beginPath(); ctx.moveTo(px, h); ctx.quadraticCurveTo(px + lean*.2, h - ph*.5, tx, ty); ctx.stroke();
+    for (let a = 0; a < 7; a++){
+      const ang = -Math.PI*.95 + a*(Math.PI*.95/6), len = 70 + (a%2)*18;
+      const ex = tx + Math.cos(ang)*len, ey = ty + Math.sin(ang)*len*.55 + 34;
+      ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(tx, ty);
+      ctx.quadraticCurveTo(tx + Math.cos(ang)*len*.5, ty + Math.sin(ang)*len*.6 - 12, ex, ey); ctx.stroke();
+    }
+  };
+  palm(w*.06, h*.62, 26); palm(w*.13, h*.48, -18); palm(w*.94, h*.58, -30);
+  // vinheta para leitura do texto
+  const v = ctx.createLinearGradient(0,0,w,0); v.addColorStop(0,"rgba(12,10,18,.55)"); v.addColorStop(.6,"rgba(12,10,18,0)");
+  ctx.fillStyle = v; ctx.fillRect(0,0,w,h);
+}
+draw();
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(draw, 120); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+})();
+</script>
