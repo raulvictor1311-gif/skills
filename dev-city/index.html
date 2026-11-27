@@ -2,297 +2,589 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&family=Yellowtail&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Barlow+Condensed:wght@500;600;700&family=Yellowtail&display=swap">
 <style>
-/* Layout: tela de carregamento de jogo de mundo aberto → HUD fixo → carrossel de protagonistas → missões → golpes (faculdade). Visual único e noturno, por escolha. */
+/* =========================================================================
+   DEV CITY · v3
+   Layout: abertura de jogo (cidade em canvas) → como funciona → seleção de
+   protagonista por categoria → quadro de missões em etapas → golpes de
+   faculdade → ficha do jogador. Barra fixa "Continuar estudando" no rodapé.
+   Visual único e noturno, por escolha (não segue o tema claro do sistema).
+   ========================================================================= */
 :root{
   color-scheme: dark;
   --asphalt:#0c0a12;      /* fundo: asfalto à noite */
-  --asphalt-2:#16121f;
+  --asphalt-2:#15111e;
   --panel:#1c1727;
-  --line:#2e2640;
-  --fg:#f3eefb;
-  --muted:#a69cba;
+  --panel-2:#251e33;
+  --line:#3b3150;
+  --fg:#f5f1fb;
+  --muted:#cdc4de;        /* NOVO: texto secundário mais claro (contraste ≥ 9:1) */
+  --dim:#ada3c2;          /* texto de itens bloqueados, ainda legível (≥ 6:1) */
   --neon:#ff2d95;         /* letreiro rosa */
+  --neon-text:#ff74b8;    /* rosa claro para texto pequeno sobre o escuro */
   --cyan:#29e3ff;
   --sunset:#ffb02e;
-  --cash:#7bdc4a;         /* verde do dinheiro do HUD */
+  --cash:#7bdc4a;         /* verde do dinheiro */
   --star:#ffd23f;
+  --prog:#29e3ff;         /* estado "em andamento" */
   --ink:#000;
   --f-display:"Anton","Impact","Arial Narrow Bold",sans-serif;
   --f-script:"Yellowtail","Brush Script MT",cursive;
   --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-hud:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --dock-h:0px;           /* altura da barra fixa, medida por script */
 }
 *{box-sizing:border-box}
+html{scroll-padding-top:84px}
 html,body{background:var(--asphalt);color:var(--fg)}
-body{font-family:var(--f-body);font-size:16px;line-height:1.55;overflow-x:hidden}
-a{color:inherit}
-button{font:inherit;color:inherit;cursor:pointer}
+body{font-family:var(--f-body);font-size:17px;line-height:1.55;overflow-x:hidden;padding-bottom:var(--dock-h)}
+a{color:var(--cyan)}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
 :focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.skip{position:absolute;left:12px;top:-60px;z-index:100;background:var(--star);color:var(--ink);padding:10px 14px;font-weight:700}
+.skip:focus{top:calc(env(safe-area-inset-top,0px) + 8px)}
 
-/* ---------- HUD ---------- */
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:rgba(12,10,18,.92)}
-.hud{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(12,10,18,.86);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.hud .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:10px}
-.brand{font-family:var(--f-display);font-size:24px;letter-spacing:.02em;text-decoration:none;line-height:1;-webkit-text-stroke:1px var(--ink);text-shadow:2px 2px 0 var(--ink)}
+/* ---------- HUD / MENU ---------- */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:#0c0a12}
+.hud{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:rgba(12,10,18,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hud-row{display:flex;align-items:center;gap:14px;padding-block:8px;min-height:60px}
+.brand{font-family:var(--f-display);font-size:24px;letter-spacing:.02em;text-decoration:none;color:var(--fg);line-height:1;-webkit-text-stroke:1px var(--ink);text-shadow:2px 2px 0 var(--ink);white-space:nowrap}
 .brand span{color:var(--neon)}
-.hud-stats{display:flex;align-items:center;gap:18px;font-family:var(--f-hud);font-weight:700}
-.cash{font-size:26px;color:var(--cash);letter-spacing:.02em;font-variant-numeric:tabular-nums;-webkit-text-stroke:1px #0b2a05;text-shadow:2px 2px 0 var(--ink)}
-.stars{display:flex;gap:2px}
-.stars svg{width:20px;height:20px}
+.nav{margin-left:auto;position:relative}
+.nav ul{list-style:none;margin:0;padding:0;display:flex;gap:4px}
+.nav a{display:flex;align-items:center;min-height:44px;padding:0 10px;color:var(--fg);text-decoration:none;font-family:var(--f-hud);font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase}
+.nav a:hover{color:var(--star)}
+.menu-btn{display:none;min-height:44px;min-width:44px;padding:0 12px;border:2px solid var(--line);background:transparent;font-family:var(--f-hud);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.hud-stats{display:flex;align-items:center;gap:12px;font-family:var(--f-hud);font-weight:700}
+.lvl{font-size:15px;letter-spacing:.06em;background:var(--star);color:var(--ink);padding:2px 8px;border:2px solid var(--ink)}
+.cash{font-size:25px;color:var(--cash);letter-spacing:.02em;font-variant-numeric:tabular-nums;-webkit-text-stroke:1px #0b2a05;text-shadow:2px 2px 0 var(--ink)}
+.stars{display:inline-flex;gap:2px}
+.stars svg{width:18px;height:18px}
 .stars .on path{fill:var(--star);stroke:var(--ink)}
-.stars .off path{fill:transparent;stroke:#6b6280}
-.rank{font-size:13px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
-@media (max-width:560px){.rank{display:none}.cash{font-size:22px}.stars svg{width:16px;height:16px}.brand{font-size:20px}}
+.stars .off path{fill:transparent;stroke:#8c82a3}
+@media (max-width:900px){
+  .menu-btn{display:inline-flex;align-items:center}
+  .nav{order:3;margin-left:0}
+  .hud-stats{margin-left:auto}
+  .nav ul{display:none;position:absolute;right:0;top:calc(100% + 10px);flex-direction:column;min-width:220px;background:var(--asphalt-2);border:2px solid var(--line);box-shadow:6px 6px 0 var(--ink);padding:6px}
+  .nav.open ul{display:flex}
+  .nav a{padding:0 14px}
+}
+@media (max-width:560px){.hud .stars{display:none}.cash{font-size:21px}.brand{font-size:20px}.hud-row{gap:10px}}
 
 /* ---------- HERO ---------- */
 .hero{position:relative;overflow:hidden;border-bottom:4px solid var(--ink)}
 .hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-.hero .wrap{position:relative;padding-block:72px 96px;display:grid;gap:18px;justify-items:start}
-.eyebrow{font-family:var(--f-hud);font-weight:700;font-size:14px;letter-spacing:.22em;text-transform:uppercase;background:var(--ink);color:var(--sunset);padding:4px 10px}
+/* NOVO: camada escura atrás do texto para não brigar com a cidade */
+.hero-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,6,14,.86) 0%,rgba(8,6,14,.6) 45%,rgba(8,6,14,0) 75%)}
+@media (max-width:760px){.hero-shade{background:rgba(8,6,14,.62)}}
+.hero-in{position:relative;padding-block:56px 72px}
+.hero-copy{max-width:640px;display:grid;gap:18px;justify-items:start}
+.eyebrow{font-family:var(--f-hud);font-weight:700;font-size:14px;letter-spacing:.2em;text-transform:uppercase;background:var(--ink);color:var(--sunset);padding:4px 10px}
 .title{position:relative;margin:0;line-height:.86}
-.title .big{display:block;font-family:var(--f-display);font-weight:400;font-size:clamp(76px,15vw,184px);color:#fff;letter-spacing:.01em;-webkit-text-stroke:3px var(--ink);text-shadow:6px 6px 0 var(--ink)}
-.title .script{position:absolute;right:-6%;bottom:-22%;font-family:var(--f-script);font-weight:400;font-size:clamp(40px,7vw,86px);color:var(--neon);transform:rotate(-8deg);text-shadow:0 0 12px rgba(255,45,149,.75),0 0 28px rgba(255,45,149,.45),3px 3px 0 var(--ink);white-space:nowrap}
-.lede{max-width:34em;margin:26px 0 0;font-size:18px;font-weight:500;background:rgba(12,10,18,.78);padding:12px 14px;border-left:4px solid var(--neon)}
-.btn{display:inline-flex;align-items:center;gap:10px;border:3px solid var(--ink);background:var(--sunset);color:var(--ink);font-family:var(--f-display);font-size:20px;letter-spacing:.04em;text-transform:uppercase;padding:10px 20px;box-shadow:5px 5px 0 var(--ink);text-decoration:none;transition:transform .12s ease,box-shadow .12s ease}
+.title .big{display:block;font-family:var(--f-display);font-weight:400;font-size:clamp(70px,14vw,170px);color:#fff;letter-spacing:.01em;-webkit-text-stroke:3px var(--ink);text-shadow:6px 6px 0 var(--ink)}
+.title .script{position:absolute;right:-4%;bottom:-24%;font-family:var(--f-script);font-weight:400;font-size:clamp(38px,6.5vw,80px);color:var(--neon);transform:rotate(-8deg);text-shadow:0 0 12px rgba(255,45,149,.75),0 0 28px rgba(255,45,149,.45),3px 3px 0 var(--ink);white-space:nowrap}
+.lede{margin:24px 0 0;font-size:19px;font-weight:500;background:rgba(10,8,16,.92);padding:14px 16px;border-left:4px solid var(--neon);max-width:34em}
+.cta-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.facts{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.facts li{background:rgba(10,8,16,.92);border:1px solid var(--line);padding:4px 10px;font-family:var(--f-hud);font-weight:600;font-size:15px;letter-spacing:.06em;text-transform:uppercase}
+.facts b{color:var(--star);font-size:18px}
+
+/* ---------- BOTÕES (mínimo 48px de altura para toque) ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;border:3px solid var(--ink);background:var(--sunset);color:var(--ink);font-family:var(--f-display);font-weight:400;font-size:19px;letter-spacing:.04em;text-transform:uppercase;padding:8px 18px;box-shadow:5px 5px 0 var(--ink);text-decoration:none;text-align:center;line-height:1.1;transition:transform .12s ease,box-shadow .12s ease}
 .btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
 .btn:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink)}
+.btn.xl{font-size:clamp(20px,2.6vw,26px);padding:14px 24px;background:var(--star);box-shadow:0 0 0 3px var(--neon),8px 8px 0 var(--ink)}
+.btn.xl:hover{box-shadow:0 0 0 3px var(--neon),10px 10px 0 var(--ink)}
 .btn.pink{background:var(--neon);color:#fff;text-shadow:1px 1px 0 var(--ink)}
-.btn.ghost{background:transparent;color:var(--fg);border-color:var(--line);box-shadow:none;font-size:16px}
-.btn[disabled]{background:#2a2436;color:#7d7391;cursor:not-allowed;box-shadow:none;transform:none}
+.btn.cyan{background:var(--cyan)}
+.btn.ghost{background:var(--panel);color:var(--fg);border-color:var(--line);box-shadow:none;font-family:var(--f-hud);font-weight:700;font-size:16px;letter-spacing:.08em}
+.btn.ghost:hover{border-color:var(--cyan);transform:none}
+.btn.sm{min-height:44px;font-size:15px;padding:6px 12px}
+.btn[disabled]{background:#2c2540;color:#b2a8c6;border-color:#3e3555;cursor:not-allowed;box-shadow:none;transform:none;text-shadow:none}
+.linkbtn{background:none;border:0;padding:8px 0;min-height:44px;color:var(--cyan);text-decoration:underline;font-family:var(--f-hud);font-weight:700;font-size:15px;letter-spacing:.06em}
 
-/* ---------- SECTIONS ---------- */
-section.block{padding-block:72px 24px}
-.sec-head{display:grid;gap:6px;margin-bottom:28px}
-.sec-head .kicker{font-family:var(--f-script);font-size:34px;color:var(--cyan);line-height:1;text-shadow:0 0 14px rgba(41,227,255,.45)}
-.sec-head h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(40px,6vw,68px);line-height:.95;text-transform:uppercase;text-wrap:balance;-webkit-text-stroke:2px var(--ink);text-shadow:4px 4px 0 var(--ink)}
-.sec-head p{margin:6px 0 0;color:var(--muted);max-width:40em}
+/* ---------- SEÇÕES ---------- */
+section.block{padding-block:64px 16px}
+.sec-head{display:grid;gap:6px;margin-bottom:24px}
+.sec-head .kicker{font-family:var(--f-script);font-size:32px;color:var(--cyan);line-height:1;text-shadow:0 0 14px rgba(41,227,255,.4)}
+.sec-head h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(36px,6vw,64px);line-height:.95;text-transform:uppercase;text-wrap:balance;-webkit-text-stroke:2px var(--ink);text-shadow:4px 4px 0 var(--ink)}
+.sec-head p{margin:6px 0 0;color:var(--muted);max-width:42em}
 
-/* ---------- CHARACTER SELECT ---------- */
-.select{position:relative}
-.reel{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(200px,230px);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px 4px 22px;scrollbar-width:thin;scrollbar-color:var(--neon) transparent}
-.char{scroll-snap-align:start;text-align:left;border:3px solid var(--ink);background:var(--panel);padding:0;box-shadow:5px 5px 0 var(--ink);transition:transform .15s ease,box-shadow .15s ease;display:grid;grid-template-rows:auto 1fr}
+/* ---------- COMO FUNCIONA ---------- */
+.how{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;counter-reset:how}
+.how li{counter-increment:how;background:var(--panel);border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);padding:16px;display:grid;gap:6px;align-content:start}
+.how li::before{content:counter(how);font-family:var(--f-display);font-size:34px;line-height:1;color:var(--star);-webkit-text-stroke:1.5px var(--ink)}
+.how h3{margin:0;font-family:var(--f-display);font-weight:400;font-size:22px;text-transform:uppercase;letter-spacing:.02em}
+.how p{margin:0;color:var(--muted);font-size:16px}
+.free-note{margin-top:20px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;background:var(--asphalt-2);border:2px dashed var(--line);padding:16px}
+.free-note .tag{font-family:var(--f-display);font-size:22px;background:var(--cash);color:var(--ink);padding:4px 10px;border:2px solid var(--ink)}
+.free-note p{margin:0;color:var(--muted)}
+.free-note strong{color:var(--fg)}
+@media (max-width:900px){.how{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.how{grid-template-columns:1fr}.free-note{grid-template-columns:1fr}}
+
+/* ---------- CATEGORIAS + CARROSSEL ---------- */
+.rec-banner{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin-bottom:18px;padding:12px 16px;background:linear-gradient(90deg,rgba(255,210,63,.16),transparent);border:2px solid var(--star)}
+.rec-banner p{margin:0;font-weight:600}
+.rec-banner b{color:var(--star)}
+.cats{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:thin}
+.cat{flex:none;min-height:44px;padding:6px 14px;border:2px solid var(--line);background:var(--panel);font-family:var(--f-hud);font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.cat[aria-pressed="true"]{background:var(--cyan);color:var(--ink);border-color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.cat .n{opacity:.8;margin-left:4px}
+.cat-desc{margin:6px 0 10px;color:var(--muted)}
+.reel-top{display:flex;justify-content:space-between;align-items:end;gap:12px}
+.reel-nav{display:flex;gap:10px}
+.icon-btn{width:48px;height:48px;border:3px solid var(--ink);background:var(--fg);color:var(--ink);font-family:var(--f-display);font-size:22px;box-shadow:3px 3px 0 var(--ink);display:grid;place-items:center}
+.icon-btn:disabled{background:var(--panel);color:var(--dim);border-color:var(--line);box-shadow:none;cursor:default}
+.reel{list-style:none;margin:0;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(190px,220px);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:10px 4px 22px;scrollbar-width:thin;scrollbar-color:var(--neon) transparent}
+@media (max-width:560px){.reel{grid-auto-columns:72%}}
+.reel li{scroll-snap-align:start;display:grid}
+.char{text-align:left;border:3px solid var(--ink);background:var(--panel);padding:0;box-shadow:5px 5px 0 var(--ink);transition:transform .15s ease,box-shadow .15s ease;display:grid;grid-template-rows:auto 1fr}
 .char:hover{transform:translateY(-4px)}
-.char[aria-pressed="true"]{box-shadow:0 0 0 3px var(--star),7px 7px 0 var(--ink);transform:translateY(-6px)}
+.char[aria-pressed="true"]{box-shadow:0 0 0 3px var(--star),7px 7px 0 var(--ink),0 0 28px rgba(255,210,63,.4);transform:translateY(-6px)}
 .art{position:relative;aspect-ratio:4/5;max-width:100%;overflow:hidden;background:linear-gradient(160deg,var(--a) 0 48%,var(--b) 48% 100%);border-bottom:3px solid var(--ink)}
 .art::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(0,0,0,.35) 1.2px,transparent 1.6px);background-size:7px 7px;mix-blend-mode:multiply}
-.art .code{position:absolute;left:10px;bottom:2px;font-family:var(--f-display);font-size:96px;line-height:1;color:#fff;-webkit-text-stroke:3px var(--ink);text-shadow:5px 5px 0 var(--ink)}
+.art .code{position:absolute;left:10px;bottom:2px;font-family:var(--f-display);font-size:90px;line-height:1;color:#fff;-webkit-text-stroke:3px var(--ink);text-shadow:5px 5px 0 var(--ink)}
 .art .sil{position:absolute;right:-8px;bottom:0;width:62%;height:auto;opacity:.92}
-.art .lock{position:absolute;top:10px;left:10px;font-family:var(--f-hud);font-weight:700;font-size:12px;letter-spacing:.14em;background:var(--ink);color:var(--star);padding:2px 8px;text-transform:uppercase}
-.char .meta{padding:10px 12px 12px;display:grid;gap:2px}
+.badges{position:absolute;top:8px;left:8px;right:8px;display:flex;flex-wrap:wrap;gap:4px}
+.badge{font-family:var(--f-hud);font-weight:700;font-size:12px;letter-spacing:.12em;background:var(--ink);color:var(--star);padding:2px 7px;text-transform:uppercase}
+.badge.rec{background:var(--star);color:var(--ink);border:1px solid var(--ink)}
+.badge.ok{color:var(--cash)}
+.char .meta{padding:10px 12px 12px;display:grid;gap:3px}
 .char .area{font-family:var(--f-display);font-size:22px;text-transform:uppercase;letter-spacing:.02em;line-height:1.05}
-.char .nick{font-size:14px;color:var(--muted);line-height:1.3}
-.char .prog{margin-top:8px;height:6px;background:#2a2436;border:1px solid var(--ink)}
-.char .prog i{display:block;height:100%;background:var(--cash)}
-.reel-nav{display:flex;gap:10px;justify-content:flex-end;margin-bottom:10px}
-.icon-btn{width:46px;height:46px;border:3px solid var(--ink);background:var(--fg);color:var(--ink);font-family:var(--f-display);font-size:22px;box-shadow:3px 3px 0 var(--ink);display:grid;place-items:center}
+.char .nick{font-size:15px;color:var(--muted);line-height:1.3}
+.char .cnt{font-family:var(--f-hud);font-weight:700;font-size:14px;color:var(--muted);letter-spacing:.06em;margin-top:6px}
+.prog{height:8px;background:#2c2540;border:1px solid var(--ink)}
+.prog i{display:block;height:100%;background:var(--cash)}
 
-/* ---------- MISSION BOARD ---------- */
-.board{margin-top:34px;border:3px solid var(--ink);background:var(--asphalt-2);box-shadow:8px 8px 0 var(--ink)}
-.board-top{display:grid;grid-template-columns:auto 1fr;gap:20px;padding:22px;border-bottom:3px solid var(--ink);background:linear-gradient(90deg,color-mix(in srgb,var(--a) 30%,transparent),transparent 70%)}
-.board-top .portrait{width:104px;aspect-ratio:4/5;border:3px solid var(--ink)}
-.board-top .portrait .code{font-size:54px}
-.board-top h3{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(32px,5vw,52px);line-height:1;text-transform:uppercase;-webkit-text-stroke:1.5px var(--ink);text-shadow:3px 3px 0 var(--ink)}
-.board-top .nick{font-family:var(--f-script);font-size:28px;color:var(--neon);line-height:1.1}
+/* ---------- QUADRO DE MISSÕES ---------- */
+.board{border:3px solid var(--ink);background:var(--asphalt-2);box-shadow:8px 8px 0 var(--ink)}
+.board-top{display:grid;grid-template-columns:auto 1fr;gap:20px;padding:20px;border-bottom:3px solid var(--ink);background:linear-gradient(90deg,color-mix(in srgb,var(--a) 28%,var(--asphalt-2)),var(--asphalt-2) 70%)}
+.portrait{width:104px;border:3px solid var(--ink)}
+.portrait .code{font-size:54px}
+.board-top h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(32px,5vw,50px);line-height:1;text-transform:uppercase;-webkit-text-stroke:1.5px var(--ink);text-shadow:3px 3px 0 var(--ink)}
+.board-top .nick{font-family:var(--f-script);font-size:28px;color:var(--neon-text);line-height:1.15}
 .board-top .info{min-width:0;display:grid;gap:6px;align-content:center}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-bottom:3px solid var(--ink)}
-.stat{padding:14px 18px;border-right:1px solid var(--line);font-family:var(--f-hud)}
+.board-top .meta-line{color:var(--muted);font-size:15px;margin:0}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:3px solid var(--ink)}
+.stat{padding:12px 16px;border-right:1px solid var(--line);font-family:var(--f-hud);min-width:0}
 .stat:last-child{border-right:0}
-.stat b{display:block;font-size:30px;line-height:1.05;font-variant-numeric:tabular-nums}
-.stat span{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.stat b{display:block;font-size:28px;line-height:1.05;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
 .stat .cashv{color:var(--cash)}
-@media (max-width:640px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid var(--line)}.board-top{grid-template-columns:1fr}.board-top .portrait{width:84px}}
-.respect{padding:14px 18px;border-bottom:3px solid var(--ink);display:grid;gap:6px}
-.respect .lbl{display:flex;justify-content:space-between;font-family:var(--f-hud);font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+@media (max-width:640px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid var(--line)}.board-top{grid-template-columns:1fr}.portrait{width:84px}}
+.respect{padding:12px 16px;border-bottom:3px solid var(--ink);display:grid;gap:6px}
+.respect .lbl{display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:space-between;font-family:var(--f-hud);font-weight:700;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .bar{height:14px;background:#231d30;border:2px solid var(--ink)}
 .bar i{display:block;height:100%;width:0;background:repeating-linear-gradient(90deg,var(--cash) 0 18px,#5fbf32 18px 20px);transition:width .6s ease}
+.final-teaser{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:3px solid var(--ink);background:rgba(255,210,63,.08)}
+.final-teaser p{margin:0}
+.final-teaser .k{font-family:var(--f-hud);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--star);font-size:14px;display:block}
+.final-teaser strong{font-family:var(--f-display);font-weight:400;font-size:22px;text-transform:uppercase}
 
 .missions{list-style:none;margin:0;padding:0}
-.mission{display:grid;grid-template-columns:56px 1fr auto;gap:16px;align-items:start;padding:18px;border-bottom:1px solid var(--line)}
-.mission:last-child{border-bottom:0}
-.marker{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-size:22px;border:3px solid var(--ink);background:var(--star);color:var(--ink);box-shadow:0 0 0 3px rgba(255,210,63,.25)}
-.mission.done .marker{background:var(--cash)}
-.mission.locked .marker{background:#2a2436;color:#6b6280;box-shadow:none}
-.mission h4{margin:0;font-family:var(--f-display);font-weight:400;font-size:24px;letter-spacing:.01em;text-transform:uppercase;line-height:1.1}
-.mission.locked h4{color:#8a809d}
-.mission .course{margin:2px 0 0;font-weight:600}
-.mission .brief{margin:6px 0 0;color:var(--muted);font-style:italic;max-width:56ch}
-.tags{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:8px;align-items:center;font-family:var(--f-hud);font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase}
-.tag-cash{color:var(--cash)}
-.diff{display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
-.diff .stars svg{width:15px;height:15px}
-.status{font-family:var(--f-hud);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:2px 8px;border:2px solid var(--ink)}
-.status.active{background:var(--star);color:var(--ink)}
-.status.done{background:var(--cash);color:var(--ink)}
-.status.locked{background:#2a2436;color:#8a809d}
-.actions{display:grid;gap:8px;justify-items:end}
-.actions .btn{font-size:15px;padding:7px 12px;box-shadow:3px 3px 0 var(--ink)}
-.actions .hint{font-family:var(--f-hud);font-size:13px;color:#8a809d;text-align:right;max-width:14em}
-@media (max-width:640px){.mission{grid-template-columns:46px 1fr}.actions{grid-column:1/-1;justify-items:start;grid-auto-flow:column;justify-content:start}.actions .hint{text-align:left}}
-.board-foot{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;padding:14px 18px;border-top:3px solid var(--ink);font-family:var(--f-hud);font-size:14px;color:var(--muted)}
+.mission{border-bottom:1px solid var(--line);border-left:6px solid transparent}
+.mission.st-done{border-left-color:var(--cash)}
+.mission.st-active{border-left-color:var(--star)}
+.mission.st-progress{border-left-color:var(--prog)}
+.mission.st-locked{border-left-color:#4a4061;border-left-style:dashed}
+.m-head{width:100%;display:grid;grid-template-columns:52px 1fr auto;gap:14px;align-items:start;padding:14px 16px;background:none;border:0;text-align:left}
+.m-head:hover{background:rgba(255,255,255,.03)}
+.marker{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-size:21px;border:3px solid var(--ink);background:var(--star);color:var(--ink)}
+.st-done .marker{background:var(--cash)}
+.st-progress .marker{background:var(--prog)}
+.st-locked .marker{background:#2c2540;color:var(--dim);border-color:#4a4061}
+.m-title{display:grid;gap:2px;min-width:0}
+.m-name{font-family:var(--f-display);font-weight:400;font-size:23px;letter-spacing:.01em;text-transform:uppercase;line-height:1.1}
+.st-locked .m-name{color:var(--dim)}
+.m-course{font-size:15px;color:var(--muted)}
+.m-course .prof{color:var(--sunset)}
+.m-meta{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin-top:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;font-family:var(--f-hud);font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;padding:1px 8px;border:2px solid var(--line);color:var(--muted)}
+.chip.state{border-color:var(--ink)}
+.chip.s-done{background:var(--cash);color:var(--ink)}
+.chip.s-active{background:var(--star);color:var(--ink)}
+.chip.s-progress{background:var(--prog);color:var(--ink)}
+.chip.s-locked{background:transparent;color:var(--dim);border:2px dashed #5d5276}
+.chip.money{color:var(--cash);border-color:#2f4d22}
+.chip .stars svg{width:13px;height:13px}
+.chev{font-size:20px;color:var(--muted);transition:transform .2s ease;padding-top:8px}
+.m-head[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.m-body{padding:0 16px 20px 82px;display:grid;gap:16px}
+@media (max-width:640px){.m-head{grid-template-columns:44px 1fr auto;gap:10px;padding:12px}.marker{width:40px;height:40px;font-size:19px}.m-body{padding:0 10px 18px}.m-name{font-size:21px}
+  .step{grid-template-columns:30px 1fr;gap:10px;padding:12px}.step-n{width:30px;height:30px;font-size:16px}}
+.brief-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.brief-grid{grid-template-columns:1fr}}
+.box{background:var(--panel);border:2px solid var(--line);padding:12px 14px}
+.box h4{margin:0 0 4px;font-family:var(--f-hud);font-weight:700;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--star)}
+.box p{margin:0}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.step{display:grid;grid-template-columns:40px 1fr;gap:12px;background:var(--panel);border:2px solid var(--line);padding:14px}
+.step.ok{border-color:#3e6e2a;background:linear-gradient(90deg,rgba(123,220,74,.1),var(--panel) 40%)}
+.step-n{width:36px;height:36px;display:grid;place-items:center;border:2px solid var(--ink);background:var(--fg);color:var(--ink);font-family:var(--f-display);font-size:18px}
+.step.ok .step-n{background:var(--cash)}
+.step h4{margin:0 0 4px;font-family:var(--f-display);font-weight:400;font-size:20px;text-transform:uppercase;letter-spacing:.02em}
+.step p{margin:0 0 10px}
+.step .row{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.check{display:inline-flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;font-weight:600}
+.check input,.phase input{appearance:none;-webkit-appearance:none;flex:none;width:24px;height:24px;margin:0;border:2px solid var(--muted);background:transparent;display:grid;place-items:center;cursor:pointer}
+.check input:checked,.phase input:checked{background:var(--cash);border-color:var(--ink)}
+.check input:checked::after,.phase input:checked::after{content:"";width:8px;height:13px;border:solid var(--ink);border-width:0 3px 3px 0;transform:translateY(-2px) rotate(45deg)}
+.field{display:grid;gap:4px;margin-top:8px;max-width:520px}
+.field label{font-size:15px;color:var(--muted)}
+.field input,.io textarea{width:100%;min-height:44px;padding:8px 10px;background:var(--asphalt);border:2px solid var(--line);color:var(--fg)}
+.field input:focus,.io textarea:focus{border-color:var(--cyan)}
+.quiz fieldset{border:0;margin:0 0 12px;padding:0}
+.quiz legend{font-weight:700;margin-bottom:6px;padding:0}
+.opt{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 10px;margin-bottom:6px;border:2px solid var(--line);background:var(--asphalt-2);cursor:pointer}
+.opt:hover{border-color:var(--muted)}
+.opt input{width:20px;height:20px;accent-color:var(--star);flex:none;margin:0}
+.opt:has(input:checked){border-color:var(--star)}
+.fb{margin:8px 0 0;font-weight:600}
+.fb.good{color:var(--cash)}
+.fb.bad{color:#ff8a8a}
+.deliver{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between;padding:14px;border:3px solid var(--ink);background:rgba(255,45,149,.1)}
+.deliver p{margin:0;max-width:40em}
+.deliver .btn{font-size:21px}
+.done-box{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between;padding:12px 14px;background:rgba(123,220,74,.1);border:2px solid #3e6e2a}
+.done-box p{margin:0}
+.locked-note{padding:12px 14px;border:2px dashed #5d5276;color:var(--muted)}
+.project{border-top:3px solid var(--ink);padding:18px 16px;background:linear-gradient(135deg,rgba(255,210,63,.12),transparent 60%);display:grid;gap:12px}
+.project h3{margin:0;font-family:var(--f-display);font-weight:400;font-size:28px;text-transform:uppercase}
+.project .k{font-family:var(--f-hud);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--star);font-size:14px}
+.project ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.board-foot{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;padding:14px 16px;border-top:3px solid var(--ink);font-family:var(--f-hud);font-size:15px;color:var(--muted)}
 
-/* ---------- HEISTS ---------- */
+/* ---------- GOLPES ---------- */
 .heists{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
 @media (max-width:900px){.heists{grid-template-columns:1fr}}
 .heist{border:3px solid var(--ink);background:var(--panel);box-shadow:6px 6px 0 var(--ink);display:grid;grid-template-rows:auto 1fr}
-.heist .poster{position:relative;padding:18px 18px 16px;background:linear-gradient(135deg,var(--a),var(--b));border-bottom:3px solid var(--ink);overflow:hidden;min-height:170px;display:grid;align-content:end}
+.heist .poster{position:relative;padding:18px 18px 16px;background:linear-gradient(135deg,var(--a),var(--b));border-bottom:3px solid var(--ink);overflow:hidden;min-height:160px;display:grid;align-content:end}
 .heist .poster::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(0,0,0,.33) 1.2px,transparent 1.6px);background-size:7px 7px}
 .heist .stamp{position:absolute;top:14px;right:-34px;transform:rotate(18deg);background:var(--ink);color:var(--star);font-family:var(--f-display);font-size:14px;letter-spacing:.14em;padding:4px 40px}
-.heist .poster h3{position:relative;margin:0;font-family:var(--f-display);font-weight:400;font-size:38px;line-height:.95;text-transform:uppercase;color:#fff;-webkit-text-stroke:2px var(--ink);text-shadow:4px 4px 0 var(--ink)}
-.heist .poster .course{position:relative;margin-top:6px;font-weight:700;background:var(--ink);justify-self:start;padding:2px 8px;font-size:14px}
+.heist .poster h3{position:relative;margin:0;font-family:var(--f-display);font-weight:400;font-size:36px;line-height:.95;text-transform:uppercase;color:#fff;-webkit-text-stroke:2px var(--ink);text-shadow:4px 4px 0 var(--ink)}
+.heist .poster .course{position:relative;margin-top:6px;font-weight:700;background:var(--ink);justify-self:start;padding:2px 8px;font-size:15px}
 .heist .body{padding:16px 18px 18px;display:grid;gap:12px;align-content:start}
-.heist dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-family:var(--f-hud);font-size:15px}
-.heist dt{color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;font-size:13px;align-self:center}
+.heist dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-family:var(--f-hud);font-size:16px}
+.heist dt{color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;font-size:14px;align-self:center}
 .heist dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums}
-.heist .btn{justify-self:start;font-size:17px}
+.heist .btn{justify-self:start}
 .plan{margin-top:26px;border:3px solid var(--ink);background:var(--asphalt-2);box-shadow:8px 8px 0 var(--ink)}
-.plan-head{padding:18px 20px;border-bottom:3px solid var(--ink);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}
-.plan-head h3{margin:0;font-family:var(--f-display);font-weight:400;font-size:32px;text-transform:uppercase}
-.phases{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0}
-.phase{padding:16px 18px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
-.phase h4{margin:0 0 8px;font-family:var(--f-hud);font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;display:flex;justify-content:space-between;gap:8px}
+.plan-head{padding:16px 18px;border-bottom:3px solid var(--ink);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}
+.plan-head h3{margin:0;font-family:var(--f-display);font-weight:400;font-size:30px;text-transform:uppercase}
+.phases{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.phase{padding:14px 16px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.phase h4{margin:0 0 6px;font-family:var(--f-hud);font-weight:700;font-size:16px;letter-spacing:.14em;text-transform:uppercase;display:flex;justify-content:space-between;gap:8px}
 .phase h4 em{font-style:normal;color:var(--cash);font-variant-numeric:tabular-nums}
-.subj{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.subj a,.subj small{flex:none;font-family:var(--f-hud);font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--cyan);text-decoration:none;padding-top:7px}
+.subj{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.subj label{display:flex;gap:10px;align-items:center;min-height:44px;cursor:pointer;line-height:1.3}
+.subj input:checked + span{color:var(--muted);text-decoration:line-through}
+.subj a,.subj small{flex:none;font-family:var(--f-hud);font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
 .subj a:hover{text-decoration:underline}
-.subj small{color:#6b6280}
-.mission .prof{color:var(--sunset)}
-.peek{font-family:var(--f-hud);font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--cyan)}
-.phase label{display:flex;gap:10px;align-items:flex-start;padding:5px 0;cursor:pointer;line-height:1.35}
-.phase input{appearance:none;-webkit-appearance:none;flex:none;width:20px;height:20px;margin-top:1px;border:2px solid var(--muted);background:transparent;display:grid;place-items:center;cursor:pointer}
-.phase input:checked{background:var(--cash);border-color:var(--ink)}
-.phase input:checked::after{content:"";width:8px;height:12px;border:solid var(--ink);border-width:0 3px 3px 0;transform:translateY(-2px) rotate(45deg)}
-.phase input:checked + span{color:var(--muted);text-decoration:line-through}
+.subj small{color:var(--dim)}
 
-footer{margin-top:72px;border-top:3px solid var(--ink);background:var(--asphalt-2)}
-footer .wrap{padding-block:22px;display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between;font-family:var(--f-hud);font-size:14px;color:var(--muted);letter-spacing:.06em}
-footer button{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;font-family:var(--f-hud);font-size:14px}
+/* ---------- FICHA DO JOGADOR ---------- */
+.ficha{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.ficha{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:460px){.ficha{grid-template-columns:1fr}}
+.tile{background:var(--panel);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:14px;display:grid;gap:4px;align-content:start;min-width:0}
+.tile .k{font-family:var(--f-hud);font-weight:700;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.tile .v{font-family:var(--f-display);font-size:34px;line-height:1.05;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.tile .v.cashv{color:var(--cash)}
+.tile .v.sm{font-size:22px;text-transform:uppercase}
+.tile p{margin:0;color:var(--muted);font-size:15px}
+.tile.wide{grid-column:span 2}
+@media (max-width:460px){.tile.wide{grid-column:auto}}
+.achs-h{margin:32px 0 12px;font-family:var(--f-display);font-weight:400;font-size:30px;text-transform:uppercase}
+.achs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.ach{display:grid;grid-template-columns:48px 1fr;gap:12px;align-items:center;padding:12px;border:2px solid var(--line);background:var(--asphalt-2)}
+.ach .ic{width:48px;height:48px;display:grid;place-items:center;border:2px solid var(--ink);background:#2c2540;color:var(--dim);font-family:var(--f-display);font-size:20px}
+.ach.on{border-color:var(--star);background:linear-gradient(90deg,rgba(255,210,63,.14),var(--asphalt-2) 70%)}
+.ach.on .ic{background:var(--star);color:var(--ink)}
+.ach b{display:block;font-family:var(--f-hud);font-size:17px;letter-spacing:.04em;text-transform:uppercase}
+.ach span{font-size:15px;color:var(--muted)}
+.ach .st{font-family:var(--f-hud);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.save-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.save-note{color:var(--muted);margin:12px 0 0}
 
-/* ---------- MISSÃO CUMPRIDA ---------- */
-.passed{position:fixed;inset:0;z-index:50;display:grid;place-items:center;pointer-events:none;background:radial-gradient(ellipse at center,rgba(0,0,0,.55),transparent 70%)}
+/* ---------- RODAPÉ ---------- */
+footer{margin-top:64px;border-top:3px solid var(--ink);background:var(--asphalt-2)}
+footer .wrap{padding-block:22px;display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between;align-items:center;font-family:var(--f-hud);font-size:15px;color:var(--muted);letter-spacing:.04em}
+
+/* ---------- NOVO · BARRA FIXA "CONTINUAR ESTUDANDO" ---------- */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:25;background:rgba(12,10,18,.97);border-top:3px solid var(--neon);box-shadow:0 -6px 24px rgba(0,0,0,.6);padding-bottom:env(safe-area-inset-bottom,0px)}
+.dock-in{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto;gap:10px 20px;align-items:center;padding-block:10px}
+.dock-k{display:block;font-family:var(--f-hud);font-weight:700;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--neon-text)}
+.dock-mission{display:block;font-family:var(--f-display);font-size:20px;text-transform:uppercase;line-height:1.15;overflow-wrap:anywhere}
+.dock-track{display:block;font-size:14px;color:var(--muted)}
+.dock-prog{display:grid;gap:4px;font-family:var(--f-hud);font-weight:700;font-size:14px;letter-spacing:.06em;color:var(--muted)}
+.dock .bar{height:10px}
+/* celular: barra compacta (duas linhas) para não roubar espaço de leitura */
+@media (max-width:700px){.dock-in{grid-template-columns:1fr auto;gap:6px 12px;padding-block:8px}.dock-prog{grid-column:1/-1;grid-row:2;grid-template-columns:1fr auto;align-items:center;gap:10px;font-size:13px}
+  .dock-track{display:none}.dock-k{font-size:12px}.dock-mission{font-size:16px}.dock .btn{font-size:15px;padding:6px 12px;min-height:44px;box-shadow:3px 3px 0 var(--ink)}}
+
+/* ---------- DIÁLOGOS ---------- */
+dialog{border:3px solid var(--ink);background:var(--asphalt-2);color:var(--fg);padding:0;width:min(640px,calc(100vw - 24px));max-height:calc(100dvh - 24px);box-shadow:0 0 0 2px var(--neon),10px 10px 0 var(--ink)}
+dialog::backdrop{background:rgba(5,3,10,.78)}
+.dlg-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border-bottom:3px solid var(--ink);background:var(--panel);position:sticky;top:0;z-index:1}
+.dlg-head h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:26px;text-transform:uppercase;line-height:1.05}
+.x{width:44px;height:44px;flex:none;border:2px solid var(--line);background:transparent;font-size:24px;line-height:1}
+.dlg-body{padding:18px 16px 20px;display:grid;gap:14px}
+.q-step{font-family:var(--f-hud);font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--neon-text);font-size:14px}
+.q-dots{display:flex;gap:6px}
+.q-dots i{flex:1;height:6px;background:#2c2540}
+.q-dots i.on{background:var(--star)}
+.q-title{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(26px,5vw,34px);line-height:1.05;text-transform:uppercase}
+.q-opts{display:grid;gap:8px}
+.q-opts .opt{min-height:52px;font-size:17px;font-weight:600}
+.q-nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.rec-card{display:grid;grid-template-columns:110px 1fr;gap:16px;align-items:start}
+.rec-card .art .code{font-size:58px}
+.rec-card h3{margin:0;font-family:var(--f-display);font-weight:400;font-size:32px;text-transform:uppercase;line-height:1}
+.rec-card .nick{font-family:var(--f-script);font-size:26px;color:var(--neon-text)}
+.why{margin:0;padding-left:20px;display:grid;gap:6px}
+@media (max-width:480px){.rec-card{grid-template-columns:80px 1fr}}
+.medal{width:150px;height:auto;margin:0 auto;display:block}
+.win-title{text-align:center;font-family:var(--f-display);font-size:clamp(40px,9vw,64px);line-height:.95;color:var(--star);-webkit-text-stroke:2px var(--ink);text-shadow:5px 5px 0 var(--ink);text-transform:uppercase;margin:0}
+.win-sub{text-align:center;margin:0;color:var(--muted)}
+.win-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.win-stats div{background:var(--panel);border:2px solid var(--line);padding:10px 12px}
+.win-stats span{display:block;font-family:var(--f-hud);font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.win-stats b{font-family:var(--f-display);font-weight:400;font-size:24px;text-transform:uppercase}
+.io textarea{min-height:150px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;resize:vertical}
+.io h3{margin:0;font-family:var(--f-display);font-weight:400;font-size:22px;text-transform:uppercase}
+.row-btns{display:flex;flex-wrap:wrap;gap:10px}
+.msg{margin:0;font-weight:600;min-height:1.5em}
+.msg.good{color:var(--cash)}
+.msg.bad{color:#ff8a8a}
+
+/* ---------- MISSÃO CUMPRIDA + TOAST ---------- */
+.passed{position:fixed;inset:0;z-index:50;display:grid;place-items:center;pointer-events:none;background:radial-gradient(ellipse at center,rgba(0,0,0,.6),transparent 70%)}
 .passed[hidden]{display:none}
-.passed .inner{text-align:center;animation:pop 2.4s ease forwards}
-.passed .t{font-family:var(--f-display);font-size:clamp(48px,10vw,118px);line-height:.95;color:var(--star);-webkit-text-stroke:3px var(--ink);text-shadow:6px 6px 0 var(--ink);text-transform:uppercase}
-.passed .s{font-family:var(--f-hud);font-weight:700;font-size:clamp(22px,4vw,34px);color:#fff;text-shadow:3px 3px 0 var(--ink);letter-spacing:.06em}
+.passed .inner{text-align:center;animation:pop 2.2s ease forwards;padding:0 16px}
+.passed .t{font-family:var(--f-display);font-size:clamp(44px,10vw,112px);line-height:.95;color:var(--star);-webkit-text-stroke:3px var(--ink);text-shadow:6px 6px 0 var(--ink);text-transform:uppercase}
+.passed .s{font-family:var(--f-hud);font-weight:700;font-size:clamp(22px,4vw,32px);color:#fff;text-shadow:3px 3px 0 var(--ink);letter-spacing:.06em}
 .passed .s b{color:var(--cash)}
-@keyframes pop{0%{opacity:0;transform:scale(1.35)}12%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:scale(1)}}
-@media (prefers-reduced-motion:reduce){.passed .inner{animation:none}.btn,.char,.bar i{transition:none}.passed .fl,.burst{display:none}}
-
-/* ---------- ANIMAÇÕES ---------- */
 .passed .fl{position:absolute;inset:0;background:var(--star);mix-blend-mode:overlay;opacity:0;animation:flash .6s ease-out forwards}
 .burst{position:absolute;left:50%;top:50%;width:0;height:0}
 .burst span{position:absolute;left:-14px;top:-14px;width:28px;height:28px;animation:starFly 1.2s cubic-bezier(.15,.7,.3,1) forwards}
 .burst svg{width:100%;height:100%}
 .burst path{fill:var(--star);stroke:var(--ink)}
+@media (max-width:560px){.toast{font-size:15px;padding:8px 12px}}
+.toast{position:fixed;left:50%;bottom:calc(var(--dock-h) + 16px);transform:translateX(-50%);z-index:45;background:var(--star);color:var(--ink);border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);padding:10px 16px;font-family:var(--f-hud);font-weight:700;font-size:17px;letter-spacing:.04em;max-width:calc(100vw - 32px);text-align:center}
+.toast[hidden]{display:none}
+
+/* ---------- ANIMAÇÕES (reduzidas na v3: sem loops que distraem a leitura) ---------- */
+@keyframes pop{0%{opacity:0;transform:scale(1.35)}12%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:scale(1)}}
+@keyframes flash{0%{opacity:.7}100%{opacity:0}}
+@keyframes starFly{0%{transform:translate(0,0) scale(.2) rotate(0);opacity:1}70%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1) rotate(var(--rot));opacity:0}}
 @keyframes slam{0%{transform:scale(2.4) rotate(-5deg);opacity:0;filter:blur(8px)}55%{transform:scale(.95) rotate(0);opacity:1;filter:blur(0)}75%{transform:scale(1.03)}100%{transform:scale(1)}}
 @keyframes neonOn{0%,14%,22%,30%{opacity:.12}18%,26%,100%{opacity:1}}
-@keyframes flicker{0%,93%,100%{opacity:1}94%{opacity:.35}95%{opacity:1}97%{opacity:.55}98%{opacity:1}}
-@keyframes slideIn{from{translate:-48px 0;opacity:0}to{translate:0 0;opacity:1}}
-@keyframes rise{from{translate:0 28px;opacity:0}to{translate:0 0;opacity:1}}
-@keyframes blip{0%{box-shadow:0 0 0 0 rgba(255,210,63,.75)}100%{box-shadow:0 0 0 18px rgba(255,210,63,0)}}
-@keyframes glow{0%,100%{box-shadow:0 0 0 3px var(--star),7px 7px 0 var(--ink),0 0 22px rgba(255,210,63,.3)}50%{box-shadow:0 0 0 3px var(--star),7px 7px 0 var(--ink),0 0 44px rgba(255,210,63,.75)}}
-@keyframes shine{from{transform:translateX(-120%)}to{transform:translateX(420%)}}
+@keyframes rise{from{translate:0 24px;opacity:0}to{translate:0 0;opacity:1}}
+@keyframes blip{0%{box-shadow:0 0 0 0 rgba(255,210,63,.7)}100%{box-shadow:0 0 0 14px rgba(255,210,63,0)}}
+@keyframes cashBump{0%{transform:scale(1)}30%{transform:scale(1.2);color:#b8ff8a}100%{transform:scale(1)}}
 @keyframes stampIn{0%{transform:rotate(18deg) scale(2.4);opacity:0}65%{transform:rotate(18deg) scale(.92);opacity:1}100%{transform:rotate(18deg) scale(1)}}
-@keyframes starFly{0%{transform:translate(0,0) scale(.2) rotate(0);opacity:1}70%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1) rotate(var(--rot));opacity:0}}
-@keyframes cashBump{0%{transform:scale(1)}30%{transform:scale(1.22);color:#b8ff8a}100%{transform:scale(1)}}
-@keyframes flash{0%{opacity:.75}100%{opacity:0}}
-@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -4px}}
 @media (prefers-reduced-motion:no-preference){
   .title .big{animation:slam .75s cubic-bezier(.2,.9,.3,1.2) .1s both}
-  .title .script{animation:neonOn 1.1s linear .75s both,flicker 7s linear 3s infinite}
-  .hero .eyebrow{animation:slideIn .5s ease .05s both}
-  .hero .lede{animation:rise .6s ease .95s both}
-  .hero .btn{animation:rise .6s ease 1.1s both,bob 2.6s ease-in-out 2s infinite}
-  .mission.active .marker{animation:blip 1.6s ease-out infinite}
-  .char[aria-pressed="true"]{animation:glow 2.2s ease-in-out infinite}
+  .title .script{animation:neonOn 1.1s linear .75s both}
+  .st-active .marker{animation:blip 2.2s ease-out infinite}
   .art .sil{transition:transform .35s ease}
   .art .code{transition:transform .35s cubic-bezier(.2,.9,.3,1.5)}
   .char:hover .art .sil{transform:translateX(-12px) scale(1.07)}
   .char:hover .art .code{transform:translateY(-8px) rotate(-5deg)}
   .heist{transition:transform .2s ease}
-  .heist:hover{transform:translateY(-5px) rotate(-.5deg)}
+  .heist:hover{transform:translateY(-4px)}
   .heist .stamp{animation:stampIn .55s ease .2s both}
-  .bar{position:relative;overflow:hidden}
-  .bar::after{content:"";position:absolute;inset:0;width:28%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.32),transparent);animation:shine 3s ease-in-out infinite}
   .cash.bump{animation:cashBump .55s ease}
-  .board.enter .mission{animation:rise .45s ease both;animation-delay:calc(var(--i) * 70ms)}
-  .board.enter .board-top{animation:slideIn .45s ease both}
-  @supports (animation-timeline:view()){
-    .sec-head,.heist,.plan{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 40%}
-    .heist .stamp{animation:stampIn linear both;animation-timeline:view();animation-range:entry 20% entry 60%}
-  }
+}
+@media (prefers-reduced-motion:reduce){
+  .passed .inner{animation:none}.passed .fl,.burst{display:none}
+  .btn,.char,.bar i,.chev{transition:none}
 }
 </style>
 
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
 <header class="hud">
-  <div class="wrap">
-    <a class="brand" href="#topo">DEV <span>CITY</span></a>
-    <div class="hud-stats" aria-label="Seu progresso geral">
-      <span class="rank" id="hudRank">Novato</span>
-      <span class="stars" id="hudStars" aria-label="Reputação"></span>
+  <div class="wrap hud-row">
+    <a class="brand" href="#topo" aria-label="Dev City, voltar ao início">DEV <span>CITY</span></a>
+    <nav class="nav" id="nav" aria-label="Seções do site">
+      <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navList">Menu</button>
+      <ul id="navList">
+        <li><a href="#como-funciona">Como funciona</a></li>
+        <li><a href="#personagens">Trilhas</a></li>
+        <li><a href="#missoes">Missões</a></li>
+        <li><a href="#golpes">Golpes</a></li>
+        <li><a href="#progresso">Progresso</a></li>
+      </ul>
+    </nav>
+    <div class="hud-stats" id="hudStats" role="group" aria-label="Seu progresso geral">
+      <span class="lvl" id="hudLvl">NV 1</span>
+      <span class="stars" id="hudStars"></span>
       <span class="cash" id="hudCash">$0</span>
     </div>
   </div>
 </header>
 
-<main id="topo">
-  <section class="hero" aria-label="Abertura">
+<main id="conteudo">
+  <!-- ABERTURA · NOVO: botão principal + camada escura atrás do texto -->
+  <section class="hero" id="topo" aria-labelledby="heroTitle">
     <canvas id="city" aria-hidden="true"></canvas>
-    <div class="wrap">
-      <span class="eyebrow">Trilhas gratuitas de programação · PT-BR</span>
-      <h1 class="title"><span class="big">DEV CITY</span><span class="script">Modo Carreira</span></h1>
-      <p class="lede">Escolha um protagonista, cumpra as missões em ordem e junte grana até virar lenda da cidade. As aulas indicadas são gratuitas, quase todas no YouTube.</p>
-      <a class="btn" href="#personagens">Escolher protagonista ▸</a>
+    <div class="hero-shade" aria-hidden="true"></div>
+    <div class="wrap hero-in">
+      <div class="hero-copy">
+        <span class="eyebrow">Trilhas gratuitas de programação · PT‑BR</span>
+        <h1 class="title" id="heroTitle"><span class="big">DEV CITY</span><span class="script" aria-hidden="true">Modo Carreira</span></h1>
+        <p class="lede">Aprender a programar virou jogo. Escolha um protagonista, cumpra missões com aula, prática e quiz, junte grana virtual e ganhe respeito até virar lenda da cidade.</p>
+        <div class="cta-row">
+          <button class="btn xl" id="startBtn" type="button" aria-haspopup="dialog">Começar minha primeira missão ▸</button>
+          <a class="btn ghost" href="#personagens">Ver todas as trilhas</a>
+        </div>
+        <ul class="facts" id="facts" aria-label="Dev City em números"></ul>
+      </div>
     </div>
   </section>
 
-  <section class="block" id="personagens">
+  <!-- NOVO · COMO FUNCIONA (aulas gratuitas + jornada guiada) -->
+  <section class="block" id="como-funciona" aria-labelledby="h-como">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">como funciona</span>
+        <h2 id="h-como">Aulas grátis, jornada guiada</h2>
+        <p>As aulas já existem e são gratuitas. O Dev City escolhe a ordem, diz o que praticar e acompanha o seu progresso, para você não ficar perdido entre mil vídeos.</p>
+      </div>
+      <ol class="how">
+        <li><h3>Escolha o corre</h3><p>Responda 4 perguntas e receba uma trilha recomendada, ou escolha o protagonista que quiser.</p></li>
+        <li><h3>Assista à aula</h3><p>Cada missão indica uma playlist ou curso gratuito, de professores e canais brasileiros.</p></li>
+        <li><h3>Pratique e prove</h3><p>Faça o exercício prático e acerte o mini quiz. Sem prática, a missão não fecha.</p></li>
+        <li><h3>Entregue e suba</h3><p>Ganhe grana virtual e XP, suba de nível e libere a próxima missão até o projeto final.</p></li>
+      </ol>
+      <div class="free-note">
+        <span class="tag">R$ 0</span>
+        <p><strong>Você não paga nada.</strong> As aulas ficam no YouTube e em plataformas abertas (algumas na Coursera, Udemy gratuita, Univesp e similares), e você assiste direto na fonte original. O Dev City só organiza esse conteúdo em uma jornada. A seleção de aulas foi adaptada da curadoria da Jornada do Herói Dev.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROTAGONISTAS · NOVO: categorias + recomendação -->
+  <section class="block" id="personagens" aria-labelledby="h-trilhas">
     <div class="wrap">
       <div class="sec-head">
         <span class="kicker">escolha seu corre</span>
-        <h2>Selecione o protagonista</h2>
-        <p>Cada protagonista é uma trilha de estudo. Arraste para o lado ou use as setas e toque em quem você quer ser.</p>
+        <h2 id="h-trilhas">Selecione o protagonista</h2>
+        <p>Cada protagonista é uma trilha de estudo. Escolha uma categoria, deslize para o lado e toque em quem você quer ser.</p>
       </div>
-      <div class="select">
+      <div class="rec-banner" id="recBanner" hidden></div>
+      <div class="cats" id="cats" role="group" aria-label="Categorias de trilhas"></div>
+      <div class="reel-top">
+        <p class="cat-desc" id="catDesc"></p>
         <div class="reel-nav">
-          <button class="icon-btn" id="prev" aria-label="Protagonistas anteriores">‹</button>
-          <button class="icon-btn" id="next" aria-label="Próximos protagonistas">›</button>
+          <button class="icon-btn" id="prev" type="button" aria-label="Mostrar protagonistas anteriores">‹</button>
+          <button class="icon-btn" id="next" type="button" aria-label="Mostrar próximos protagonistas">›</button>
         </div>
-        <div class="reel" id="reel" role="list"></div>
       </div>
-      <div class="board" id="board" aria-live="polite"></div>
+      <ul class="reel" id="reel" aria-label="Protagonistas da categoria"></ul>
     </div>
   </section>
 
-  <section class="block" id="golpes">
+  <!-- MISSÕES · NOVO: cada missão em etapas (assistir, praticar, quiz, entregar) -->
+  <section class="block" id="missoes" aria-label="Missões da trilha atual">
+    <div class="wrap">
+      <div class="board" id="board"></div>
+    </div>
+  </section>
+
+  <!-- GOLPES DE FACULDADE (mantidos) -->
+  <section class="block" id="golpes" aria-labelledby="h-golpes">
     <div class="wrap">
       <div class="sec-head">
         <span class="kicker">os grandes golpes</span>
-        <h2>Golpes de faculdade</h2>
-        <p>Grades completas de graduação, fase por fase. Marque cada matéria que você estudou e acompanhe quanto falta para fechar o golpe.</p>
+        <h2 id="h-golpes">Golpes de faculdade</h2>
+        <p>Grades completas de graduação, semestre por semestre. Marque cada matéria que você estudou e acompanhe quanto falta para fechar o golpe.</p>
       </div>
       <div class="heists" id="heists"></div>
       <div class="plan" id="plan" hidden></div>
+    </div>
+  </section>
+
+  <!-- NOVO · FICHA DO JOGADOR: nível, XP, grana, sequência, conquistas, exportar/importar -->
+  <section class="block" id="progresso" aria-labelledby="h-prog">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">sua ficha</span>
+        <h2 id="h-prog">Progresso do jogador</h2>
+        <p>Tudo o que você conquistou na cidade. O progresso fica salvo neste navegador.</p>
+      </div>
+      <div class="ficha" id="ficha"></div>
+      <h3 class="achs-h">Conquistas</h3>
+      <ul class="achs" id="achs"></ul>
+      <div class="save-row">
+        <button class="btn cyan" id="exportBtn" type="button" aria-haspopup="dialog">Exportar meu progresso</button>
+        <button class="btn ghost" id="importBtn" type="button" aria-haspopup="dialog">Importar progresso</button>
+        <button class="btn ghost" id="redoQuiz" type="button" aria-haspopup="dialog">Refazer questionário</button>
+        <button class="btn ghost" id="reset" type="button">Zerar progresso</button>
+      </div>
+      <p class="save-note">Vai trocar de celular ou computador? Exporte o progresso, guarde o arquivo (ou o texto) e importe no outro aparelho.</p>
     </div>
   </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <span>Progresso salvo só neste navegador.</span>
-    <button id="reset" type="button">Zerar progresso</button>
+    <span>Dev City · progresso salvo só neste navegador.</span>
+    <span>Aulas gratuitas de criadores independentes. Curadoria adaptada da Jornada do Herói Dev.</span>
   </div>
 </footer>
 
-<div class="passed" id="passed" hidden aria-live="assertive">
+<!-- NOVO · BARRA FIXA "CONTINUAR ESTUDANDO" -->
+<aside class="dock" id="dock" aria-label="Continuar estudando" hidden>
+  <div class="wrap dock-in">
+    <div style="min-width:0">
+      <span class="dock-k">Continuar estudando</span>
+      <span class="dock-mission" id="dockMission"></span>
+      <span class="dock-track" id="dockTrack"></span>
+    </div>
+    <div class="dock-prog">
+      <div class="bar" role="progressbar" id="dockBarWrap" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da trilha"><i id="dockBar"></i></div>
+      <span id="dockCount"></span>
+    </div>
+    <button class="btn pink" id="dockBtn" type="button">Continuar missão ▸</button>
+  </div>
+</aside>
+
+<!-- NOVO · QUESTIONÁRIO INICIAL -->
+<dialog id="dlgQuiz" aria-labelledby="qTitle">
+  <div class="dlg-head"><h2 id="qTitle">Sua primeira missão</h2><button class="x" type="button" data-close aria-label="Fechar questionário">×</button></div>
+  <div class="dlg-body" id="qBody"></div>
+</dialog>
+
+<!-- NOVO · TELA DE CONCLUSÃO DE TRILHA -->
+<dialog id="dlgWin" aria-labelledby="winTitle">
+  <div class="dlg-head"><h2 id="winTitle">Trilha zerada</h2><button class="x" type="button" data-close aria-label="Fechar tela de conclusão">×</button></div>
+  <div class="dlg-body" id="winBody"></div>
+</dialog>
+
+<!-- NOVO · EXPORTAR / IMPORTAR -->
+<dialog id="dlgIO" aria-labelledby="ioTitle">
+  <div class="dlg-head"><h2 id="ioTitle">Salvar progresso</h2><button class="x" type="button" data-close aria-label="Fechar">×</button></div>
+  <div class="dlg-body io" id="ioBody"></div>
+</dialog>
+
+<div class="passed" id="passed" hidden>
   <div class="fl"></div><div class="burst" id="burst"></div>
-  <div class="inner"><div class="t">Missão cumprida</div><div class="s" id="passedSub"></div></div>
+  <div class="inner"><div class="t" id="passedT">Missão cumprida</div><div class="s" id="passedSub"></div></div>
 </div>
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="sr-only" id="live" aria-live="polite"></div>
 
 <script>
 (() => {
+"use strict";
 /* ---------- PROTAGONISTAS ----------
    Aulas: mesmos cursos e links do site de referência. Formato de cada missão:
    [título, curso, professor, link, dificuldade 1-5, recompensa $, descrição] */
@@ -325,207 +617,929 @@ const H = [
   {id:"cc",name:"Reserva Federal",course:"Ciência da Computação",a:"#b05cff",b:"#0f3d2e",crew:"Lendário",phases:[[["Informação Profissional e Tutoria Acadêmica em CC","https://www.youtube.com/@devvarthur",100],["Introdução à Ciência da Computação I","https://www.youtube.com/playlist?list=PLTYhWEH3DGrTjP7t0uPtRlbdi7BhrTDP4",300],["Laboratório de Introdução à CC I","https://www.youtube.com/playlist?list=PLRWz0gvEGE7il46UwfR_aw47-y3AYQ9JK",200],["Geometria Analítica","https://www.youtube.com/playlist?list=PLEfwqyY2ox858XssXB_f-Jx42fgTb0Vsn",200],["Cálculo I","https://www.youtube.com/playlist?list=PLEfwqyY2ox86LhxKybOY3_IG-7R5herLC",250],["Evolução Histórica da Computação e Aplicações","https://www.youtube.com/playlist?list=PLWJVgHJ6b_aEjM0RhGkiU3MFNG8IIwsNU",100],["Introdução à Lógica Digital","https://www.youtube.com/playlist?list=PLHCyLhqWSaHD2R2gmYa8mILMp2P75AwRy",200],["Prática em Lógica Digital","https://www.youtube.com/playlist?list=PLHz_AreHm4dmSj0MHol_aoNYCSGFqvfXV",150]],[["Introdução à Ciência da Computação II","https://www.youtube.com/playlist?list=PL892UsUS6uKVF7Zgvp-DbnpuOVJjctYVo",300],["Algoritmos e Estruturas de Dados I","https://www.youtube.com/playlist?list=PL_JAaU8k6DQXxJ_HL_kiy8_jXzGs6e6EH",350],["Matemática Discreta I","https://www.youtube.com/playlist?list=PLrOyM49ctTx-HWypJVvn_zMO1o7oOAfVx",250],["Cálculo II","https://www.youtube.com/playlist?list=PLAudUnJeNg4sd0TEJ9EG6hr-3d3jqrddN",250],["Sistemas Digitais","https://www.youtube.com/playlist?list=PL1K59X-jJdii6ojXmSAzOuUJNNDXGRara",250],["Prática em Sistemas Digitais","https://www.youtube.com/playlist?list=PLmzMThftjYfimsFjce65TWkI6XYLAEBGb",150]],[["Organização de Arquivos","https://www.youtube.com/playlist?list=PLFeaJA03y9ozZns6MmC-a6L8-CyJ9yXZV",250],["Modelagem Computacional em Grafos","https://www.youtube.com/playlist?list=PLxKmxm_IWVlQPUrPJOQrstBg6Cit-aCQT",300],["Cálculo III","https://www.youtube.com/playlist?list=PLAudUnJeNg4ugGUJo52dtgFZ_tCm1Ds5W",250],["Programação Orientada a Objetos","https://www.youtube.com/playlist?list=PL62G310vn6nFIsOCC0H-C2infYgwm8SWW",300],["Organização e Arquitetura de Computadores","https://www.youtube.com/playlist?list=PLxI8Can9yAHdG-xUDj6i-HGB7IAsAU-t1",300],["Programação Funcional","https://www.youtube.com/playlist?list=PL838IdaPZmcujeki2lpEk2z__yS9ODo4P",250]],[["Metodologia de Pesquisa em Computação","https://www.youtube.com/playlist?list=PLclUQno6PMpQO0-XrDwWsPzRzEvjwp1__",200],["Algoritmos Avançados e Aplicações","https://www.youtube.com/@devvarthur",350],["Estatística","https://www.youtube.com/playlist?list=PL-QAz5R5Rlm4kJSju2xqUACmBjyGH2k_N",250],["Álgebra Linear e Aplicações","https://www.youtube.com/playlist?list=PLO3hBdfBc4pFef1zn1oZyYXLomL9MiX-C",250],["Análise e Projeto Orientados a Objetos","https://www.youtube.com/playlist?list=PLtII2Mw41oA0LLJgLVeyRWO5IPUtdfRth",300],["Sistemas Operacionais I","https://www.youtube.com/playlist?list=PL866_LrQxNVhjUCo5b9iQLvgTtC9RoyO1",300]],[["Introdução ao Desenvolvimento Web","https://www.youtube.com/playlist?list=PL1dUY2RYa2RhNhm-QTuNIifVpc59wrpFP",300],["Bases de Dados","https://www.youtube.com/playlist?list=PLbIBj8vQhvm2WT-pjGS5x7zUzmh4VgvRk",300],["Cálculo Numérico","https://www.youtube.com/playlist?list=PLsfUsqON-YybXUTyvm_xy8J8VpHRvpG_z",250],["Processos Estocásticos","https://www.youtube.com/playlist?list=PL9yL8SksMgYGntu1ITXE2yVbGBxnMUaN0",250],["Engenharia de Software","https://www.youtube.com/playlist?list=PLxI8Can9yAHfeoA_yMm9iKJVxQprljmL9",300],["Redes de Computadores","https://www.youtube.com/playlist?list=PLHz_AreHm4dkd4lr9G0Up-W-YaHYdTDuP",300]],[["Teoria da Computação e Linguagens Formais","https://www.youtube.com/playlist?list=PL0Z-gyL9saMfoCGiX28ZTKSHsYU1Vm-Jj",350],["Inteligência Artificial","https://www.youtube.com/playlist?list=PLHz_AreHm4dm24MhlWJYiR_Rm7TFtvs6S",350],["Programação Matemática","https://www.youtube.com/playlist?list=PLO3hBdfBc4pE-wJCvjKTiBxkpIUvktBHy",300],["Computação de Alto Desempenho","https://www.youtube.com/playlist?list=PLOVkAviW9S-rR8UCuVmhDkdvs4Vs63RZY",350]],[["Linguagens de Programação e Compiladores","https://www.youtube.com/playlist?list=PLxI8Can9yAHdmCAoLW5KWCG5ZrnfwrWXV",400],["Computação Gráfica","https://www.youtube.com/playlist?list=PLX6Nyaq0ebfgTrw6BlgBpPwM3F7I4UMyA",350],["Sistemas de Informação","https://www.youtube.com/playlist?list=PLxI8Can9yAHczVm37Sw-UssyYdd0FMyR0",250],["Engenharia de Segurança","https://www.youtube.com/@devvarthur",300],["Sistemas Computacionais Distribuídos","https://www.youtube.com/playlist?list=PLxI8Can9yAHdAU8zIvJTKcbhgRyzwjII2",350]],[["Aprendizado de Máquina","https://www.youtube.com/playlist?list=PLVYKJqnvllt_H_alEiwTW9o9T112oSP7-",350],["Redes Neurais e Deep Learning","https://www.youtube.com/playlist?list=PLyqOvdQmGdTTRYIm2jPsirBviWc2k0rdt",400],["Processamento de Linguagem Natural","https://www.youtube.com/playlist?list=PLxI8Can9yAHeLcxJwSQPrzhWTKoYqgXOL",350],["Ciência de Dados","https://www.youtube.com/playlist?list=PLfCKf0-awunPFkWOKWNaXB_ndaHBlJ4QQ",350],["Mineração de Dados","https://www.youtube.com/playlist?list=PLYen_alduuqrMeAMYe6xXNO875JsPMYzj",350],["Banco de Dados Avançado","https://www.youtube.com/playlist?list=PLfvOpw8k80WpKTtloa7fMbfPWL7D6X5cC",350],["Computação em Nuvem","https://www.youtube.com/playlist?list=PLtL97Owd1gkQ0dfqGW8OtJ-155Gs67Ecz",350],["Testes de Software","https://www.youtube.com/playlist?list=PLf8x7B3nFTl3EouPsBoqgbatKti9liVyj",300],["Desenvolvimento Mobile","https://www.youtube.com/playlist?list=PL50rZONmv8ZRsWj0L3rvSicPSEJl6sQ40",300],["Sistemas Embarcados","https://www.youtube.com/playlist?list=PLqBAJMdCNemmW6nC3g5TGFBywLqy2UBnB",350]],[["Estágio Supervisionado","https://www.youtube.com/@devvarthur",400],["Trabalho de Conclusão de Curso I (TCC I)","",500]],[["Entrega do TCC (TCC II)","",600]]]},
 ];
 
-/* ---------- ESTADO ---------- */
-const KEY = "devcity.v2";
-let S = {sel:"backend", done:{}, heist:{}, openHeist:null};
-try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch(e) {}
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} };
+/* ======================================================================
+   NOVO · CATEGORIAS — organizam os 19 protagonistas para o iniciante
+   não se perder. Cada trilha aparece em exatamente uma categoria.
+   ====================================================================== */
+const CATS = [
+  {id:"comece", name:"Comece aqui", desc:"Trilhas que começam do absoluto zero. Boas para a primeira jornada.", ids:["frontend","backend","automacao"]},
+  {id:"dev", name:"Desenvolvimento", desc:"Construir produtos: sites completos, apps, jogos e Web3.", ids:["fullstack","mobile","gamedev","blockchain"]},
+  {id:"dados", name:"Dados e Inteligência Artificial", desc:"Transformar dados em respostas e treinar modelos de IA.", ids:["dados","ia","engdados"]},
+  {id:"infra", name:"Infraestrutura e Segurança", desc:"Servidores, nuvem, deploy, hardware e proteção de sistemas.", ids:["devops","cloud","cyber","hacker","embarcados"]},
+  {id:"design", name:"Design e Qualidade", desc:"Experiência de quem usa e garantia de que tudo funciona.", ids:["uiux","qa"]},
+  {id:"avancadas", name:"Trilhas avançadas", desc:"Para quem já tem base: matemática e ferramentas de nível sênior.", ids:["avancado","matematica"]}
+];
 
+/* ======================================================================
+   NOVO · PROJETO FINAL de cada trilha (visível no topo da trilha e
+   entregue depois da última missão). reqs = checklist de entrega.
+   ====================================================================== */
+const PROJ = {
+  backend:{t:"API de Tarefas", d:"Uma API REST profissional para gerenciar tarefas, pronta para qualquer front end usar.", reqs:["CRUD completo: criar, listar, editar e apagar tarefas","Dados salvos em um banco SQL","Aplicação rodando em um container Docker","README com instruções e exemplos de requisição"]},
+  frontend:{t:"Portfólio Pessoal", d:"Seu site de apresentação, com projetos, sobre você e contato.", reqs:["Seções Sobre, Projetos e Contato","Layout responsivo no celular e no computador","Feito em React com componentes reutilizáveis","Publicado online (Vercel, Netlify ou GitHub Pages)"]},
+  fullstack:{t:"Sistema Completo de Tarefas", d:"Front, back e banco conversando: login, lista de tarefas e filtros.", reqs:["Front end em React consumindo a sua API","API em Node com TypeScript","Banco MySQL com pelo menos 2 tabelas relacionadas","Tudo sobe com Docker Compose"]},
+  dados:{t:"Dashboard de Análise", d:"Um painel que responde perguntas reais a partir de um dataset público.", reqs:["Dataset público limpo com Pandas","Pelo menos 4 gráficos ou um painel no Power BI","3 perguntas respondidas com números","Conclusão escrita em um parágrafo"]},
+  ia:{t:"Classificador com IA", d:"Um modelo treinado por você que classifica textos ou imagens.", reqs:["Dataset público com treino e teste separados","Modelo treinado com scikit-learn ou PyTorch","Métricas de avaliação explicadas","Notebook ou app simples para testar o modelo"]},
+  avancado:{t:"Plataforma em Produção", d:"Uma aplicação com tudo que uma empresa grande espera ver.", reqs:["Aplicação em container com testes","Pipeline de CI no GitHub Actions","Infraestrutura descrita em Terraform","Deploy em Kubernetes (pode ser local, com kind ou minikube)"]},
+  matematica:{t:"Caderno de Algoritmos Matemáticos", d:"Os conceitos da trilha transformados em código que roda.", reqs:["Estatísticas: média, mediana e desvio padrão","Contagem de combinações e permutações","Operações com matrizes","Menor caminho em um grafo (Dijkstra)"]},
+  gamedev:{t:"Jogo de Plataforma 2D", d:"Um jogo curto e completo que qualquer pessoa joga pelo navegador.", reqs:["Personagem que anda, pula e coleta itens","Pelo menos 2 fases com fim de jogo","Arte própria em pixel art","Publicado jogável no navegador (WebGL no itch.io)"]},
+  hacker:{t:"Relatório de CTF", d:"Desafios legais resolvidos e documentados como um profissional.", reqs:["5 desafios resolvidos no picoCTF ou OverTheWire","Writeup de cada desafio com o passo a passo","Ferramentas usadas e o que aprendeu","Tudo feito só em ambientes autorizados"]},
+  devops:{t:"Pipeline de Deploy Automatizado", d:"Do commit à produção sem ninguém encostar na mão.", reqs:["Aplicação e banco em Docker Compose","Pipeline de CI/CD com testes","Deploy em um cluster Kubernetes local","Servidor configurado com Ansible"]},
+  cyber:{t:"Auditoria de Segurança", d:"Um relatório de segurança de uma aplicação de treino.", reqs:["Varredura do OWASP Juice Shop com o OWASP ZAP","Vulnerabilidades classificadas por risco","Correção sugerida para cada achado","Checklist de LGPD para a aplicação"]},
+  embarcados:{t:"Estação Meteorológica IoT", d:"Um dispositivo que mede o ambiente e manda os dados pela rede.", reqs:["ESP32 lendo temperatura e umidade","Leituras publicadas via MQTT","Painel mostrando as leituras","Esquema do circuito documentado"]},
+  automacao:{t:"Robô de Relatório Automático", d:"Um fluxo que trabalha sozinho todo dia por você.", reqs:["Coleta dados de uma API pública","Resume o resultado com IA","Envia por e-mail ou Telegram","Roda agendado, sem clique manual"]},
+  engdados:{t:"Pipeline de Dados ETL", d:"Dados saindo de uma API e chegando organizados em um Data Warehouse.", reqs:["Extração de uma API pública","Transformação com Pandas ou Spark","Carga em um Data Warehouse (PostgreSQL serve)","Orquestração diária com Airflow"]},
+  blockchain:{t:"dApp de Votação", d:"Uma votação transparente em blockchain com interface web.", reqs:["Contrato de votação em Solidity com testes","Front end conectado com Ethers.js","Deploy na testnet Sepolia","Revisão de segurança do contrato"]},
+  qa:{t:"Suíte de Testes Automatizados", d:"Testes que protegem um sistema real de quebrar.", reqs:["Testes E2E com Playwright","Testes de API automatizados","Testes rodando no CI a cada push","Relatório com bugs encontrados"]},
+  uiux:{t:"Redesign de um App", d:"Um app real repensado com pesquisa, protótipo e código.", reqs:["Pesquisa com pelo menos 3 pessoas","Protótipo navegável no Figma","Mini design system (cores, tipografia, botões)","Uma tela implementada em HTML e CSS"]},
+  cloud:{t:"Infra na Nuvem como Código", d:"Uma API publicada na nuvem com infraestrutura reproduzível.", reqs:["API em Go em um container","Infraestrutura na AWS descrita em Terraform","Deploy em Kubernetes","Alerta de custos configurado (use o nível gratuito)"]},
+  mobile:{t:"App de Hábitos", d:"Um app Android para registrar hábitos e acompanhar sequências.", reqs:["Telas em Kotlin com Jetpack Compose","Hábitos salvos no aparelho ou no Firebase","Testes unitários das regras","Build de lançamento (.aab) gerado"]}
+};
+
+/* ======================================================================
+   NOVO · BIBLIOTECA DE PRÁTICA — para cada tema: objetivo (o),
+   exercício prático (e) e mini quiz (q: [pergunta, opções, índice certo]).
+   A missão é ligada ao tema pelo título (regex sobre o título sem acentos).
+   A ORDEM IMPORTA: temas específicos vêm antes dos genéricos.
+   ====================================================================== */
+const K = [
+  [/seguranca de smart contracts/, {o:"Encontrar e evitar falhas comuns em contratos inteligentes.", e:"Escreva um contrato de cofre com função de saque, identifique o risco de reentrância e corrija usando o padrão checks-effects-interactions.", q:[["Qual ataque explora chamar um contrato de novo antes de o saldo ser atualizado?",["Reentrância","Phishing","DDoS"],0]]}],
+  [/python para pentesters/, {o:"Usar Python para automatizar tarefas de segurança em ambientes autorizados.", e:"Escreva um verificador que testa as portas 22, 80 e 443 da sua própria máquina (localhost) e mostra quais estão abertas. Nunca rode contra sistemas sem autorização.", q:[["Antes de testar a segurança de um sistema, o que é obrigatório?",["Autorização do dono do sistema","Ter um computador rápido","Usar Linux"],0]]}],
+  [/nosql/, {o:"Entender quando usar bancos NoSQL e modelar dados como documentos.", e:"Modele uma coleção 'pedidos' em JSON para uma loja (cliente, itens, total) e escreva 3 consultas: pedidos de um cliente, pedidos acima de R$ 100 e total vendido.", q:[["Qual destes é um banco NoSQL orientado a documentos?",["MySQL","MongoDB","PostgreSQL"],1]]}],
+  [/teste de api|apis e postman|automacao de apis/, {o:"Testar APIs verificando status, corpo da resposta e casos de erro.", e:"Use a API pública jsonplaceholder.typicode.com e crie testes para GET /posts/1 (status 200 e campo title), POST /posts (status 201) e GET /posts/9999 (status 404).", q:[["Qual código HTTP indica que um recurso foi criado?",["200 OK","201 Created","404 Not Found"],1]]}],
+  [/consumo de api/, {o:"Buscar dados de uma API com fetch e mostrar na tela.", e:"Crie uma página que busca api.github.com/users/SEU_USUARIO com fetch e mostra foto, nome e número de repositórios. Trate o caso de usuário não encontrado.", q:[["O que a função fetch retorna?",["Um número","Uma Promise","Um arquivo HTML pronto"],1]]}],
+  [/api rest com node|apis rest|^apis$|redes e apis/, {o:"Criar e entender endpoints REST com os métodos HTTP certos.", e:"Crie uma API simples de tarefas com 4 rotas: GET /tarefas, POST /tarefas, PUT /tarefas/:id e DELETE /tarefas/:id. Pode guardar os dados em memória. Teste no Postman ou Insomnia.", q:[["Em uma API REST, qual método costuma criar um recurso?",["GET","POST","DELETE"],1]]}],
+  [/typescript em node|^node/, {o:"Rodar JavaScript no servidor e criar um servidor HTTP com Node.", e:"Crie um servidor com Node (http ou Express) que responde em /ola com {\"mensagem\":\"Olá, Dev City\"} e em /hora com a hora atual.", q:[["Para que serve o npm?",["Instalar e gerenciar pacotes do projeto","Editar imagens","Criar bancos de dados"],0]]}],
+  [/typescript/, {o:"Adicionar tipos ao JavaScript para pegar erros antes de rodar.", e:"Crie um tipo Produto (nome: string, preco: number, emEstoque: boolean) e uma função que recebe uma lista de produtos e retorna só os que estão em estoque, com a soma dos preços.", q:[["Qual a principal vantagem do TypeScript?",["Deixar o site mais colorido","Detectar erros de tipo antes de executar","Substituir o HTML"],1]]}],
+  [/projeto fullstack/, {o:"Juntar front, back e banco em um projeto só.", e:"Planeje o sistema: desenhe as telas, liste as rotas da API e as tabelas do banco. Depois implemente o primeiro fluxo completo (um item cadastrado aparecendo na tela).", q:[["Em uma aplicação full stack, quem normalmente acessa o banco de dados?",["O navegador do usuário","O CSS","O back end"],2]]}],
+  [/react/, {o:"Criar interfaces com componentes, props e estado.", e:"Crie um contador em React com botões +1, −1 e Zerar, e um componente Lista que recebe um array por props e mostra os itens.", q:[["Qual hook do React guarda um valor de estado?",["useState","useFetch","useStyle"],0]]}],
+  [/^javascript$/, {o:"Usar variáveis, funções, arrays e eventos para dar vida à página.", e:"Crie uma lista de tarefas: um campo de texto, um botão Adicionar e, em cada tarefa, um botão para marcar como feita e outro para remover.", q:[["Qual método adiciona um item ao final de um array?",["pop()","shift()","push()"],2],["Como reagir ao clique em um botão?",["botao.addEventListener(\"click\", funcao)","botao.onClickCSS()","document.write(\"click\")"],0]]}],
+  [/html|desenvolvimento web/, {o:"Estruturar páginas com HTML semântico e estilizar com CSS.", e:"Crie um cartão de perfil: foto, nome, uma frase sobre você e três links (GitHub, LinkedIn, e-mail). Centralize com Flexbox e deixe bonito no celular.", q:[["Qual tag representa o título principal da página?",["<head>","<h1>","<title-main>"],1],["Qual propriedade CSS ativa o Flexbox?",["display: flex","position: flex","float: flex"],0]]}],
+  [/gitflow/, {o:"Organizar as branches de um time com o fluxo Gitflow.", e:"Num repositório de teste, crie as branches develop e feature/login, faça um commit na feature, junte em develop e depois crie uma release para a main.", q:[["No Gitflow, onde as novas funcionalidades são desenvolvidas?",["Direto na main","Em branches feature/","Em branches hotfix/"],1]]}],
+  [/github actions|ci\/cd/, {o:"Automatizar testes e deploy a cada push.", e:"Crie um workflow do GitHub Actions que roda em todo push, instala as dependências e executa os testes. Faça um teste falhar de propósito e veja o pipeline ficar vermelho.", q:[["O que significa CI em CI/CD?",["Integração Contínua","Código Instantâneo","Controle de Interface"],0]]}],
+  [/\bgit\b|github/, {o:"Versionar código com commits e publicar no GitHub.", e:"Crie um repositório no GitHub, faça 3 commits com mensagens claras, crie uma branch, altere um arquivo e abra um pull request para a main.", q:[["Qual comando registra as mudanças preparadas no histórico?",["git push","git commit","git clone"],1]]}],
+  [/docker compose/, {o:"Subir vários serviços juntos com Docker Compose.", e:"Crie um arquivo compose com uma aplicação web e um banco PostgreSQL ligados em rede, com volume para guardar os dados do banco.", q:[["Qual arquivo descreve os serviços do Docker Compose?",["package.json","compose.yaml (ou docker-compose.yml)","Dockerfile.json"],1]]}],
+  [/docker/, {o:"Empacotar aplicações em containers que rodam igual em qualquer máquina.", e:"Escreva um Dockerfile para uma aplicação simples (a API de tarefas serve), gere a imagem e rode o container expondo a porta 3000.", q:[["Qual a diferença entre imagem e container?",["A imagem é o molde; o container é a imagem em execução","São a mesma coisa","O container é o molde; a imagem roda"],0]]}],
+  [/kubernetes/, {o:"Orquestrar containers com Pods, Deployments e Services.", e:"Com minikube ou kind, crie um Deployment com 3 réplicas do nginx e um Service para acessá-lo. Apague um pod e veja o Kubernetes recriar.", q:[["Qual objeto do Kubernetes mantém um número de réplicas rodando?",["ConfigMap","Namespace","Deployment"],2]]}],
+  [/terraform/, {o:"Descrever infraestrutura como código.", e:"Escreva um arquivo Terraform que cria um bucket S3 (ou recurso equivalente), rode plan e apply e depois destroy para não gerar custos.", q:[["Qual comando mostra o que vai mudar antes de aplicar?",["terraform plan","terraform run","terraform show-me"],0]]}],
+  [/ansible/, {o:"Automatizar a configuração de servidores com playbooks.", e:"Crie um playbook que instala o nginx em uma máquina de teste (VM ou container) e copia uma página index.html personalizada.", q:[["Em que formato são escritos os playbooks do Ansible?",["CSV","YAML","XML binário"],1]]}],
+  [/kafka/, {o:"Entender mensageria com tópicos, produtores e consumidores.", e:"Suba o Kafka com Docker, crie um tópico 'pedidos', envie 5 mensagens com um produtor e leia com um consumidor.", q:[["No Kafka, onde as mensagens são publicadas?",["Em tópicos","Em tabelas SQL","Em branches"],0]]}],
+  [/aws/, {o:"Conhecer os serviços básicos da AWS e usar a nuvem sem sustos na conta.", e:"No nível gratuito, configure um alerta de cobrança e publique um site estático em um bucket S3. Anote para que serve cada serviço usado.", q:[["Qual serviço da AWS guarda arquivos como objetos?",["EC2","IAM","S3"],2]]}],
+  [/shell|bash/, {o:"Automatizar tarefas no terminal com scripts.", e:"Escreva um script que cria uma pasta com a data de hoje, copia para ela todos os .txt da pasta atual e mostra quantos arquivos foram copiados.", q:[["Qual linha costuma iniciar um script Bash?",["#!/bin/bash","<?bash","//bash"],0]]}],
+  [/linux/, {o:"Navegar e trabalhar no terminal Linux com confiança.", e:"No terminal: crie a pasta projetos, entre nela, crie 3 arquivos, liste com detalhes (ls -l), procure uma palavra com grep e mude a permissão de um arquivo com chmod.", q:[["Qual comando mostra em que pasta você está?",["ls","pwd","cd"],1]]}],
+  [/ia e llms/, {o:"Usar modelos de linguagem por API dentro de automações.", e:"Crie um script ou fluxo que envia um texto para uma API de IA e recebe um resumo em 3 tópicos. Guarde a chave em variável de ambiente, nunca no código.", q:[["Onde guardar a chave de uma API de IA?",["Direto no código publicado no GitHub","Em variável de ambiente ou cofre de segredos","No nome do arquivo"],1]]}],
+  [/python para automacao/, {o:"Automatizar tarefas repetitivas com Python.", e:"Escreva um script que renomeia todos os arquivos de uma pasta colocando a data no começo do nome e gera um relatório .txt com a lista.", q:[["Qual módulo do Python ajuda a trabalhar com pastas e arquivos?",["math","os / pathlib","random"],1]]}],
+  [/python para ml|scikit|machine learning/, {o:"Treinar e avaliar um modelo de machine learning.", e:"Com scikit-learn, treine um classificador no dataset Iris, separe treino e teste e mostre a acurácia. Depois troque o modelo e compare.", q:[["Por que separamos dados de treino e de teste?",["Para treinar mais rápido","Para avaliar o modelo com dados que ele não viu","Porque o Python exige"],1]]}],
+  [/mlops/, {o:"Levar modelos para produção com rastreio e automação.", e:"Registre dois treinos de um modelo com MLflow (parâmetros e métricas) e compare os resultados na interface.", q:[["O que o MLOps busca resolver?",["Colocar e manter modelos em produção de forma confiável","Desenhar telas de apps","Criar planilhas"],0]]}],
+  [/deep learning|pytorch/, {o:"Montar e treinar redes neurais.", e:"Com PyTorch, treine uma rede simples no dataset MNIST e mostre a acurácia no conjunto de teste.", q:[["O que é uma época (epoch) no treinamento?",["Um tipo de neurônio","Uma passada completa por todos os dados de treino","O tempo para ligar o computador"],1]]}],
+  [/nlp/, {o:"Processar texto com técnicas de linguagem natural.", e:"Junte 20 avaliações de produtos, limpe o texto (minúsculas, sem pontuação), conte as palavras mais frequentes e classifique cada frase como positiva ou negativa.", q:[["O que é tokenização?",["Criptografar o texto","Dividir o texto em pedaços, como palavras","Traduzir para inglês"],1]]}],
+  [/pandas|numpy/, {o:"Manipular tabelas e números com Pandas e NumPy.", e:"Carregue um CSV público (IBGE ou Kaggle) com Pandas, trate valores vazios, agrupe por uma categoria e calcule médias.", q:[["No Pandas, qual estrutura representa uma tabela?",["DataFrame","ArrayList","Sheet"],0]]}],
+  [/power bi/, {o:"Montar painéis interativos com Power BI.", e:"Importe uma planilha de vendas, crie 3 visuais (total por mês, por categoria e um cartão com o faturamento) e um filtro por período.", q:[["Para que serve um filtro (segmentação) no Power BI?",["Apagar dados da fonte","Deixar quem vê o painel escolher o recorte dos dados","Mudar a fonte do texto"],1]]}],
+  [/analista de dados|ciencia de dados|estatidados/, {o:"Transformar dados em respostas para perguntas reais.", e:"Escolha um dataset público, faça 3 perguntas sobre ele e responda cada uma com um número e um gráfico. Termine com uma conclusão de um parágrafo.", q:[["Qual é o primeiro passo de uma análise de dados?",["Escolher a cor dos gráficos","Definir a pergunta que você quer responder","Apagar os dados antigos"],1]]}],
+  [/estatistica/, {o:"Usar média, mediana, desvio padrão e probabilidade para entender dados.", e:"Para as notas 5, 7, 7, 8, 10 e 3, calcule média, mediana e desvio padrão à mão e confira com Python ou planilha. Explique por que média e mediana diferem.", q:[["Qual medida é menos afetada por valores extremos?",["Média","Soma","Mediana"],2]]}],
+  [/fundamentos de ia|intro a ia/, {o:"Entender o que é IA, aprendizado de máquina e seus limites.", e:"Escolha 3 aplicativos que você usa e descreva onde há IA neles, que dados ela provavelmente usa e um risco ou viés possível.", q:[["Machine learning é...",["Um tipo de cabo de rede","Uma área da IA em que o sistema aprende padrões a partir de dados","Uma linguagem de programação"],1]]}],
+  [/python/, {o:"Programar em Python com variáveis, listas, funções e arquivos.", e:"Analise uma pequena tabela: crie uma lista com as vendas de 7 dias, calcule total, média, melhor e pior dia, e mostre o resultado formatado.", q:[["Como se cria uma lista em Python?",["vendas = [10, 20, 30]","vendas = (10; 20; 30)","list vendas = 10, 20, 30"],0],["Qual função mostra informações na tela?",["echo()","print()","console()"],1]]}],
+  [/data warehouse/, {o:"Modelar dados para análise em um Data Warehouse.", e:"Desenhe um modelo estrela de vendas: tabela fato vendas e dimensões cliente, produto e data. Crie as tabelas e uma consulta de faturamento por mês.", q:[["No modelo estrela, a tabela fato guarda...",["Só os nomes dos clientes","Os eventos e medidas, como vendas e valores","As senhas dos usuários"],1]]}],
+  [/sql|bancos? de dados/, {o:"Criar tabelas e escrever consultas SQL.", e:"Crie as tabelas alunos(id, nome, turma) e notas(aluno_id, materia, nota). Insira dados e escreva consultas para: alunos de uma turma, média por aluno (JOIN + AVG) e alunos com média acima de 7.", q:[["Qual comando busca dados em uma tabela?",["INSERT","SELECT","DROP"],1],["Para juntar dados de duas tabelas relacionadas, usamos...",["JOIN","MERGE CSS","CONCAT TABLE"],0]]}],
+  [/etl/, {o:"Extrair, transformar e carregar dados em um destino.", e:"Crie um pipeline que baixa dados de uma API pública, limpa e padroniza as colunas com Pandas e salva em SQLite ou PostgreSQL.", q:[["Na sigla ETL, o T significa...",["Transferir","Testar","Transformar"],2]]}],
+  [/spark/, {o:"Processar grandes volumes de dados de forma distribuída.", e:"Com PySpark, leia um CSV grande, filtre linhas, agrupe por uma coluna e grave o resultado em Parquet.", q:[["Por que o Spark é rápido em grandes volumes?",["Distribui o processamento e usa memória","Porque roda só no celular","Porque não lê os dados"],0]]}],
+  [/airflow/, {o:"Agendar e orquestrar pipelines com DAGs.", e:"Crie uma DAG com 3 tarefas em sequência (extrair, transformar, carregar) agendada para rodar todo dia.", q:[["No Airflow, um fluxo de tarefas é chamado de...",["Sprint","DAG","Container"],1]]}],
+  [/big data/, {o:"Entender os desafios de volume, velocidade e variedade dos dados.", e:"Escolha um caso real (app de transporte, por exemplo) e descreva de onde vêm os dados, o volume estimado por dia e que ferramentas usaria para guardar e processar.", q:[["Quais são os 3 Vs clássicos do Big Data?",["Vídeo, voz e vírus","Volume, velocidade e variedade","Valor, verdade e voto"],1]]}],
+  [/logica de programacao/, {o:"Pensar passo a passo com variáveis, condições e repetições.", e:"Crie um programa que calcula a média de três notas e mostra Aprovado (média 7 ou mais), Recuperação (de 5 a 7) ou Reprovado. Use Portugol, Python ou JavaScript.", q:[["Qual estrutura repete um bloco de código várias vezes?",["Condição (se)","Laço (para / enquanto)","Variável"],1],["Se as notas são 6, 7 e 8, qual é a média?",["6","21","7"],2]]}],
+  [/raciocinio/, {o:"Treinar raciocínio lógico e tabelas-verdade.", e:"Monte a tabela-verdade de (A E B) OU (NÃO A) e resolva 5 problemas de lógica de um banco de questões.", q:[["Se A é verdadeiro e B é falso, A E B é...",["Falso","Verdadeiro","Depende"],0]]}],
+  [/matematica basica/, {o:"Revisar operações, frações, porcentagem e potências.", e:"Resolva 10 exercícios de porcentagem e frações. Depois escreva um programa que calcula o preço final com desconto (preço e % de desconto).", q:[["Quanto é 20% de 150?",["20","30","15"],1]]}],
+  [/geometria/, {o:"Entender funções e geometria básica para programar gráficos e jogos.", e:"Escreva um programa que recebe a e b e mostra 5 pontos da função f(x) = a·x + b. Calcule também a distância entre dois pontos.", q:[["Em f(x) = 2x + 1, quanto vale f(3)?",["6","7","5"],1]]}],
+  [/discreta/, {o:"Trabalhar com conjuntos, relações e indução.", e:"Dados A = {1, 2, 3, 4} e B = {3, 4, 5}, calcule união, interseção e diferença à mão e depois em código usando conjuntos (sets).", q:[["Qual é a interseção de {1, 2, 3} e {2, 3, 4}?",["{1, 2, 3, 4}","{2, 3}","{1, 4}"],1]]}],
+  [/combinatoria/, {o:"Contar possibilidades com permutação, arranjo e combinação.", e:"Calcule quantas senhas de 4 dígitos (0 a 9) existem e quantos grupos de 3 pessoas dá para formar com 5. Confira gerando as combinações em código.", q:[["Quantos grupos de 2 pessoas dá para formar com 4 pessoas?",["8","12","6"],2]]}],
+  [/pre-calculo|pre calculo/, {o:"Dominar funções, exponenciais e logaritmos antes do cálculo.", e:"Faça os gráficos de f(x) = x², g(x) = 2^x e h(x) = log₂(x) (no Desmos ou em Python) e descreva como cada uma cresce.", q:[["Quanto vale log₂(8)?",["4","3","2"],1]]}],
+  [/calculo/, {o:"Entender limites, derivadas e taxas de variação.", e:"Calcule a derivada de f(x) = 3x² + 2x e use para achar a inclinação em x = 1. Confira em uma calculadora gráfica.", q:[["A derivada de x² é...",["x","x³/3","2x"],2]]}],
+  [/algebra linear/, {o:"Trabalhar com vetores e matrizes, a base de gráficos e IA.", e:"Multiplique duas matrizes 2×2 à mão e confira com NumPy. Depois aplique uma rotação de 90° em um vetor usando uma matriz.", q:[["Para multiplicar A (2×3) por B, B precisa ter quantas linhas?",["2","3","Qualquer número"],1]]}],
+  [/grafos/, {o:"Modelar conexões com grafos e encontrar caminhos.", e:"Represente 6 bairros e suas distâncias como um grafo e implemente busca em largura (BFS) e o algoritmo de Dijkstra para achar o menor caminho.", q:[["Qual algoritmo acha o menor caminho em grafos com pesos positivos?",["Bubble Sort","Dijkstra","Busca binária"],1]]}],
+  [/^c#$/, {o:"Programar em C# com classes e objetos, a base da Unity.", e:"Crie uma classe Personagem com vida e ataque e um método ReceberDano. Simule uma luta entre dois personagens no console.", q:[["Em C#, o que é uma classe?",["Um tipo de laço","Um molde para criar objetos","Um arquivo de imagem"],1]]}],
+  [/pixel art/, {o:"Criar sprites em pixel art para seus jogos.", e:"Desenhe um personagem 32×32 com 4 quadros de animação de caminhada e exporte como spritesheet PNG.", q:[["Por que a pixel art costuma usar paleta limitada?",["Porque o PNG não aceita cores","Para manter consistência e o estilo retrô","Para rodar sem placa de vídeo"],1]]}],
+  [/steam/, {o:"Preparar e publicar um jogo para jogadores reais.", e:"Monte a página do seu jogo: título, descrição curta, 5 capturas de tela, trailer de 30 s e requisitos. Publique antes uma versão de teste no itch.io.", q:[["Antes de lançar, o que mais ajuda a achar bugs?",["Aumentar o preço","Testes com jogadores (playtest)","Tirar o menu de opções"],1]]}],
+  [/unity|jogo 2d|plataforma 2d|jogos 2d|rpg 2d/, {o:"Construir jogos 2D na Unity com cenas, física e scripts.", e:"Crie uma fase com um personagem que anda e pula, 3 plataformas, moedas coletáveis com contador na tela e uma tela de fim de jogo.", q:[["Na Unity, qual componente faz um objeto sofrer gravidade?",["SpriteRenderer","Rigidbody2D","Canvas"],1]]}],
+  [/investigacao digital|pericia|forense/, {o:"Coletar e analisar evidências digitais preservando a cadeia de custódia.", e:"Analise os metadados de 3 fotos suas (data, aparelho, localização) com uma ferramenta como o exiftool e escreva um mini laudo. Use só arquivos seus.", q:[["Por que se calcula o hash de uma evidência digital?",["Para deixá-la menor","Para provar que ela não foi alterada","Para apagar vírus"],1]]}],
+  [/exploit|cve/, {o:"Entender como vulnerabilidades públicas (CVEs) são catalogadas e corrigidas.", e:"Pesquise a CVE-2021-44228 (Log4Shell): explique a causa, o impacto, como detectar e como corrigir. Não execute exploits fora de laboratório.", q:[["O que é uma CVE?",["Um antivírus","Um identificador público de uma vulnerabilidade conhecida","Uma linguagem de programação"],1]]}],
+  [/ctf/, {o:"Treinar segurança resolvendo desafios legais de Capture The Flag.", e:"Resolva 3 desafios de iniciante no picoCTF ou no OverTheWire (Bandit) e escreva um writeup curto de cada um.", q:[["Em um CTF, o objetivo é...",["Invadir sites reais","Encontrar a flag escondida em desafios autorizados","Derrubar servidores"],1]]}],
+  [/hacking|pentest/, {o:"Conhecer as fases de um teste de invasão autorizado.", e:"Monte um laboratório com uma máquina vulnerável de treino (Metasploitable ou DVWA) e documente reconhecimento, varredura e uma vulnerabilidade encontrada, com a correção.", q:[["Qual costuma ser a primeira fase de um pentest?",["Exploração","Reconhecimento","Relatório final"],1]]}],
+  [/criptografia|chaves publicas/, {o:"Entender criptografia simétrica, assimétrica e hashes.", e:"Gere um par de chaves com GPG ou OpenSSL, criptografe uma mensagem com a chave pública e abra com a privada. Depois gere o SHA-256 de um arquivo.", q:[["Na criptografia assimétrica, o que se compartilha com todo mundo?",["A chave privada","A chave pública","As duas chaves"],1]]}],
+  [/owasp/, {o:"Escanear aplicações web em busca de falhas comuns.", e:"Rode o OWASP ZAP contra o OWASP Juice Shop (app vulnerável de treino) na sua máquina e liste 3 alertas com risco e sugestão de correção.", q:[["O OWASP Juice Shop é...",["Uma loja real","Uma aplicação feita para treinar segurança","Um antivírus"],1]]}],
+  [/siem/, {o:"Centralizar e analisar logs para detectar incidentes.", e:"Envie os logs do seu sistema (ou de um container) para uma ferramenta SIEM de laboratório e crie um alerta para 5 logins falhos em 1 minuto.", q:[["Qual a função principal de um SIEM?",["Compilar código","Correlacionar logs e gerar alertas de segurança","Editar vídeos"],1]]}],
+  [/sast|rasp/, {o:"Conhecer as formas de testar e proteger a segurança de aplicações.", e:"Rode uma ferramenta SAST gratuita (como o Semgrep) em um projeto seu e classifique cada achado como falso positivo ou problema real.", q:[["O SAST analisa...",["A aplicação em produção","O código-fonte sem executar a aplicação","Somente o banco de dados"],1]]}],
+  [/lgpd/, {o:"Entender a Lei Geral de Proteção de Dados e aplicá-la em sistemas.", e:"Escolha um formulário de cadastro e liste quais dados são pessoais, quais são sensíveis, qual a base legal e o que mudaria para coletar só o necessário.", q:[["Pela LGPD, dados de saúde são...",["Dados públicos","Dados pessoais sensíveis","Dados anônimos"],1]]}],
+  [/engenharia reversa/, {o:"Analisar programas compilados para entender como funcionam.", e:"Compile um programa seu em C que confere uma senha, abra o binário no Ghidra e encontre a comparação. Use só programas seus ou desafios autorizados.", q:[["Qual ferramenta gratuita é usada em engenharia reversa?",["Figma","Ghidra","Excel"],1]]}],
+  [/ciberseguranca|cybersecurity|seguranca com pratica/, {o:"Entender os pilares da segurança da informação e as ameaças mais comuns.", e:"Audite suas contas: ative a verificação em duas etapas em 3 serviços, troque senhas repetidas e escreva um plano com 5 boas práticas.", q:[["A tríade da segurança da informação é...",["Código, internet e antivírus","Confidencialidade, integridade e disponibilidade","Controle, inspeção e auditoria"],1]]}],
+  [/solidity/, {o:"Escrever contratos inteligentes em Solidity.", e:"No Remix, crie um contrato de votação: cadastrar opções, votar uma vez por endereço e consultar a opção vencedora.", q:[["Onde os contratos em Solidity são executados?",["No navegador como CSS","Na EVM (Ethereum Virtual Machine)","No Excel"],1]]}],
+  [/ethers/, {o:"Conectar um front end à blockchain com Ethers.js.", e:"Crie uma página que conecta à carteira do usuário e mostra o endereço e o saldo na testnet Sepolia.", q:[["Para que serve o Ethers.js?",["Criar planilhas","Interagir com a blockchain a partir do JavaScript","Desenhar no Figma"],1]]}],
+  [/^blockchain$/, {o:"Entender blocos, hashes, consenso e carteiras.", e:"Implemente uma mini blockchain em JavaScript ou Python: cada bloco guarda dados, o próprio hash e o hash do anterior. Altere um bloco e mostre que a cadeia fica inválida.", q:[["O que liga um bloco ao anterior?",["O nome do minerador","O hash do bloco anterior","A data de criação"],1]]}],
+  [/fundamentos de qa/, {o:"Entender o papel do QA e os tipos de teste.", e:"Escolha um site que você usa, escreva 5 casos de teste para o login (passos, dados e resultado esperado), execute e registre o resultado.", q:[["Um caso de teste precisa ter...",["Somente o nome do testador","Passos, dados e resultado esperado","A cor do botão"],1]]}],
+  [/playwright/, {o:"Automatizar testes de ponta a ponta no navegador.", e:"Escreva testes Playwright para uma lista de tarefas: adicionar item, marcar como feito e remover. Rode no Chromium e no Firefox.", q:[["Testes E2E verificam...",["Uma função isolada","O fluxo completo como o usuário usa","O tamanho do banco"],1]]}],
+  [/testes de performance/, {o:"Medir como o sistema se comporta sob carga.", e:"Use o k6 ou o JMeter para simular 50 usuários acessando uma API de teste por 1 minuto e registre o tempo médio de resposta e os erros.", q:[["Um teste de carga mede...",["A cor da interface","O comportamento com muitos usuários ao mesmo tempo","A ortografia dos textos"],1]]}],
+  [/testes unitarios/, {o:"Testar funções e classes isoladamente.", e:"Escreva testes unitários para uma função que calcula a média de três notas: caso normal, notas zero e notas inválidas.", q:[["Um teste unitário testa...",["O sistema inteiro em produção","Uma pequena parte do código isoladamente","Apenas o design"],1]]}],
+  [/^testes$/, {o:"Garantir que a interface funciona com testes automatizados.", e:"Escreva testes para um componente contador: começa em 0, soma ao clicar e volta a 0 no botão Zerar.", q:[["Por que automatizar testes do front end?",["Para não precisar de HTML","Para detectar quebras rápido a cada mudança","Para o site carregar mais rápido"],1]]}],
+  [/scrum/, {o:"Trabalhar em ciclos curtos com os papéis e eventos do Scrum.", e:"Planeje uma sprint de 1 semana para um projeto seu: escreva 5 histórias de usuário, estime cada uma e defina a meta da sprint.", q:[["Quem prioriza o backlog do produto no Scrum?",["Scrum Master","Product Owner","O time de vendas"],1]]}],
+  [/jira/, {o:"Organizar tarefas e bugs em um quadro de projeto.", e:"Crie um quadro no Jira (plano gratuito) com as colunas A fazer, Fazendo e Feito e cadastre 3 bugs com passos para reproduzir e prioridade.", q:[["Um bom relatório de bug precisa ter...",["Somente um print","Passos para reproduzir, resultado esperado e obtido","A opinião do testador"],1]]}],
+  [/design system/, {o:"Criar componentes e padrões reutilizáveis.", e:"No Figma, monte um mini design system: paleta de cores, escala tipográfica e um botão com variantes (primário, secundário e desabilitado).", q:[["Qual o principal benefício de um design system?",["Deixar cada tela diferente","Consistência e reuso entre telas e times","Substituir o código"],1]]}],
+  [/figma/, {o:"Prototipar telas no Figma com componentes e Auto Layout.", e:"Desenhe a tela de login e a tela inicial de um app no Figma e ligue as duas em um protótipo navegável.", q:[["Para que serve o Auto Layout no Figma?",["Exportar vídeos","Organizar elementos que se ajustam ao conteúdo","Escrever código"],1]]}],
+  [/^ux$|ui \/ ux|fundamentos do design/, {o:"Entender princípios de design e a experiência de quem usa.", e:"Escolha um app que te irrita, liste 3 problemas de usabilidade e redesenhe uma tela no papel ou no Figma resolvendo esses problemas.", q:[["Uma heurística importante de usabilidade é...",["Esconder os botões","Dar retorno sobre o que está acontecendo","Usar o máximo de cores"],1]]}],
+  [/eletronica/, {o:"Entender tensão, corrente, resistência e componentes básicos.", e:"Use a Lei de Ohm para calcular o resistor de um LED (fonte de 5 V, LED de 2 V e 20 mA) e monte o circuito em um simulador como o Tinkercad.", q:[["Pela Lei de Ohm, V é igual a...",["R + I","R × I","I ÷ R"],1]]}],
+  [/arduino/, {o:"Programar o Arduino para ler sensores e controlar saídas.", e:"No Tinkercad ou na placa, faça um semáforo com 3 LEDs e um botão de pedestre.", q:[["Qual função do Arduino roda repetidamente?",["setup()","loop()","main()"],1]]}],
+  [/esp32/, {o:"Conectar dispositivos ao Wi-Fi com o ESP32.", e:"Programe o ESP32 para entrar no Wi-Fi e servir uma página que mostra a temperatura de um sensor (ou um valor simulado).", q:[["O que o ESP32 tem de fábrica que o Arduino Uno não tem?",["Porta USB","Wi-Fi e Bluetooth","Pinos digitais"],1]]}],
+  [/mqtt/, {o:"Trocar mensagens entre dispositivos IoT com MQTT.", e:"Publique leituras de um sensor (ou valores simulados) em um tópico MQTT e assine esse tópico em outro dispositivo ou no computador.", q:[["No MQTT, quem recebe e distribui as mensagens?",["O sensor","O broker","O roteador Wi-Fi"],1]]}],
+  [/lorawan/, {o:"Entender comunicação de longo alcance e baixo consumo.", e:"Compare LoRaWAN, Wi-Fi e Bluetooth em alcance, consumo e taxa de dados e proponha um caso de uso no campo para cada um.", q:[["A principal vantagem do LoRaWAN é...",["Altíssima velocidade de vídeo","Longo alcance com baixo consumo de energia","Funcionar só por cabo"],1]]}],
+  [/freertos/, {o:"Executar várias tarefas em tempo real no mesmo microcontrolador.", e:"Crie duas tarefas no FreeRTOS: uma pisca um LED a cada 500 ms e outra lê um botão, trocando mensagens por uma fila.", q:[["Em um RTOS, o escalonador serve para...",["Carregar a bateria","Decidir qual tarefa roda a cada momento","Compilar o código"],1]]}],
+  [/assembly/, {o:"Entender as instruções de baixo nível do microcontrolador.", e:"Escreva em Assembly para o ATmega328 um programa que pisca o LED do pino 13 e comente cada instrução.", q:[["O que são registradores?",["Arquivos de configuração","Pequenas memórias dentro do processador","Portas USB"],1]]}],
+  [/microcontroladores|stm32/, {o:"Configurar periféricos como GPIO, timers e interrupções.", e:"Configure um timer para gerar uma interrupção a cada 1 s e alterne um LED dentro dela.", q:[["Uma interrupção serve para...",["Desligar o chip","Reagir a um evento sem ficar verificando o tempo todo","Aumentar a memória"],1]]}],
+  [/c\+\+/, {o:"Programar em C++ com classes, ponteiros e a biblioteca padrão.", e:"Crie uma classe Sensor que guarda leituras e calcula a média das últimas 5, usando std::vector.", q:[["O que é um ponteiro?",["Um tipo de laço","Uma variável que guarda um endereço de memória","Um comentário"],1]]}],
+  [/programacao em c$|c moderno/, {o:"Programar em C com ponteiros, structs e memória.", e:"Escreva um programa em C que lê 5 números, guarda em um vetor alocado com malloc, mostra a média e libera a memória com free.", q:[["Em C, qual função libera a memória alocada com malloc?",["delete()","free()","clear()"],1]]}],
+  [/^java( |$)/, {o:"Programar em Java com orientação a objetos.", e:"Crie as classes Conta e ContaPoupanca (herança) com depositar, sacar e render juros. Teste tudo no método main.", q:[["Em Java, a herança é indicada pela palavra...",["inherits","extends","import"],1]]}],
+  [/spring/, {o:"Criar APIs profissionais com Spring Boot.", e:"Crie com Spring Boot uma API de tarefas com Controller, Service e Repository (Spring Data JPA) usando o banco H2.", q:[["Qual anotação marca uma classe como controlador REST no Spring?",["@Table","@RestController","@Main"],1]]}],
+  [/^go$/, {o:"Programar em Go com tipos, funções e concorrência simples.", e:"Escreva em Go um servidor HTTP com a rota /saude que responde {\"status\":\"ok\"} e uma goroutine que registra no log a cada 10 s.", q:[["Em Go, o que é uma goroutine?",["Um tipo de banco de dados","Uma função executada de forma concorrente e leve","Um pacote de CSS"],1]]}],
+  [/^kotlin$/, {o:"Programar em Kotlin com null safety e data classes.", e:"Crie uma data class Habito(nome, diasFeitos) e funções para marcar um dia e mostrar o hábito com mais dias.", q:[["O que o operador ?. faz em Kotlin?",["Divide números","Acessa algo só se não for nulo","Cria uma lista"],1]]}],
+  [/android studio/, {o:"Criar e rodar projetos Android no emulador.", e:"Crie um app com um campo de texto e um botão que mostra Olá, NOME! e rode no emulador.", q:[["Onde se declaram as permissões de um app Android?",["build.css","AndroidManifest.xml","index.html"],1]]}],
+  [/jetpack compose/, {o:"Construir telas declarativas com Jetpack Compose.", e:"Crie uma tela com a lista de hábitos em LazyColumn e um botão que adiciona um hábito novo, guardando o estado com remember.", q:[["Em Compose, qual função lembra um valor entre recomposições?",["save","remember","keep"],1]]}],
+  [/firebase/, {o:"Usar o Firebase para login e banco de dados em nuvem.", e:"Adicione login por e-mail com Firebase Auth e salve os hábitos do usuário no Firestore.", q:[["O Firestore é...",["Uma linguagem","Um banco de dados NoSQL em nuvem","Um emulador"],1]]}],
+  [/coroutines|kotlin flow/, {o:"Executar tarefas assíncronas sem travar a tela.", e:"Simule uma busca de dados com delay dentro de uma coroutine e mostre um indicador de carregando até o resultado chegar.", q:[["Por que não fazer chamadas de rede na thread principal?",["Porque gasta menos bateria","Porque trava a interface do app","Porque o Kotlin proíbe"],1]]}],
+  [/injecao de dependencia/, {o:"Organizar o código recebendo as dependências de fora (DI).", e:"Refatore uma classe que cria o próprio repositório para recebê-lo pelo construtor e configure com Hilt ou Koin.", q:[["Qual o benefício da injeção de dependência?",["Deixa o app mais colorido","Facilita testes e a troca de implementações","Remove a necessidade de classes"],1]]}],
+  [/google play/, {o:"Preparar e publicar um app na loja.", e:"Gere um Android App Bundle (.aab) assinado, prepare ícone, capturas de tela e descrição e crie um teste interno no Play Console.", q:[["Qual formato a Google Play pede para apps novos?",["Arquivo .exe","Android App Bundle (.aab)","Um .zip de imagens"],1]]}],
+  [/n8n/, {o:"Montar automações visuais conectando apps e APIs.", e:"Crie um fluxo no n8n que roda todo dia às 8h, busca a previsão do tempo em uma API pública e envia um resumo por e-mail ou Telegram.", q:[["No n8n, o que inicia um fluxo?",["Um comentário","Um gatilho (trigger)","Um arquivo CSS"],1]]}],
+  [/redes/, {o:"Entender IP, DNS, portas e como os dados viajam.", e:"Use ping, traceroute (tracert no Windows) e nslookup em um site que você usa. Anote o IP, quantos saltos teve e explique com suas palavras o que o DNS fez.", q:[["Qual a função do DNS?",["Criptografar senhas","Traduzir nomes de domínio em endereços IP","Aumentar a velocidade da internet"],1]]}]
+];
+/* Tema reserva, usado só se um título novo não casar com nenhum tema acima. */
+const K_FALLBACK = {o:"Entender os conceitos principais desta missão e aplicar em um exemplo seu.", e:"Escreva um resumo de 5 tópicos do que aprendeu e crie um exemplo prático (código, diagrama ou experimento) que use pelo menos 2 desses tópicos. Publique no GitHub.", q:[["Qual a melhor forma de fixar o conteúdo de uma aula?",["Assistir tudo em 2x sem pausar","Praticar junto e refazer os exemplos sozinho","Ler só os comentários do vídeo"],1]]};
+
+
+/* =====================================================================
+   REGRAS DO JOGO
+   ===================================================================== */
+const SITE = "https://dev-city-lake.vercel.app/";
+const HRS = [0, 4, 6, 10, 14, 20];         // horas estimadas por dificuldade (1–5)
+const DIFF = ["", "Fácil", "Fácil", "Moderado", "Difícil", "Lendário"];
+const CASH_X = 10;                          // grana = XP da aula × 10
+const QUIZ_BONUS = 250;                     // bônus por acertar o quiz de primeira
+const PROJ_XP = 1000, PROJ_CASH = 10000, PROJ_HRS = 20;
+const RANKS = ["Novato","Aviãozinho","Corre Firme","Respeitado","Chefão","Lenda da Cidade"];
+const xpForLevel = L => 150 * L * (L - 1);  // XP total para chegar ao nível L
+const levelOf = xp => { let L = 1; while (xpForLevel(L + 1) <= xp) L++; return L; };
+const rankOf = L => L >= 17 ? 5 : L >= 12 ? 4 : L >= 8 ? 3 : L >= 5 ? 2 : L >= 3 ? 1 : 0;
+
+const $ = id => document.getElementById(id);
 const reduce = matchMedia("(prefers-reduced-motion: reduce)");
-const fmt = n => "$" + n.toLocaleString("pt-BR");
+const fmt = n => "$" + Math.round(n).toLocaleString("pt-BR");
 const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const safeUrl = u => /^https:\/\//.test(u || "") ? esc(u) : "";
-const doneCount = t => (S.done[t.id] || 0);
-const trackCash = t => t.m.slice(0, doneCount(t)).reduce((a, m) => a + m[5], 0);
-const trackMax = t => t.m.reduce((a, m) => a + m[5], 0);
+const norm = s => String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+const today = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); };
+
+/* Índices de ajuda */
+const byId = Object.fromEntries(T.map(t => [t.id, t]));
 H.forEach(h => { h.flat = h.phases.flat(); h.pay = h.flat.reduce((a, x) => a + x[2], 0); });
-const heistDone = h => (S.heist[h.id] || []).length;
-const heistCash = h => (S.heist[h.id] || []).reduce((a, i) => a + (h.flat[i] ? h.flat[i][2] : 0), 0);
+CATS.forEach(c => c.ids.forEach(id => { if (byId[id]) byId[id].cat = c.id; }));
 
+/* NOVO · monta a missão completa a partir dos dados originais + biblioteca de prática */
+const topicCache = {};
+function mission(t, i){
+  const [title, course, prof, link, diff, xp, desc] = t.m[i];
+  const key = norm(title);
+  const topic = topicCache[key] || (topicCache[key] = (K.find(([r]) => r.test(key)) || [null, K_FALLBACK])[1]);
+  return {title, course, prof, link, diff, xp, desc, cash: xp * CASH_X, hours: HRS[diff] || 8, topic};
+}
+const trackHours = t => t.m.reduce((a, m) => a + (HRS[m[4]] || 8), 0) + PROJ_HRS;
+
+/* =====================================================================
+   ESTADO (localStorage) · v3 migra automaticamente o progresso da v2
+   ===================================================================== */
+const KEY = "devcity.v3", OLD_KEY = "devcity.v2";
+const blank = () => ({app:"dev-city", v:3, sel:null, done:{}, steps:{}, proj:{}, heist:{}, openHeist:null,
+  days:[], bestStreak:0, bonus:0, firstTries:0, profile:null, ach:{}});
+let S = blank();
+
+/* Valida e limpa qualquer estado vindo do navegador ou de uma importação */
+function sanitize(o){
+  const s = blank();
+  if (!o || typeof o !== "object") return s;
+  if (typeof o.sel === "string" && byId[o.sel]) s.sel = o.sel;
+  if (o.done && typeof o.done === "object") for (const [k, v] of Object.entries(o.done))
+    if (byId[k]) s.done[k] = Math.max(0, Math.min(byId[k].m.length, parseInt(v, 10) || 0));
+  if (o.steps && typeof o.steps === "object") for (const [k, v] of Object.entries(o.steps)) {
+    const [tid, i] = k.split(":"); if (!byId[tid] || !(+i >= 0 && +i < byId[tid].m.length) || !v || typeof v !== "object") continue;
+    s.steps[k] = {w:!!v.w, p:!!v.p, q:!!v.q, tries: Math.max(0, parseInt(v.tries, 10) || 0), link: typeof v.link === "string" ? v.link.slice(0, 300) : ""};
+  }
+  if (o.proj && typeof o.proj === "object") for (const [k, v] of Object.entries(o.proj)) {
+    if (!byId[k] || !v || typeof v !== "object") continue;
+    s.proj[k] = {reqs: Array.isArray(v.reqs) ? v.reqs.slice(0, 8).map(Boolean) : [], link: typeof v.link === "string" ? v.link.slice(0, 300) : "", done: !!v.done, at: typeof v.at === "string" ? v.at.slice(0, 10) : ""};
+  }
+  if (o.heist && typeof o.heist === "object") for (const h of H) {
+    const arr = o.heist[h.id]; if (Array.isArray(arr)) s.heist[h.id] = [...new Set(arr.map(Number).filter(i => i >= 0 && i < h.flat.length))];
+  }
+  if (H.some(h => h.id === o.openHeist)) s.openHeist = o.openHeist;
+  if (Array.isArray(o.days)) s.days = [...new Set(o.days.filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)))].sort().slice(-1000);
+  s.bestStreak = Math.max(0, parseInt(o.bestStreak, 10) || 0);
+  s.bonus = Math.max(0, parseInt(o.bonus, 10) || 0);
+  s.firstTries = Math.max(0, parseInt(o.firstTries, 10) || 0);
+  if (o.profile && typeof o.profile === "object" && byId[o.profile.rec]) s.profile = {a: o.profile.a || {}, rec: o.profile.rec, alt: byId[o.profile.alt] ? o.profile.alt : null};
+  if (o.ach && typeof o.ach === "object") for (const [k, v] of Object.entries(o.ach)) if (typeof v === "string") s.ach[k] = v.slice(0, 10);
+  return s;
+}
+function load(){
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) { S = sanitize(JSON.parse(raw)); return; }
+    const old = localStorage.getItem(OLD_KEY);   // progresso da versão anterior
+    if (old) S = sanitize(JSON.parse(old));
+  } catch (e) { S = blank(); }
+}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+load();
+
+/* NOVO · registra o dia de estudo (para a sequência de dias) */
+function touch(){
+  const d = today();
+  if (!S.days.includes(d)) { S.days.push(d); S.days.sort(); }
+  S.bestStreak = Math.max(S.bestStreak, streak());
+}
+function streak(){
+  const set = new Set(S.days); if (!set.size) return 0;
+  const d = new Date(); let n = 0;
+  const key = x => x.getFullYear() + "-" + String(x.getMonth()+1).padStart(2,"0") + "-" + String(x.getDate()).padStart(2,"0");
+  if (!set.has(key(d))) d.setDate(d.getDate() - 1);          // vale até o fim de hoje
+  while (set.has(key(d))) { n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+
+/* =====================================================================
+   NÚMEROS DO JOGADOR (derivados do estado, nunca guardados duplicados)
+   ===================================================================== */
+const doneCount = t => S.done[t.id] || 0;
+const stepOf = (tid, i) => S.steps[tid + ":" + i] || (S.steps[tid + ":" + i] = {w:false, p:false, q:false, tries:0, link:""});
+const peekStep = (tid, i) => S.steps[tid + ":" + i];
+const projDone = t => !!(S.proj[t.id] && S.proj[t.id].done);
+function trackNumbers(t){
+  let xp = 0; for (let i = 0; i < doneCount(t); i++) xp += t.m[i][5];
+  const pxp = projDone(t) ? PROJ_XP : 0;
+  return {xp: xp + pxp, cash: xp * CASH_X + (projDone(t) ? PROJ_CASH : 0), maxCash: t.m.reduce((a, m) => a + m[5] * CASH_X, 0) + PROJ_CASH};
+}
+function stats(){
+  let xp = 0, cash = S.bonus, missions = 0, tracksTouched = 0, tracksDone = 0, projects = 0;
+  for (const t of T) { const n = trackNumbers(t); xp += n.xp; cash += n.cash; missions += doneCount(t);
+    if (doneCount(t) > 0) tracksTouched++; if (projDone(t)) { projects++; tracksDone++; } }
+  let subjects = 0, heistsDone = 0;
+  for (const h of H) { const got = S.heist[h.id] || []; subjects += got.length; if (got.length === h.flat.length) heistsDone++;
+    for (const i of got) { xp += h.flat[i][2]; cash += h.flat[i][2] * CASH_X; } }
+  const level = levelOf(xp);
+  return {xp, cash, missions, tracksTouched, tracksDone, projects, subjects, heistsDone, level, rank: rankOf(level), streak: streak(), best: Math.max(S.bestStreak, streak())};
+}
+
+/* NOVO · CONQUISTAS (uma vez desbloqueadas, ficam guardadas com a data) */
+const ACH = [
+  {id:"ficha", n:"Ficha criada", d:"Responder o questionário inicial", ic:"?", ok:s => !!S.profile},
+  {id:"primeira", n:"Primeiro corre", d:"Entregar a primeira missão", ic:"1", ok:s => s.missions >= 1},
+  {id:"cinco", n:"Cinco na conta", d:"Entregar 5 missões", ic:"5", ok:s => s.missions >= 5},
+  {id:"vinte", n:"Veterano do bairro", d:"Entregar 20 missões", ic:"20", ok:s => s.missions >= 20},
+  {id:"nalata", n:"Na lata", d:"Acertar 5 quizzes de primeira", ic:"✓", ok:s => S.firstTries >= 5},
+  {id:"tres", n:"Três dias no corre", d:"Estudar 3 dias seguidos", ic:"3D", ok:s => s.best >= 3},
+  {id:"semana", n:"Semana completa", d:"Estudar 7 dias seguidos", ic:"7D", ok:s => s.best >= 7},
+  {id:"explorador", n:"Conhece a cidade", d:"Entregar missões em 3 trilhas", ic:"⌖", ok:s => s.tracksTouched >= 3},
+  {id:"obra", n:"Obra entregue", d:"Entregar um projeto final", ic:"★", ok:s => s.projects >= 1},
+  {id:"plano", n:"Plano em andamento", d:"Marcar uma matéria de faculdade", ic:"F", ok:s => s.subjects >= 1},
+  {id:"golpe", n:"Golpe fechado", d:"Concluir uma grade de faculdade", ic:"$", ok:s => s.heistsDone >= 1},
+  {id:"seis", n:"Seis dígitos", d:"Juntar $100.000", ic:"6", ok:s => s.cash >= 100000}
+];
+function checkAchievements(){
+  const s = stats(), fresh = [];
+  for (const a of ACH) if (!S.ach[a.id] && a.ok(s)) { S.ach[a.id] = today(); fresh.push(a); }
+  if (fresh.length) { save(); renderFicha(); toast("Conquista desbloqueada: " + fresh.map(a => a.n).join(", ")); }
+}
+
+/* =====================================================================
+   COMPONENTES VISUAIS
+   ===================================================================== */
 const starSvg = on => `<svg viewBox="0 0 24 24" class="${on?'on':'off'}" aria-hidden="true"><path stroke-width="1.6" stroke-linejoin="round" d="M12 2.6l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 16.9l-5.8 3.2 1.4-6.4L2.7 9.3l6.5-.7z"/></svg>`;
-const stars = (n, max=5) => Array.from({length:max}, (_,i) => starSvg(i < n)).join("");
-const RANKS = ["Novato","Aviãozinho","Corre Firme","Respeitado","Chefão","Lenda da Cidade"];
-
+const stars = (n, max=5) => `<span class="stars">${Array.from({length:max}, (_,i) => starSvg(i < n)).join("")}</span>`;
 const silhouette = `<svg class="sil" viewBox="0 0 100 140" aria-hidden="true"><path fill="#000" d="M50 8c11 0 19 9 19 20 0 8-4 14-9 17l-1 6c14 3 26 11 30 24l7 38c1 5-2 9-7 9h-6l-4 18H21l-4-18h-6c-5 0-8-4-7-9l7-38c4-13 16-21 30-24l-1-6c-5-3-9-9-9-17 0-11 8-20 19-20z"/><path fill="var(--b)" opacity=".55" d="M36 14c4-5 9-7 14-7 9 0 16 5 19 13-6-3-20-4-33-6z"/></svg>`;
-const art = (t, extra="") => `<div class="art" style="--a:${t.a};--b:${t.b}">${extra}${silhouette}<span class="code">${t.code}</span></div>`;
+const art = (t, extra="") => `<div class="art" style="--a:${t.a};--b:${t.b}" aria-hidden="true">${extra}${silhouette}<span class="code">${esc(t.code)}</span></div>`;
+const medalSvg = t => `<svg class="medal" viewBox="0 0 120 150" aria-hidden="true">
+  <path d="M38 0h18l8 40H46zM64 0h18L74 40H56z" fill="${t.b}" stroke="#000" stroke-width="3"/>
+  <circle cx="60" cy="92" r="50" fill="#ffd23f" stroke="#000" stroke-width="4"/>
+  <circle cx="60" cy="92" r="38" fill="${t.a}" stroke="#000" stroke-width="3"/>
+  <text x="60" y="108" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="40" fill="#fff" stroke="#000" stroke-width="2.5" paint-order="stroke">${esc(t.code)}</text></svg>`;
 
-/* ---------- HUD ---------- */
+function announce(msg){ const l = $("live"); l.textContent = ""; setTimeout(() => l.textContent = msg, 30); }
+let toastT;
+function toast(msg){ const el = $("toast"); el.textContent = msg; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => el.hidden = true, 3800); }
+
+/* =====================================================================
+   HUD (topo)
+   ===================================================================== */
+let shownCash = null, cashRaf;
 function renderHud(){
-  const total = T.reduce((a,t) => a + trackCash(t), 0) + H.reduce((a,h) => a + heistCash(h), 0);
-  const missions = T.reduce((a,t) => a + doneCount(t), 0);
-  const lvl = Math.min(5, Math.floor(missions / 6));
-  document.getElementById("hudStars").innerHTML = stars(lvl);
-  document.getElementById("hudStars").setAttribute("aria-label", `Reputação ${lvl} de 5`);
-  document.getElementById("hudRank").textContent = RANKS[lvl];
-  // contador de grana rolando
-  const el = document.getElementById("hudCash");
-  const from = shownCash, to = total; shownCash = to;
+  const s = stats();
+  $("hudLvl").textContent = "NV " + s.level;
+  $("hudLvl").setAttribute("aria-label", `Nível ${s.level}, ${RANKS[s.rank]}`);
+  $("hudStars").innerHTML = Array.from({length:5}, (_,i) => starSvg(i < s.rank)).join("");
+  $("hudStars").setAttribute("aria-label", `Reputação ${s.rank} de 5`);
+  $("hudStars").setAttribute("role", "img");
+  const el = $("hudCash"); el.setAttribute("aria-label", "Dinheiro virtual " + fmt(s.cash));
+  const from = shownCash ?? s.cash, to = s.cash; shownCash = to;
   cancelAnimationFrame(cashRaf);
   if (from === to || reduce.matches) { el.textContent = fmt(to); return; }
   const t0 = performance.now();
   const step = n => { const p = Math.min(1, (n - t0) / 800), e = 1 - Math.pow(1 - p, 3);
-    el.textContent = fmt(Math.round(from + (to - from) * e)); if (p < 1) cashRaf = requestAnimationFrame(step); };
+    el.textContent = fmt(from + (to - from) * e); if (p < 1) cashRaf = requestAnimationFrame(step); };
   cashRaf = requestAnimationFrame(step);
   el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump");
 }
-let shownCash = 0, cashRaf;
 
-/* ---------- CARROSSEL ---------- */
-const reel = document.getElementById("reel");
-function renderReel(){
-  reel.innerHTML = T.map(t => {
-    const pct = Math.round(doneCount(t) / t.m.length * 100);
-    const badge = pct === 100 ? `<span class="lock">Zerado</span>` : "";
-    return `<button class="char" role="listitem" data-id="${t.id}" aria-pressed="${S.sel===t.id}" style="--a:${t.a};--b:${t.b}">
-      ${art(t, badge)}
-      <span class="meta"><span class="area">${t.area}</span><span class="nick">${t.nick}</span>
-      <span class="prog" aria-label="${pct}% concluído"><i style="width:${pct}%"></i></span></span></button>`;
-  }).join("");
+/* =====================================================================
+   NOVO · CATEGORIAS + CARROSSEL DE PROTAGONISTAS
+   ===================================================================== */
+let catSel = (S.sel && byId[S.sel].cat) || "comece";
+const reel = $("reel");
+function renderCats(){
+  $("cats").innerHTML = CATS.map(c => `<button type="button" class="cat" data-cat="${c.id}" aria-pressed="${c.id === catSel}">${esc(c.name)}<span class="n">(${c.ids.length})</span></button>`).join("");
+  $("catDesc").textContent = CATS.find(c => c.id === catSel).desc;
+  const p = S.profile;
+  const rb = $("recBanner");
+  if (p && byId[p.rec]) {
+    const r = byId[p.rec];
+    rb.hidden = false;
+    rb.innerHTML = `<p>Recomendada para você: <b>${esc(r.area)}</b> · ${esc(r.nick)}${p.alt ? ` · também combina: ${esc(byId[p.alt].area)}` : ""}</p>
+      <button class="btn sm" type="button" data-pick="${r.id}">Ir para ${esc(r.area)}</button>`;
+  } else rb.hidden = true;
 }
-reel.addEventListener("click", e => {
-  const b = e.target.closest(".char"); if (!b) return;
-  S.sel = b.dataset.id; save();
-  reel.querySelectorAll(".char").forEach(c => c.setAttribute("aria-pressed", c.dataset.id === S.sel));
-  renderBoard(true);
-  document.getElementById("board").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"});
-});
-document.getElementById("prev").onclick = () => reel.scrollBy({left:-reel.clientWidth*.8, behavior:"smooth"});
-document.getElementById("next").onclick = () => reel.scrollBy({left: reel.clientWidth*.8, behavior:"smooth"});
-
-/* ---------- MISSÕES ---------- */
-const DIFF = ["","Fácil","Fácil","Moderado","Difícil","Lendário"];
-function renderBoard(anim){
-  const t = T.find(x => x.id === S.sel) || T[0];
-  const d = doneCount(t), n = t.m.length;
-  const cash = trackCash(t), max = trackMax(t);
-  const pct = Math.round(d / n * 100);
-  const lvl = pct === 100 ? "Lenda" : pct >= 60 ? "Respeitado" : pct > 0 ? "No corre" : "Novato";
-  const quote = pct === 100 ? "Trilha zerada. A cidade é sua." : d === 0 ? "Todo protagonista começa sem nada no bolso." : `Faltam ${n - d} missões. Não para agora.`;
-  const items = t.m.map(([title, course, prof, link, s, pay, desc], i) => {
-    const state = i < d ? "done" : i === d ? "active" : "locked";
-    const label = {done:"Cumprida", active:"Disponível", locked:"Bloqueada"}[state];
-    const url = safeUrl(link);
-    let act;
-    if (state === "done") act = `<span class="status done">Cumprida</span><button class="btn ghost" data-undo="${i}">Desfazer</button>`;
-    else if (state === "active") act = `<a class="btn ghost" href="${url}" target="_blank" rel="noopener">▶ Assistir aulas</a><button class="btn pink" data-done="${i}">Cumprir missão</button>`;
-    else act = `<a class="peek" href="${url}" target="_blank" rel="noopener">Espiar aulas</a><span class="hint">Cumpra a missão anterior para liberar</span>`;
-    return `<li class="mission ${state}" style="--i:${i}">
-      <span class="marker" aria-hidden="true">${state==="done" ? "✓" : i+1}</span>
-      <div style="min-width:0">
-        <h4>${esc(title)}</h4>
-        <p class="course">${esc(course)} · <span class="prof">${esc(prof)}</span></p>
-        <p class="brief">${esc(desc)}</p>
-        <div class="tags"><span class="status ${state}">${label}</span><span class="tag-cash">+${fmt(pay)}</span>
-        <span class="diff">${DIFF[s]} <span class="stars">${stars(s)}</span></span></div>
-      </div>
-      <div class="actions">${act}</div></li>`;
+function renderReel(){
+  const cat = CATS.find(c => c.id === catSel);
+  reel.innerHTML = cat.ids.map(id => byId[id]).map(t => {
+    const d = doneCount(t), n = t.m.length, pct = Math.round(d / n * 100);
+    const badges = [
+      S.profile && S.profile.rec === t.id ? `<span class="badge rec">Recomendada</span>` : "",
+      S.sel === t.id ? `<span class="badge">Atual</span>` : "",
+      projDone(t) ? `<span class="badge ok">Zerada</span>` : ""
+    ].join("");
+    return `<li><button type="button" class="char" data-id="${t.id}" aria-pressed="${S.sel === t.id}" style="--a:${t.a};--b:${t.b}"
+      aria-label="${esc(t.area)}, ${esc(t.nick)}. ${d} de ${n} missões concluídas${S.profile && S.profile.rec === t.id ? ". Recomendada para você" : ""}">
+      ${art(t, `<span class="badges">${badges}</span>`)}
+      <span class="meta"><span class="area">${esc(t.area)}</span><span class="nick">${esc(t.nick)}</span>
+      <span class="cnt">${d}/${n} missões · ${pct}%</span><span class="prog"><i style="width:${pct}%"></i></span></span></button></li>`;
   }).join("");
-  const board = document.getElementById("board");
+  requestAnimationFrame(updateArrows);
+}
+$("cats").addEventListener("click", e => {
+  const b = e.target.closest("[data-cat]"); if (!b) return;
+  catSel = b.dataset.cat; renderCats(); renderReel(); reel.scrollLeft = 0;
+  $("cats").querySelector(`[data-cat="${catSel}"]`).focus();
+});
+$("recBanner").addEventListener("click", e => { const b = e.target.closest("[data-pick]"); if (b) selectTrack(b.dataset.pick, true); });
+reel.addEventListener("click", e => { const b = e.target.closest(".char"); if (b) selectTrack(b.dataset.id, true); });
+/* Setas desativadas quando não há mais protagonistas daquele lado */
+function updateArrows(){
+  const max = reel.scrollWidth - reel.clientWidth - 12;   // folga para o encaixe (scroll-snap) do primeiro/último card
+  $("prev").disabled = reel.scrollLeft <= 12;
+  $("next").disabled = reel.scrollLeft >= max;
+}
+reel.addEventListener("scroll", () => requestAnimationFrame(updateArrows), {passive:true});
+addEventListener("resize", updateArrows);
+$("prev").onclick = () => reel.scrollBy({left:-reel.clientWidth * .8, behavior: reduce.matches ? "auto" : "smooth"});
+$("next").onclick = () => reel.scrollBy({left: reel.clientWidth * .8, behavior: reduce.matches ? "auto" : "smooth"});
+
+function selectTrack(id, scroll){
+  if (!byId[id]) return;
+  S.sel = id; save();
+  catSel = byId[id].cat; openSet = null;
+  renderCats(); renderReel(); renderBoard(); renderDock(); renderFicha();
+  if (scroll) { $("missoes").scrollIntoView({behavior: reduce.matches ? "auto" : "smooth", block:"start"}); $("board").focus({preventScroll:true}); }
+}
+
+/* =====================================================================
+   NOVO · QUADRO DE MISSÕES EM ETAPAS
+   Estados: disponível → em andamento → concluída; bloqueada até a anterior.
+   Para entregar: assistir + praticar + acertar o quiz.
+   ===================================================================== */
+let openSet = null;          // missões abertas (só interface, não é salvo)
+const answers = {};          // respostas marcadas no quiz antes de enviar
+const armed = {};            // confirmações de "desfazer" em dois toques
+function stateOf(t, i){
+  const d = doneCount(t);
+  if (i < d) return "done";
+  if (i > d) return "locked";
+  const s = peekStep(t.id, i);
+  return s && (s.w || s.p || s.q || s.tries) ? "progress" : "active";
+}
+const LABEL = {done:"Concluída", active:"Disponível", progress:"Em andamento", locked:"Bloqueada"};
+function currentTrack(){ return byId[S.sel] || byId[(S.profile && S.profile.rec) || "frontend"]; }
+
+function renderBoard(){
+  const t = currentTrack(), d = doneCount(t), n = t.m.length;
+  if (!openSet || openSet.tid !== t.id) openSet = {tid:t.id, set:new Set([Math.min(d, n - 1)])};
+  const tn = trackNumbers(t), pct = Math.round(d / n * 100), P = PROJ[t.id];
+  const status = projDone(t) ? "Lenda" : pct >= 60 ? "Respeitado" : pct > 0 ? "No corre" : "Novato";
+  const hw = S.profile && S.profile.a && S.profile.a.tempo ? HW[S.profile.a.tempo] : null;
+  const hrs = trackHours(t);
+  const items = t.m.map((_, i) => missionItem(t, i)).join("");
+  const board = $("board");
   board.style.setProperty("--a", t.a); board.style.setProperty("--b", t.b);
-  board.classList.remove("enter"); if (anim) { void board.offsetWidth; board.classList.add("enter"); }
+  board.setAttribute("tabindex", "-1");
+  board.setAttribute("aria-labelledby", "boardTitle");
   board.innerHTML = `
     <div class="board-top">
       <div class="portrait">${art(t)}</div>
-      <div class="info"><span class="eyebrow" style="justify-self:start">Trilha de ${t.area}</span>
-        <h3>${t.area}</h3><span class="nick">${t.nick}</span></div>
+      <div class="info"><span class="eyebrow" style="justify-self:start">Trilha atual · ${esc(CATS.find(c => c.id === t.cat).name)}</span>
+        <h2 id="boardTitle">${esc(t.area)}</h2><span class="nick">${esc(t.nick)}</span>
+        <p class="meta-line">Tempo estimado: cerca de ${hrs} h de estudo${hw ? ` · ≈ ${Math.ceil(hrs / hw)} semanas no seu ritmo` : ""}</p></div>
     </div>
     <div class="stats">
-      <div class="stat"><b>${lvl}</b><span>Status</span></div>
-      <div class="stat"><b class="cashv">${fmt(cash)}</b><span>Grana</span></div>
+      <div class="stat"><b>${status}</b><span>Status</span></div>
+      <div class="stat"><b class="cashv">${fmt(tn.cash)}</b><span>Grana na trilha</span></div>
       <div class="stat"><b>${d}/${n}</b><span>Missões</span></div>
       <div class="stat"><b>${pct}%</b><span>Progresso</span></div>
     </div>
-    <div class="respect"><div class="lbl"><span>Respeito · ${quote}</span><span>${fmt(cash)} / ${fmt(max)}</span></div>
-      <div class="bar"><i style="width:${pct}%"></i></div></div>
-    <ol class="missions">${items}</ol>
-    <div class="board-foot"><span>Cada missão é um tema. Assista às aulas, pratique e só então marque como cumprida.</span>
-      <a class="btn ghost" href="#personagens">Trocar protagonista</a></div>`;
+    <div class="respect"><div class="lbl"><span>Respeito na trilha</span><span>${fmt(tn.cash)} / ${fmt(tn.maxCash)}</span></div>
+      <div class="bar" role="progressbar" aria-label="Progresso da trilha" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${pct}%"></i></div></div>
+    <div class="final-teaser"><p><span class="k">Projeto final da trilha</span><strong>${esc(P.t)}</strong> · ${esc(P.d)}</p>
+      <a class="btn ghost sm" href="#projeto-final">Ver projeto</a></div>
+    <ol class="missions" aria-label="Missões de ${esc(t.area)}">${items}</ol>
+    ${projectBlock(t)}
+    <div class="board-foot"><span>Assista, pratique, acerte o quiz e entregue. A próxima missão libera na hora.</span>
+      <a class="btn ghost sm" href="#personagens">Trocar protagonista</a></div>`;
 }
-document.getElementById("board").addEventListener("click", e => {
-  const t = T.find(x => x.id === S.sel);
-  const dn = e.target.closest("[data-done]"), un = e.target.closest("[data-undo]");
-  if (dn) {
-    const i = +dn.dataset.done;
-    S.done[t.id] = i + 1; save();
-    passed(`<b>+${fmt(t.m[i][5])}</b> · Respeito +`);
-    refresh();
-  } else if (un) {
-    S.done[t.id] = +un.dataset.undo; save(); refresh();
+
+function missionItem(t, i){
+  const m = mission(t, i), st = stateOf(t, i), open = openSet.set.has(i);
+  const url = safeUrl(m.link);
+  const marker = st === "done" ? "✓" : i + 1;
+  const head = `<button type="button" class="m-head" id="mh-${i}" data-toggle="${i}" aria-expanded="${open}" aria-controls="mb-${i}">
+      <span class="marker" aria-hidden="true">${marker}</span>
+      <span class="m-title"><span class="m-name">${esc(m.title)}</span>
+        <span class="m-course">${esc(m.course)} · <span class="prof">${esc(m.prof)}</span></span>
+        <span class="m-meta"><span class="chip state s-${st}">${LABEL[st]}</span><span class="chip money">+${fmt(m.cash)}</span>
+          <span class="chip">${DIFF[m.diff]} ${stars(m.diff)}</span><span class="chip">~${m.hours} h</span></span></span>
+      <span class="chev" aria-hidden="true">▾</span></button>`;
+  if (!open) return `<li class="mission st-${st}" id="m-${i}">${head}</li>`;
+  const brief = `<div class="brief-grid">
+      <div class="box"><h4>Objetivo</h4><p>${esc(m.topic.o)}</p></div>
+      <div class="box"><h4>Explicação curta</h4><p>${esc(m.desc)}</p></div></div>`;
+  let body;
+  if (st === "locked") {
+    body = `${brief}
+      <div class="box"><h4>Aula recomendada</h4><p>${esc(m.course)} · ${esc(m.prof)}</p>
+        ${url ? `<p style="margin-top:8px"><a href="${url}" target="_blank" rel="noopener">Espiar a aula (abre em nova aba)</a></p>` : ""}</div>
+      <div class="box"><h4>Exercício prático</h4><p>${esc(m.topic.e)}</p></div>
+      <p class="locked-note">Missão bloqueada. Entregue a missão ${i} para liberar esta.</p>`;
+  } else if (st === "done") {
+    const s = peekStep(t.id, i) || {};
+    const isLast = i === doneCount(t) - 1;
+    body = `${brief}
+      <div class="done-box"><p><strong>Missão entregue.</strong> ${s.link ? (safeUrl(s.link) ? `Seu código: <a href="${safeUrl(s.link)}" target="_blank" rel="noopener">${esc(s.link)}</a>` : `Seu registro: ${esc(s.link)}`) : "Recompensa de " + fmt(m.cash) + " recebida."}</p>
+        ${url ? `<a class="btn ghost sm" href="${url}" target="_blank" rel="noopener">Revisar aula</a>` : ""}
+        <button type="button" class="linkbtn" data-undo="${i}" aria-label="Desfazer entrega da missão ${i+1}${isLast ? "" : " e das seguintes"}">${armed[t.id + ":" + i] ? "Toque de novo para confirmar" : "Desfazer entrega"}</button></div>`;
+  } else {
+    const s = peekStep(t.id, i) || {w:false, p:false, q:false, tries:0, link:""};
+    const k = t.id + "-" + i, sel = answers[t.id + ":" + i] || [];
+    const quiz = m.topic.q.map((q, qi) => `<fieldset><legend>${qi + 1}. ${esc(q[0])}</legend>
+        ${q[1].map((o, oi) => `<label class="opt"><input type="radio" name="q-${k}-${qi}" id="q-${k}-${qi}-${oi}" value="${oi}" data-ans="${i}" data-q="${qi}" ${sel[qi] === oi ? "checked" : ""} ${s.q ? "disabled" : ""}> ${esc(o)}</label>`).join("")}</fieldset>`).join("");
+    const missing = [!s.w && "assistir à aula", !s.p && "fazer o exercício", !s.q && "acertar o quiz"].filter(Boolean);
+    body = `${brief}
+      <ol class="steps" aria-label="Etapas da missão">
+        <li class="step ${s.w ? "ok" : ""}"><span class="step-n" aria-hidden="true">1</span><div>
+          <h4>Assistir à aula</h4><p>${esc(m.course)} · ${esc(m.prof)} · cerca de ${m.hours} h com a prática</p>
+          <div class="row">${url ? `<a class="btn ghost sm" href="${url}" target="_blank" rel="noopener" aria-label="Abrir aula ${esc(m.course)} em nova aba">▶ Abrir aula</a>` : ""}
+          <label class="check"><input type="checkbox" id="w-${k}" data-step="w" data-i="${i}" ${s.w ? "checked" : ""}> Assisti às aulas</label></div></div></li>
+        <li class="step ${s.p ? "ok" : ""}"><span class="step-n" aria-hidden="true">2</span><div>
+          <h4>Exercício prático</h4><p>${esc(m.topic.e)}</p>
+          <label class="check"><input type="checkbox" id="p-${k}" data-step="p" data-i="${i}" ${s.p ? "checked" : ""}> Fiz o exercício</label>
+          <div class="field"><label for="l-${k}">Link do seu código ou anotações (opcional)</label>
+          <input type="url" id="l-${k}" data-link="${i}" inputmode="url" placeholder="https://github.com/..." value="${esc(s.link)}"></div></div></li>
+        <li class="step ${s.q ? "ok" : ""}"><span class="step-n" aria-hidden="true">3</span><div class="quiz">
+          <h4>Mini quiz</h4>${quiz}
+          ${s.q ? `<p class="fb good">Quiz certo${s.tries === 0 ? " de primeira" : ""}.</p>` : `<button type="button" class="btn cyan sm" data-quiz="${i}" id="qb-${k}">Responder quiz</button>`}
+          <p class="fb" id="fb-${k}" role="status"></p></div></li>
+      </ol>
+      <div class="deliver"><p id="dm-${k}">${missing.length ? "Para entregar falta: " + missing.join(", ") + "." : `Tudo pronto. Recompensa: <strong>+${fmt(m.cash)}</strong> e +${m.xp} XP.`}</p>
+        <button type="button" class="btn pink" id="dv-${k}" data-deliver="${i}" ${missing.length ? "disabled" : ""} aria-describedby="dm-${k}">Entregar missão</button></div>`;
   }
+  return `<li class="mission st-${st}" id="m-${i}">${head}<div class="m-body" id="mb-${i}">${body}</div></li>`;
+}
+
+/* NOVO · projeto final da trilha */
+function projectBlock(t){
+  const P = PROJ[t.id], all = doneCount(t) === t.m.length, pj = S.proj[t.id] || {reqs:[], link:"", done:false};
+  const reqs = P.reqs.map((r, ri) => `<li><label class="check"><input type="checkbox" id="pr-${t.id}-${ri}" data-req="${ri}" ${pj.reqs[ri] ? "checked" : ""} ${!all || pj.done ? "disabled" : ""}> ${esc(r)}</label></li>`).join("");
+  const ok = P.reqs.every((_, ri) => pj.reqs[ri]);
+  let foot;
+  if (pj.done) foot = `<div class="done-box"><p><strong>Projeto entregue${pj.at ? " em " + pj.at.split("-").reverse().join("/") : ""}.</strong> Trilha zerada.</p>
+      <button type="button" class="btn sm" data-win="1">Ver tela de conclusão</button></div>`;
+  else if (!all) foot = `<p class="locked-note">Libera depois da última missão (${doneCount(t)}/${t.m.length} entregues). Já dá para ir pensando nele.</p>`;
+  else foot = `<div class="field"><label for="pl-${t.id}">Link do projeto publicado ou do repositório (opcional)</label>
+      <input type="url" id="pl-${t.id}" data-plink="1" placeholder="https://..." value="${esc(pj.link)}"></div>
+      <div class="deliver"><p id="pdm-${t.id}">${ok ? `Recompensa: <strong>+${fmt(PROJ_CASH)}</strong> e +${PROJ_XP} XP.` : "Marque todos os requisitos para entregar."}</p>
+      <button type="button" class="btn pink" data-pdeliver="1" ${ok ? "" : "disabled"} aria-describedby="pdm-${t.id}">Entregar projeto final</button></div>`;
+  return `<section class="project" id="projeto-final" aria-labelledby="pf-${t.id}">
+    <span class="k">Missão final · ~${PROJ_HRS} h · +${fmt(PROJ_CASH)}</span>
+    <h3 id="pf-${t.id}">Projeto: ${esc(P.t)}</h3><p style="margin:0">${esc(P.d)}</p>
+    <ul aria-label="Requisitos do projeto">${reqs}</ul>${foot}</section>`;
+}
+
+/* Reconstrói o quadro mantendo o foco do teclado no mesmo controle */
+function rerenderBoard(){
+  const id = document.activeElement && document.activeElement.id;
+  renderBoard(); renderHud(); renderDock(); renderFicha(); renderReel();
+  if (id && $(id)) $(id).focus({preventScroll:true});
+}
+
+/* Qualquer ação no quadro fixa a trilha mostrada como trilha atual */
+const claim = t => { if (S.sel !== t.id) { S.sel = t.id; save(); renderDock(); } };
+$("board").addEventListener("click", e => {
+  const t = currentTrack();
+  if (e.target.closest("[data-quiz],[data-deliver],[data-pdeliver]")) claim(t);
+  const tg = e.target.closest("[data-toggle]");
+  if (tg) { const i = +tg.dataset.toggle; openSet.set.has(i) ? openSet.set.delete(i) : openSet.set.add(i); rerenderBoard(); return; }
+  const qb = e.target.closest("[data-quiz]");
+  if (qb) return answerQuiz(t, +qb.dataset.quiz);
+  const dv = e.target.closest("[data-deliver]");
+  if (dv && !dv.disabled) return deliver(t, +dv.dataset.deliver);
+  const un = e.target.closest("[data-undo]");
+  if (un) {
+    const i = +un.dataset.undo, key = t.id + ":" + i;
+    if (!armed[key]) { armed[key] = true; rerenderBoard(); setTimeout(() => { if (armed[key]) { delete armed[key]; if ($("board").contains(un)) rerenderBoard(); } }, 4000); return; }
+    delete armed[key]; S.done[t.id] = i;
+    if (S.proj[t.id]) S.proj[t.id].done = false;
+    save(); openSet.set = new Set([i]); rerenderBoard(); announce("Entrega desfeita. A missão " + (i + 1) + " está aberta de novo.");
+    $("mh-" + i) && $("mh-" + i).focus();
+    return;
+  }
+  if (e.target.closest("[data-pdeliver]") && !e.target.closest("[data-pdeliver]").disabled) return deliverProject(t);
+  if (e.target.closest("[data-win]")) return openWin(t);
+});
+$("board").addEventListener("change", e => {
+  const t = currentTrack(), el = e.target;
+  claim(t);
+  if (el.dataset.step) { const s = stepOf(t.id, +el.dataset.i); s[el.dataset.step] = el.checked; if (el.checked) touch(); save(); rerenderBoard(); }
+  else if (el.dataset.ans) { const key = t.id + ":" + el.dataset.ans; (answers[key] = answers[key] || [])[+el.dataset.q] = +el.value; }
+  else if (el.dataset.req) { const pj = S.proj[t.id] = S.proj[t.id] || {reqs:[], link:"", done:false}; pj.reqs[+el.dataset.req] = el.checked; save(); rerenderBoard(); }
+});
+$("board").addEventListener("input", e => {
+  const t = currentTrack(), el = e.target;
+  if (el.dataset.link) { stepOf(t.id, +el.dataset.link).link = el.value.slice(0, 300); save(); }
+  else if (el.dataset.plink) { const pj = S.proj[t.id] = S.proj[t.id] || {reqs:[], link:"", done:false}; pj.link = el.value.slice(0, 300); save(); }
 });
 
-/* ---------- GOLPES ---------- */
+function answerQuiz(t, i){
+  const m = mission(t, i), key = t.id + ":" + i, sel = answers[key] || [], s = stepOf(t.id, i), k = t.id + "-" + i;
+  const fb = $("fb-" + k);
+  if (m.topic.q.some((_, qi) => sel[qi] === undefined)) { fb.className = "fb bad"; fb.textContent = "Responda todas as perguntas antes de enviar."; return; }
+  const wrong = m.topic.q.map((q, qi) => sel[qi] === q[2] ? null : qi + 1).filter(Boolean);
+  touch();
+  if (wrong.length) {
+    s.tries++; save();
+    fb.className = "fb bad";
+    fb.textContent = (wrong.length === 1 ? `A pergunta ${wrong[0]} não está certa.` : `As perguntas ${wrong.join(" e ")} não estão certas.`) + " Revise a aula e tente de novo.";
+    renderDock();
+    return;
+  }
+  s.q = true;
+  let msg = "Quiz certo!";
+  if (s.tries === 0) { S.bonus += QUIZ_BONUS; S.firstTries++; msg = `Na lata, de primeira! Bônus de +${fmt(QUIZ_BONUS)}.`; }
+  save(); rerenderBoard();
+  const f2 = $("fb-" + k); if (f2) { f2.className = "fb good"; f2.textContent = msg; }
+  $("dv-" + k) && !$("dv-" + k).disabled ? $("dv-" + k).focus() : null;
+  announce(msg); checkAchievements();
+}
+
+function deliver(t, i){
+  const s = stepOf(t.id, i), m = mission(t, i);
+  if (!(s.w && s.p && s.q) || i !== doneCount(t)) return;
+  S.done[t.id] = i + 1; touch(); save();
+  const next = i + 1;
+  openSet.set = new Set([Math.min(next, t.m.length - 1)]);
+  passed("Missão cumprida", `<b>+${fmt(m.cash)}</b> · +${m.xp} XP · Respeito +`);
+  rerenderBoard(); checkAchievements();
+  announce(`Missão ${m.title} entregue. Mais ${fmt(m.cash)}.`);
+  const target = next < t.m.length ? $("mh-" + next) : $("projeto-final");
+  if (target) { target.scrollIntoView({behavior: reduce.matches ? "auto" : "smooth", block:"start"}); if (target.focus) target.focus({preventScroll:true}); }
+}
+function deliverProject(t){
+  const pj = S.proj[t.id] = S.proj[t.id] || {reqs:[], link:"", done:false};
+  if (doneCount(t) < t.m.length || !PROJ[t.id].reqs.every((_, ri) => pj.reqs[ri])) return;
+  pj.done = true; pj.at = today(); touch(); save();
+  rerenderBoard(); checkAchievements();
+  openWin(t);
+}
+
+/* =====================================================================
+   NOVO · TELA DE CONCLUSÃO + COMPARTILHAR
+   ===================================================================== */
+let lastFocus = null;
+function openDialog(d){
+  lastFocus = document.activeElement;
+  if (typeof d.showModal === "function") { if (!d.open) d.showModal(); } else d.setAttribute("open", "");
+}
+function closeDialog(d){ if (d.open) { typeof d.close === "function" ? d.close() : d.removeAttribute("open"); } }
+document.querySelectorAll("dialog").forEach(d => {
+  d.addEventListener("click", e => { if (e.target.closest("[data-close]") || e.target === d) closeDialog(d); });
+  d.addEventListener("close", () => { if (lastFocus && document.contains(lastFocus)) lastFocus.focus(); });
+});
+function openWin(t){
+  const s = stats(), tn = trackNumbers(t), P = PROJ[t.id];
+  const text = `Zerei a trilha ${t.area} (${t.nick}) no Dev City! ${t.m.length} missões, nível ${s.level}, ${fmt(tn.cash)} acumulados e o projeto final "${P.t}" entregue.`;
+  $("winBody").innerHTML = `${medalSvg(t)}
+    <p class="win-title">Trilha zerada</p>
+    <p class="win-sub">${esc(t.area)} · ${esc(t.nick)}</p>
+    <div class="win-stats">
+      <div><span>Projeto final</span><b>${esc(P.t)}</b></div>
+      <div><span>Missões concluídas</span><b>${t.m.length}/${t.m.length}</b></div>
+      <div><span>Nível alcançado</span><b>NV ${s.level} · ${RANKS[s.rank]}</b></div>
+      <div><span>Grana na trilha</span><b style="color:var(--cash)">${fmt(tn.cash)}</b></div>
+    </div>
+    <p style="margin:0;text-align:center"><strong>Conquista:</strong> Lenda de ${esc(t.area)}</p>
+    <label for="shareText" class="sr-only">Texto para compartilhar</label>
+    <textarea id="shareText" class="io" readonly rows="3" style="width:100%;min-height:84px;padding:8px;background:var(--asphalt);border:2px solid var(--line);color:var(--fg)">${esc(text + " " + SITE)}</textarea>
+    <div class="row-btns"><button type="button" class="btn pink" id="shareBtn">Compartilhar resultado</button>
+      <button type="button" class="btn ghost" id="nextTrackBtn">Escolher próxima trilha</button></div>
+    <p class="msg" id="shareMsg" role="status"></p>`;
+  $("shareBtn").onclick = async () => {
+    const msg = $("shareMsg");
+    try { if (navigator.share) { await navigator.share({title:"Dev City", text, url:SITE}); msg.className = "msg good"; msg.textContent = "Compartilhado!"; return; } }
+    catch (e) { if (e && e.name === "AbortError") return; }
+    try { await navigator.clipboard.writeText(text + " " + SITE); msg.className = "msg good"; msg.textContent = "Texto copiado. Cole onde quiser."; }
+    catch (e) { const ta = $("shareText"); ta.focus(); ta.select(); msg.className = "msg"; msg.textContent = "Texto selecionado. Use Copiar do seu aparelho."; }
+  };
+  $("nextTrackBtn").onclick = () => { closeDialog($("dlgWin")); $("personagens").scrollIntoView({behavior: reduce.matches ? "auto" : "smooth"}); };
+  openDialog($("dlgWin"));
+  if (!reduce.matches) passed("Trilha zerada", `<b>+${fmt(PROJ_CASH)}</b> · Lenda de ${esc(t.area)}`);
+}
+
+/* =====================================================================
+   NOVO · QUESTIONÁRIO INICIAL + RECOMENDAÇÃO
+   ===================================================================== */
+const Q = [
+  {id:"nivel", q:"Você está começando do zero?", opts:[["zero","Sim, nunca programei"],["pouco","Já vi um pouco (curso, vídeo ou faculdade)"],["ja","Já programo e quero me especializar"]]},
+  {id:"criar", q:"O que você deseja criar?", opts:[["sites","Sites e páginas bonitas"],["sistemas","Sistemas e APIs que rodam no servidor"],["produto","Um produto completo, da tela ao banco de dados"],["apps","Aplicativos de celular"],["jogos","Jogos"],["dados","Análises e gráficos com dados"],["ia","Coisas com inteligência artificial"],["seguro","Sistemas seguros e caça a falhas"],["design","Telas fáceis e bonitas de usar"]]},
+  {id:"area", q:"Qual área parece mais interessante?", opts:[["visual","Visual e experiência de quem usa"],["logica","Lógica e regras por trás dos sistemas"],["numeros","Números, padrões e estatística"],["infra","Servidores, nuvem e automação de deploy"],["seguranca","Segurança e investigação"],["games","Games e mundos interativos"],["mobile","Celulares e apps do dia a dia"]]},
+  {id:"tempo", q:"Quanto tempo por semana você pode estudar?", opts:[["3","Até 3 horas"],["6","De 3 a 6 horas"],["10","De 6 a 10 horas"],["15","Mais de 10 horas"]]}
+];
+const HW = {"3":2.5, "6":4.5, "10":8, "15":12};       // horas/semana usadas na estimativa
+const REC = ["frontend","backend","fullstack","dados","ia","gamedev","devops","cyber","uiux","mobile"];
+const WEIGHT = {
+  criar:{sites:{frontend:3,uiux:1,fullstack:1}, sistemas:{backend:3,fullstack:1,devops:1}, produto:{fullstack:3,frontend:1,backend:1},
+    apps:{mobile:3}, jogos:{gamedev:3}, dados:{dados:3,ia:1}, ia:{ia:3,dados:1}, seguro:{cyber:3,devops:.5}, design:{uiux:3,frontend:1}},
+  area:{visual:{uiux:2,frontend:1}, logica:{backend:2,fullstack:1}, numeros:{dados:2,ia:1}, infra:{devops:2,backend:.5},
+    seguranca:{cyber:2}, games:{gamedev:2}, mobile:{mobile:2}},
+  nivel:{zero:{frontend:.6,uiux:.3,backend:.3}, pouco:{}, ja:{fullstack:.4,devops:.3,ia:.3}}
+};
+function recommend(a){
+  const sc = Object.fromEntries(REC.map(id => [id, 0]));
+  for (const k of ["criar","area","nivel"]) for (const [id, w] of Object.entries((WEIGHT[k] || {})[a[k]] || {})) sc[id] += w;
+  const order = [...REC].sort((x, y) => sc[y] - sc[x] || REC.indexOf(x) - REC.indexOf(y));
+  return {rec: order[0], alt: sc[order[1]] > 0 ? order[1] : null};
+}
+let qi = 0, qa = {};
+function startQuiz(){ qi = 0; qa = Object.assign({}, (S.profile && S.profile.a) || {}); renderQuiz(); openDialog($("dlgQuiz")); setTimeout(() => { const f = $("qBody").querySelector("input:checked,input"); f && f.focus(); }, 30); }
+function renderQuiz(){
+  const body = $("qBody");
+  if (qi < Q.length) {
+    const q = Q[qi];
+    $("qTitle").textContent = "Sua primeira missão";
+    body.innerHTML = `<span class="q-step">Pergunta ${qi + 1} de ${Q.length}</span>
+      <div class="q-dots" aria-hidden="true">${Q.map((_, k) => `<i class="${k <= qi ? "on" : ""}"></i>`).join("")}</div>
+      <fieldset style="border:0;margin:0;padding:0"><legend class="q-title">${esc(q.q)}</legend>
+      <div class="q-opts" style="margin-top:12px">${q.opts.map(([v, l]) => `<label class="opt"><input type="radio" name="qq-${q.id}" id="qq-${q.id}-${v}" value="${v}" ${qa[q.id] === v ? "checked" : ""}> ${esc(l)}</label>`).join("")}</div></fieldset>
+      <div class="q-nav">
+        ${qi > 0 ? `<button type="button" class="btn ghost" id="qBack">Voltar</button>` : `<button type="button" class="linkbtn" id="qSkip">Prefiro escolher sozinho</button>`}
+        <button type="button" class="btn pink" id="qNext" ${qa[q.id] ? "" : "disabled"}>${qi === Q.length - 1 ? "Ver minha trilha" : "Próxima"}</button></div>`;
+    body.querySelectorAll("input").forEach(r => r.addEventListener("change", () => { qa[q.id] = r.value; $("qNext").disabled = false; }));
+    $("qNext").onclick = () => { if (!qa[q.id]) return; qi++; renderQuiz(); focusQuiz(); };
+    if ($("qBack")) $("qBack").onclick = () => { qi--; renderQuiz(); focusQuiz(); };
+    if ($("qSkip")) $("qSkip").onclick = () => { closeDialog($("dlgQuiz")); $("personagens").scrollIntoView({behavior: reduce.matches ? "auto" : "smooth"}); };
+    return;
+  }
+  const {rec, alt} = recommend(qa), t = byId[rec], hw = HW[qa.tempo] || 4.5, hrs = trackHours(t);
+  const lower1 = x => x.charAt(0).toLowerCase() + x.slice(1);   // "Sistemas e APIs" → "sistemas e APIs"
+  const crie = lower1(Q[1].opts.find(o => o[0] === qa.criar)[1]);
+  const why = [
+    `Você quer criar ${esc(crie)}: ${esc(t.area)} é o caminho mais direto.`,
+    `Sua primeira missão será <strong>${esc(t.m[0][0])}</strong>${qa.nivel === "zero" ? ", pensada para quem está começando" : ""}.`,
+    `Com ${esc(lower1(Q[3].opts.find(o => o[0] === qa.tempo)[1]))} por semana, a trilha leva cerca de ${Math.ceil(hrs / hw)} semanas (${hrs} h no total).`
+  ];
+  if (qa.nivel === "zero" && ["ia","devops","cyber"].includes(rec)) why.push("Dica: essa trilha é puxada para quem começa do zero. Se travar, faça antes a missão de Lógica de Programação da trilha Back End.");
+  $("qTitle").textContent = "Sua trilha recomendada";
+  body.innerHTML = `<div class="rec-card">${art(t)}<div><h3>${esc(t.area)}</h3><span class="nick">${esc(t.nick)}</span>
+      <p style="margin:6px 0 0;color:var(--muted)">Projeto final: <strong style="color:var(--fg)">${esc(PROJ[rec].t)}</strong></p></div></div>
+    <ul class="why">${why.map(w => `<li>${w}</li>`).join("")}</ul>
+    ${alt ? `<p style="margin:0;color:var(--muted)">Também combina com você: <button type="button" class="linkbtn" id="qAlt">${esc(byId[alt].area)}</button></p>` : ""}
+    <div class="q-nav"><button type="button" class="btn ghost" id="qRedo">Refazer</button>
+      <button type="button" class="btn xl" id="qGo">Começar missão 1 ▸</button></div>`;
+  const accept = id => {
+    S.profile = {a: Object.assign({}, qa), rec, alt}; touch(); save();
+    closeDialog($("dlgQuiz")); selectTrack(id, true); checkAchievements();
+    const t2 = byId[id], i = Math.min(doneCount(t2), t2.m.length - 1);
+    setTimeout(() => { const h = $("mh-" + i); if (h) { h.scrollIntoView({behavior: reduce.matches ? "auto" : "smooth", block:"start"}); h.focus({preventScroll:true}); } }, 60);
+  };
+  $("qGo").onclick = () => accept(rec);
+  if ($("qAlt")) $("qAlt").onclick = () => accept(alt);
+  $("qRedo").onclick = () => { qi = 0; renderQuiz(); focusQuiz(); };
+  $("qGo").focus();
+}
+function focusQuiz(){ const f = $("qBody").querySelector("input:checked") || $("qBody").querySelector("input") || $("qGo"); f && f.focus(); }
+$("startBtn").onclick = startQuiz;
+$("redoQuiz").onclick = startQuiz;
+
+/* =====================================================================
+   GOLPES DE FACULDADE (mantidos; agora contam XP, grana e conquistas)
+   ===================================================================== */
 function renderHeists(){
-  document.getElementById("heists").innerHTML = H.map(h => {
-    const total = h.flat.length, d = heistDone(h);
-    const pct = Math.round(d/total*100);
-    return `<article class="heist">
-      <div class="poster" style="--a:${h.a};--b:${h.b}"><span class="stamp">${pct===100 ? "FECHADO" : "GOLPE"}</span>
-        <h3>${h.name}</h3><span class="course">${h.course}</span></div>
+  $("heists").innerHTML = H.map(h => {
+    const total = h.flat.length, got = S.heist[h.id] || [], d = got.length, pct = Math.round(d / total * 100);
+    const cash = got.reduce((a, i) => a + h.flat[i][2] * CASH_X, 0);
+    const open = S.openHeist === h.id;
+    return `<article class="heist" aria-labelledby="ht-${h.id}">
+      <div class="poster" style="--a:${h.a};--b:${h.b}"><span class="stamp" aria-hidden="true">${pct === 100 ? "FECHADO" : "GOLPE"}</span>
+        <h3 id="ht-${h.id}">${esc(h.name)}</h3><span class="course">${esc(h.course)}</span></div>
       <div class="body">
         <dl><dt>Fases</dt><dd>${h.phases.length} semestres</dd>
           <dt>Alvos</dt><dd>${total} matérias</dd>
-          <dt>Equipe</dt><dd>${h.crew}</dd>
-          <dt>Pagamento</dt><dd style="color:var(--cash)">${fmt(heistCash(h))} / ${fmt(h.pay)}</dd></dl>
-        <div class="bar" aria-label="${pct}% do golpe"><i style="width:${pct}%"></i></div>
-        <button class="btn ${S.openHeist===h.id?'':'pink'}" data-heist="${h.id}">${S.openHeist===h.id ? "Fechar planejamento" : "Planejar golpe"}</button>
+          <dt>Equipe</dt><dd>${esc(h.crew)}</dd>
+          <dt>Pagamento</dt><dd style="color:var(--cash)">${fmt(cash)} / ${fmt(h.pay * CASH_X)}</dd></dl>
+        <div class="bar" role="progressbar" aria-label="Progresso do golpe ${esc(h.name)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${pct}%"></i></div>
+        <button type="button" class="btn ${open ? "ghost" : "pink"}" data-heist="${h.id}" aria-expanded="${open}" aria-controls="plan">${open ? "Fechar planejamento" : "Planejar golpe"}</button>
       </div></article>`;
   }).join("");
-  const plan = document.getElementById("plan");
-  const h = H.find(x => x.id === S.openHeist);
+  const plan = $("plan"), h = H.find(x => x.id === S.openHeist);
   if (!h) { plan.hidden = true; plan.innerHTML = ""; return; }
   plan.hidden = false;
   const got = S.heist[h.id] || [];
   let idx = 0;
-  plan.innerHTML = `<div class="plan-head"><h3>${h.name} · ${h.course}</h3>
-      <span class="cash" style="font-family:var(--f-hud);font-weight:700">${fmt(heistCash(h))}</span></div>
+  plan.innerHTML = `<div class="plan-head"><h3>${esc(h.name)} · ${esc(h.course)}</h3>
+      <span class="cash">${fmt(got.reduce((a, i) => a + h.flat[i][2] * CASH_X, 0))}</span></div>
     <div class="phases">${h.phases.map((p, pi) => {
-      const rows = p.map(([s, link, pay]) => { const i = idx++; const u = safeUrl(link);
-        return `<div class="subj"><label><input type="checkbox" id="h-${h.id}-${i}" data-h="${h.id}" data-i="${i}" ${got.includes(i)?"checked":""}><span>${esc(s)}</span></label>${u ? `<a href="${u}" target="_blank" rel="noopener" aria-label="Aulas de ${esc(s)}">▶ aulas</a>` : `<small>sem aula</small>`}</div>`; }).join("");
-      const start = idx - p.length; const c = p.filter((_,k) => got.includes(start+k)).length;
-      return `<div class="phase"><h4>Fase ${pi+1}<em>${c}/${p.length}</em></h4>${rows}</div>`;
+      const start = idx;
+      const rows = p.map(([s, link]) => { const i = idx++, u = safeUrl(link);
+        return `<div class="subj"><label><input type="checkbox" id="h-${h.id}-${i}" data-h="${h.id}" data-i="${i}" ${got.includes(i) ? "checked" : ""}><span>${esc(s)}</span></label>${u ? `<a href="${u}" target="_blank" rel="noopener" aria-label="Aulas de ${esc(s)} (nova aba)">▶ aulas</a>` : `<small>sem aula</small>`}</div>`; }).join("");
+      const c = p.filter((_, k) => got.includes(start + k)).length;
+      return `<div class="phase"><h4>Fase ${pi + 1}<em>${c}/${p.length}</em></h4>${rows}</div>`;
     }).join("")}</div>`;
 }
-document.getElementById("heists").addEventListener("click", e => {
+$("heists").addEventListener("click", e => {
   const b = e.target.closest("[data-heist]"); if (!b) return;
   S.openHeist = S.openHeist === b.dataset.heist ? null : b.dataset.heist; save(); renderHeists();
-  if (S.openHeist) document.getElementById("plan").scrollIntoView({behavior:"smooth", block:"nearest"});
+  const nb = $("heists").querySelector(`[data-heist="${b.dataset.heist}"]`); nb && nb.focus();
+  if (S.openHeist) $("plan").scrollIntoView({behavior: reduce.matches ? "auto" : "smooth", block:"nearest"});
 });
-document.getElementById("plan").addEventListener("change", e => {
+$("plan").addEventListener("change", e => {
   const c = e.target; if (!c.dataset.h) return;
-  const h = H.find(x => x.id === c.dataset.h);
-  const list = new Set(S.heist[h.id] || []); const i = +c.dataset.i;
+  const h = H.find(x => x.id === c.dataset.h), list = new Set(S.heist[h.id] || []), i = +c.dataset.i;
   c.checked ? list.add(i) : list.delete(i);
-  S.heist[h.id] = [...list]; save();
-  const total = h.flat.length;
-  if (c.checked && list.size === total) passed(`Golpe fechado · <b>${fmt(h.pay)}</b>`);
-  renderHeists(); renderHud();
+  S.heist[h.id] = [...list]; if (c.checked) touch(); save();
+  if (c.checked && list.size === h.flat.length) passed("Golpe fechado", `<b>${fmt(h.pay * CASH_X)}</b>`);
+  const id = c.id; renderHeists(); renderHud(); renderFicha(); checkAchievements(); $(id) && $(id).focus();
 });
 
-/* ---------- MISSÃO CUMPRIDA ---------- */
-let pt;
-function passed(html){
-  const el = document.getElementById("passed");
-  document.getElementById("passedSub").innerHTML = html;
-  el.hidden = true; void el.offsetWidth; el.hidden = false;
-  el.querySelectorAll(".inner,.fl").forEach(n => { n.style.animation = "none"; void n.offsetWidth; n.style.animation = ""; });
-  const burst = document.getElementById("burst");
-  burst.innerHTML = reduce.matches ? "" : Array.from({length:16}, (_, i) => {
-    const a = (i / 16) * Math.PI * 2 + Math.random() * .3, d = 160 + Math.random() * 220;
-    return `<span style="--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d}px;--rot:${(Math.random()*720-360)|0}deg;animation-delay:${(Math.random()*120)|0}ms">${starSvg(true)}</span>`;
-  }).join("");
-  clearTimeout(pt); pt = setTimeout(() => el.hidden = true, 2400);
+/* =====================================================================
+   NOVO · FICHA DO JOGADOR + CONQUISTAS
+   ===================================================================== */
+function nextOf(t){
+  const d = doneCount(t);
+  if (d < t.m.length) return {label: `Missão ${d + 1}: ${t.m[d][0]}`, i: d};
+  if (!projDone(t)) return {label: `Projeto final: ${PROJ[t.id].t}`, i: -1};
+  return {label: "Trilha zerada!", i: -2};
+}
+function renderFicha(){
+  const s = stats(), t = byId[S.sel];
+  const L = s.level, lo = xpForLevel(L), hi = xpForLevel(L + 1), pct = Math.round((s.xp - lo) / (hi - lo) * 100);
+  const nx = t ? nextOf(t) : null;
+  $("ficha").innerHTML = `
+    <div class="tile wide"><span class="k">Nível do jogador</span><span class="v">NV ${L} · ${RANKS[s.rank]}</span>
+      <div class="bar" role="progressbar" aria-label="XP para o próximo nível" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><i style="width:${pct}%"></i></div>
+      <p>${s.xp.toLocaleString("pt-BR")} XP · faltam ${(hi - s.xp).toLocaleString("pt-BR")} XP para o nível ${L + 1}</p></div>
+    <div class="tile"><span class="k">Dinheiro virtual</span><span class="v cashv">${fmt(s.cash)}</span><p>Inclui ${fmt(S.bonus)} de bônus de quiz</p></div>
+    <div class="tile"><span class="k">Sequência</span><span class="v">${s.streak} ${s.streak === 1 ? "dia" : "dias"}</span><p>Recorde: ${s.best} ${s.best === 1 ? "dia" : "dias"} · ${S.days.length} ${S.days.length === 1 ? "dia estudado" : "dias estudados"}</p></div>
+    <div class="tile"><span class="k">Missões concluídas</span><span class="v">${s.missions}</span><p>${s.projects} projeto${s.projects === 1 ? "" : "s"} final${s.projects === 1 ? "" : "is"} · ${s.subjects} matérias de faculdade</p></div>
+    <div class="tile"><span class="k">Trilha atual</span><span class="v sm">${t ? esc(t.area) : "Nenhuma"}</span><p>${t ? `${doneCount(t)}/${t.m.length} missões` : "Responda o questionário ou escolha um protagonista."}</p></div>
+    <div class="tile wide"><span class="k">Próxima missão</span><span class="v sm">${nx ? esc(nx.label) : "Escolha uma trilha"}</span>
+      ${t ? `<button type="button" class="btn sm" id="fichaGo" style="justify-self:start;margin-top:6px">${nx.i === -2 ? "Ver conclusão" : "Continuar missão"}</button>` : `<button type="button" class="btn sm" id="fichaStart" style="justify-self:start;margin-top:6px">Começar minha primeira missão</button>`}</div>`;
+  if ($("fichaGo")) $("fichaGo").onclick = continueMission;
+  if ($("fichaStart")) $("fichaStart").onclick = startQuiz;
+  $("achs").innerHTML = ACH.map(a => { const on = !!S.ach[a.id];
+    return `<li class="ach ${on ? "on" : ""}"><span class="ic" aria-hidden="true">${esc(a.ic)}</span><div><b>${esc(a.n)}</b><span>${esc(a.d)}</span>
+      <div class="st" style="color:${on ? "var(--star)" : "var(--dim)"}">${on ? "Desbloqueada em " + S.ach[a.id].split("-").reverse().join("/") : "Bloqueada"}</div></div></li>`; }).join("");
 }
 
-document.getElementById("reset").onclick = function(){
-  if (this.dataset.armed) { S = {sel:S.sel, done:{}, heist:{}, openHeist:null}; save(); refresh(); renderHeists(); this.textContent = "Zerar progresso"; delete this.dataset.armed; return; }
+/* =====================================================================
+   NOVO · BARRA FIXA "CONTINUAR ESTUDANDO"
+   ===================================================================== */
+const started = () => !!(S.profile || Object.keys(S.done).some(k => S.done[k] > 0) || Object.keys(S.steps).length || S.sel);
+function renderDock(){
+  const dock = $("dock"), t = byId[S.sel];
+  if (!t || !started()) { dock.hidden = true; measureDock(); return; }
+  dock.hidden = false;
+  const d = doneCount(t), n = t.m.length, pct = Math.round(d / n * 100), nx = nextOf(t);
+  $("dockMission").textContent = nx.label;
+  $("dockTrack").textContent = `${t.area} · ${t.nick}`;
+  $("dockBar").style.width = pct + "%";
+  $("dockBarWrap").setAttribute("aria-valuenow", pct);
+  $("dockCount").textContent = `${d} de ${n} missões concluídas · ${pct}%`;
+  $("dockBtn").textContent = nx.i === -2 ? "Ver conclusão ▸" : nx.i === -1 ? "Ir ao projeto ▸" : "Continuar missão ▸";
+  $("dockBtn").setAttribute("aria-label", nx.i === -2 ? "Ver tela de conclusão da trilha" : "Continuar: " + nx.label);
+  measureDock();
+}
+function measureDock(){ const d = $("dock"); document.documentElement.style.setProperty("--dock-h", d.hidden ? "0px" : d.offsetHeight + "px"); }
+function continueMission(){
+  const t = byId[S.sel]; if (!t) return startQuiz();
+  const nx = nextOf(t);
+  if (nx.i === -2) return openWin(t);
+  if (nx.i >= 0) { openSet = {tid:t.id, set:new Set([nx.i])}; renderBoard(); }
+  const el = nx.i >= 0 ? $("mh-" + nx.i) : $("projeto-final");
+  if (el) { el.scrollIntoView({behavior: reduce.matches ? "auto" : "smooth", block:"start"}); (nx.i >= 0 ? el : $("board")).focus({preventScroll:true}); }
+}
+$("dockBtn").onclick = continueMission;
+if ("ResizeObserver" in window) new ResizeObserver(measureDock).observe($("dock"));
+
+/* =====================================================================
+   NOVO · EXPORTAR / IMPORTAR PROGRESSO (JSON simples)
+   ===================================================================== */
+let pendingImport = null;
+function openIO(mode){
+  pendingImport = null;
+  const body = $("ioBody");
+  if (mode === "export") {
+    $("ioTitle").textContent = "Exportar meu progresso";
+    const json = JSON.stringify(Object.assign({exportedAt: new Date().toISOString()}, S));
+    body.innerHTML = `<p style="margin:0">Guarde este código (ou baixe o arquivo). No outro aparelho, use <strong>Importar progresso</strong> e cole o código.</p>
+      <label for="ioOut" class="sr-only">Código do seu progresso</label><textarea id="ioOut" readonly>${esc(json)}</textarea>
+      <div class="row-btns"><button type="button" class="btn cyan" id="ioCopy">Copiar código</button><button type="button" class="btn ghost" id="ioDown">Baixar arquivo .json</button></div>
+      <p class="msg" id="ioMsg" role="status"></p>`;
+    $("ioCopy").onclick = async () => { const m = $("ioMsg");
+      try { await navigator.clipboard.writeText(json); m.className = "msg good"; m.textContent = "Código copiado."; }
+      catch (e) { $("ioOut").focus(); $("ioOut").select(); m.className = "msg"; m.textContent = "Código selecionado. Use Copiar do seu aparelho."; } };
+    $("ioDown").onclick = () => { const m = $("ioMsg");
+      try { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([json], {type:"application/json"}));
+        a.download = "dev-city-progresso-" + today() + ".json"; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 2000); m.className = "msg good"; m.textContent = "Se o download não começar, use Copiar código."; }
+      catch (e) { m.className = "msg bad"; m.textContent = "Este navegador bloqueou o download. Use Copiar código."; } };
+  } else {
+    $("ioTitle").textContent = "Importar progresso";
+    body.innerHTML = `<p style="margin:0">Escolha o arquivo .json exportado ou cole o código. O progresso atual deste aparelho será substituído.</p>
+      <div class="field" style="max-width:none"><label for="ioFile">Arquivo de progresso (.json)</label><input type="file" id="ioFile" accept="application/json,.json"></div>
+      <label for="ioIn">Ou cole o código</label><textarea id="ioIn" placeholder='{"app":"dev-city", ...}'></textarea>
+      <div class="row-btns"><button type="button" class="btn cyan" id="ioCheck">Verificar</button><button type="button" class="btn pink" id="ioApply" disabled>Confirmar importação</button></div>
+      <p class="msg" id="ioMsg" role="status"></p>`;
+    $("ioFile").onchange = () => { const f = $("ioFile").files[0]; if (!f) return;
+      if (f.size > 2e6) { $("ioMsg").className = "msg bad"; $("ioMsg").textContent = "Arquivo grande demais para ser um progresso do Dev City."; return; }
+      const r = new FileReader(); r.onload = () => { $("ioIn").value = r.result; check(); }; r.readAsText(f); };
+    const check = () => {
+      const m = $("ioMsg"); pendingImport = null; $("ioApply").disabled = true;
+      let o; try { o = JSON.parse($("ioIn").value); } catch (e) { m.className = "msg bad"; m.textContent = "Não consegui ler o código. Confira se copiou tudo, do { ao }."; return; }
+      if (!o || (o.app !== "dev-city" && !o.done)) { m.className = "msg bad"; m.textContent = "Esse código não parece ser um progresso do Dev City."; return; }
+      const s2 = sanitize(o), n = Object.values(s2.done).reduce((a, b) => a + b, 0);
+      pendingImport = s2; $("ioApply").disabled = false;
+      m.className = "msg good"; m.textContent = `Progresso válido: ${n} missões, ${Object.values(s2.proj).filter(p => p.done).length} projetos, ${Object.keys(s2.ach).length} conquistas. Toque em Confirmar importação.`;
+    };
+    $("ioCheck").onclick = check;
+    $("ioApply").onclick = () => { if (!pendingImport) return; S = pendingImport; pendingImport = null; save();
+      catSel = (S.sel && byId[S.sel].cat) || "comece"; openSet = null; shownCash = null; renderAll();
+      $("ioMsg").className = "msg good"; $("ioMsg").textContent = "Progresso importado!"; $("ioApply").disabled = true; toast("Progresso importado"); };
+  }
+  openDialog($("dlgIO"));
+}
+$("exportBtn").onclick = () => openIO("export");
+$("importBtn").onclick = () => openIO("import");
+
+/* Zerar progresso (mantido, com confirmação em dois toques) */
+$("reset").onclick = function(){
+  if (this.dataset.armed) { S = blank(); save(); delete this.dataset.armed; this.textContent = "Zerar progresso"; catSel = "comece"; openSet = null; shownCash = null; renderAll(); toast("Progresso zerado"); return; }
   this.dataset.armed = "1"; this.textContent = "Toque de novo para confirmar";
   setTimeout(() => { if (this.dataset.armed) { delete this.dataset.armed; this.textContent = "Zerar progresso"; } }, 4000);
 };
 
-function refresh(){ renderReel(); renderBoard(); renderHud(); }
-refresh(); renderHeists();
-requestAnimationFrame(() => { const c = reel.querySelector('[aria-pressed="true"]'); if (c) reel.scrollLeft = Math.max(0, c.offsetLeft - reel.offsetLeft - 8); });
+/* =====================================================================
+   MISSÃO CUMPRIDA (overlay)
+   ===================================================================== */
+let pt;
+function passed(title, html){
+  const el = $("passed");
+  $("passedT").textContent = title;
+  $("passedSub").innerHTML = html;
+  el.hidden = true; void el.offsetWidth; el.hidden = false;
+  el.querySelectorAll(".inner,.fl").forEach(n => { n.style.animation = "none"; void n.offsetWidth; n.style.animation = ""; });
+  $("burst").innerHTML = reduce.matches ? "" : Array.from({length:16}, (_, i) => {
+    const a = (i / 16) * Math.PI * 2 + Math.random() * .3, d = 160 + Math.random() * 220;
+    return `<span style="--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d}px;--rot:${(Math.random()*720-360)|0}deg;animation-delay:${(Math.random()*120)|0}ms">${starSvg(true)}</span>`;
+  }).join("");
+  clearTimeout(pt); pt = setTimeout(() => el.hidden = true, reduce.matches ? 1600 : 2200);
+}
+
+/* Menu compacto no celular */
+$("menuBtn").onclick = () => { const nav = $("nav"), open = !nav.classList.contains("open"); nav.classList.toggle("open", open); $("menuBtn").setAttribute("aria-expanded", open); };
+$("navList").addEventListener("click", e => { if (e.target.closest("a")) { $("nav").classList.remove("open"); $("menuBtn").setAttribute("aria-expanded", "false"); } });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && $("nav").classList.contains("open")) { $("nav").classList.remove("open"); $("menuBtn").setAttribute("aria-expanded", "false"); $("menuBtn").focus(); } });
+
+/* Números da abertura */
+$("facts").innerHTML = `<li><b>${T.length}</b> trilhas</li><li><b>${T.reduce((a, t) => a + t.m.length, 0)}</b> missões</li><li><b>${H.length}</b> grades de faculdade</li><li><b>R$ 0</b> de custo</li>`;
+
+function renderAll(){ renderCats(); renderReel(); renderBoard(); renderHeists(); renderFicha(); renderDock(); renderHud(); }
+renderAll();
+checkAchievements();
+requestAnimationFrame(() => { const c = reel.querySelector('[aria-pressed="true"]'); if (c) reel.scrollLeft = Math.max(0, c.closest("li").offsetLeft - reel.offsetLeft - 8); });
 
 /* ---------- CIDADE AO PÔR DO SOL (canvas animado) ---------- */
 const cv = document.getElementById("city"), ctx = cv.getContext("2d");
@@ -628,5 +1642,6 @@ if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => {
 }).observe(cv);
 let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(start, 120); });
 reduce.addEventListener?.("change", start);
+
 })();
 </script>
