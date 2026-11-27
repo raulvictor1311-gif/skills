@@ -140,7 +140,11 @@
       "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-06-como-comeco-todo-projeto-de-cl.mp4",
       "redes": {
         "instagram": {
-          "status": "pendente"
+          "status": "postado",
+          "id": "18499669489128707",
+          "url": "https://www.instagram.com/reel/DgPs1SFhjJW/",
+          "em": "2026-11-27T12:41:41.500Z",
+          "confirmado": "2026-11-27T12:41:41.539Z"
         }
       },
       "metricas": {
@@ -1031,5 +1035,5 @@
   "conta": {
     "instagram": "velidi.ai (17841444122916638)"
   },
-  "trial": "SS_PERFORMANCE"
+  "trialRecusado": "Instagram: poucos seguidores para Reel de teste (27/11)"
 }
