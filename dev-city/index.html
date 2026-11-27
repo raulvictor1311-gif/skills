@@ -172,7 +172,52 @@ footer button{background:none;border:0;padding:0;color:var(--muted);text-decorat
 .passed .s{font-family:var(--f-hud);font-weight:700;font-size:clamp(22px,4vw,34px);color:#fff;text-shadow:3px 3px 0 var(--ink);letter-spacing:.06em}
 .passed .s b{color:var(--cash)}
 @keyframes pop{0%{opacity:0;transform:scale(1.35)}12%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:scale(1)}}
-@media (prefers-reduced-motion:reduce){.passed .inner{animation:none}.btn,.char,.bar i{transition:none}}
+@media (prefers-reduced-motion:reduce){.passed .inner{animation:none}.btn,.char,.bar i{transition:none}.passed .fl,.burst{display:none}}
+
+/* ---------- ANIMAÇÕES ---------- */
+.passed .fl{position:absolute;inset:0;background:var(--star);mix-blend-mode:overlay;opacity:0;animation:flash .6s ease-out forwards}
+.burst{position:absolute;left:50%;top:50%;width:0;height:0}
+.burst span{position:absolute;left:-14px;top:-14px;width:28px;height:28px;animation:starFly 1.2s cubic-bezier(.15,.7,.3,1) forwards}
+.burst svg{width:100%;height:100%}
+.burst path{fill:var(--star);stroke:var(--ink)}
+@keyframes slam{0%{transform:scale(2.4) rotate(-5deg);opacity:0;filter:blur(8px)}55%{transform:scale(.95) rotate(0);opacity:1;filter:blur(0)}75%{transform:scale(1.03)}100%{transform:scale(1)}}
+@keyframes neonOn{0%,14%,22%,30%{opacity:.12}18%,26%,100%{opacity:1}}
+@keyframes flicker{0%,93%,100%{opacity:1}94%{opacity:.35}95%{opacity:1}97%{opacity:.55}98%{opacity:1}}
+@keyframes slideIn{from{translate:-48px 0;opacity:0}to{translate:0 0;opacity:1}}
+@keyframes rise{from{translate:0 28px;opacity:0}to{translate:0 0;opacity:1}}
+@keyframes blip{0%{box-shadow:0 0 0 0 rgba(255,210,63,.75)}100%{box-shadow:0 0 0 18px rgba(255,210,63,0)}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 3px var(--star),7px 7px 0 var(--ink),0 0 22px rgba(255,210,63,.3)}50%{box-shadow:0 0 0 3px var(--star),7px 7px 0 var(--ink),0 0 44px rgba(255,210,63,.75)}}
+@keyframes shine{from{transform:translateX(-120%)}to{transform:translateX(420%)}}
+@keyframes stampIn{0%{transform:rotate(18deg) scale(2.4);opacity:0}65%{transform:rotate(18deg) scale(.92);opacity:1}100%{transform:rotate(18deg) scale(1)}}
+@keyframes starFly{0%{transform:translate(0,0) scale(.2) rotate(0);opacity:1}70%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1) rotate(var(--rot));opacity:0}}
+@keyframes cashBump{0%{transform:scale(1)}30%{transform:scale(1.22);color:#b8ff8a}100%{transform:scale(1)}}
+@keyframes flash{0%{opacity:.75}100%{opacity:0}}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -4px}}
+@media (prefers-reduced-motion:no-preference){
+  .title .big{animation:slam .75s cubic-bezier(.2,.9,.3,1.2) .1s both}
+  .title .script{animation:neonOn 1.1s linear .75s both,flicker 7s linear 3s infinite}
+  .hero .eyebrow{animation:slideIn .5s ease .05s both}
+  .hero .lede{animation:rise .6s ease .95s both}
+  .hero .btn{animation:rise .6s ease 1.1s both,bob 2.6s ease-in-out 2s infinite}
+  .mission.active .marker{animation:blip 1.6s ease-out infinite}
+  .char[aria-pressed="true"]{animation:glow 2.2s ease-in-out infinite}
+  .art .sil{transition:transform .35s ease}
+  .art .code{transition:transform .35s cubic-bezier(.2,.9,.3,1.5)}
+  .char:hover .art .sil{transform:translateX(-12px) scale(1.07)}
+  .char:hover .art .code{transform:translateY(-8px) rotate(-5deg)}
+  .heist{transition:transform .2s ease}
+  .heist:hover{transform:translateY(-5px) rotate(-.5deg)}
+  .heist .stamp{animation:stampIn .55s ease .2s both}
+  .bar{position:relative;overflow:hidden}
+  .bar::after{content:"";position:absolute;inset:0;width:28%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.32),transparent);animation:shine 3s ease-in-out infinite}
+  .cash.bump{animation:cashBump .55s ease}
+  .board.enter .mission{animation:rise .45s ease both;animation-delay:calc(var(--i) * 70ms)}
+  .board.enter .board-top{animation:slideIn .45s ease both}
+  @supports (animation-timeline:view()){
+    .sec-head,.heist,.plan{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 40%}
+    .heist .stamp{animation:stampIn linear both;animation-timeline:view();animation-range:entry 20% entry 60%}
+  }
+}
 </style>
 
 <header class="hud">
@@ -236,6 +281,7 @@ footer button{background:none;border:0;padding:0;color:var(--muted);text-decorat
 </footer>
 
 <div class="passed" id="passed" hidden aria-live="assertive">
+  <div class="fl"></div><div class="burst" id="burst"></div>
   <div class="inner"><div class="t">Missão cumprida</div><div class="s" id="passedSub"></div></div>
 </div>
 
@@ -390,6 +436,7 @@ let S = {sel:"backend", done:{}, heist:{}, openHeist:null};
 try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch(e) {}
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} };
 
+const reduce = matchMedia("(prefers-reduced-motion: reduce)");
 const reward = s => s * 100;
 const fmt = n => "$" + n.toLocaleString("pt-BR");
 const doneCount = t => (S.done[t.id] || 0);
@@ -410,11 +457,21 @@ function renderHud(){
   const total = T.reduce((a,t) => a + trackCash(t), 0) + H.reduce((a,h) => a + heistCash(h), 0);
   const missions = T.reduce((a,t) => a + doneCount(t), 0);
   const lvl = Math.min(5, Math.floor(missions / 6));
-  document.getElementById("hudCash").textContent = fmt(total);
   document.getElementById("hudStars").innerHTML = stars(lvl);
   document.getElementById("hudStars").setAttribute("aria-label", `Reputação ${lvl} de 5`);
   document.getElementById("hudRank").textContent = RANKS[lvl];
+  // contador de grana rolando
+  const el = document.getElementById("hudCash");
+  const from = shownCash, to = total; shownCash = to;
+  cancelAnimationFrame(cashRaf);
+  if (from === to || reduce.matches) { el.textContent = fmt(to); return; }
+  const t0 = performance.now();
+  const step = n => { const p = Math.min(1, (n - t0) / 800), e = 1 - Math.pow(1 - p, 3);
+    el.textContent = fmt(Math.round(from + (to - from) * e)); if (p < 1) cashRaf = requestAnimationFrame(step); };
+  cashRaf = requestAnimationFrame(step);
+  el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump");
 }
+let shownCash = 0, cashRaf;
 
 /* ---------- CARROSSEL ---------- */
 const reel = document.getElementById("reel");
@@ -432,7 +489,7 @@ reel.addEventListener("click", e => {
   const b = e.target.closest(".char"); if (!b) return;
   S.sel = b.dataset.id; save();
   reel.querySelectorAll(".char").forEach(c => c.setAttribute("aria-pressed", c.dataset.id === S.sel));
-  renderBoard();
+  renderBoard(true);
   document.getElementById("board").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"});
 });
 document.getElementById("prev").onclick = () => reel.scrollBy({left:-reel.clientWidth*.8, behavior:"smooth"});
@@ -440,7 +497,7 @@ document.getElementById("next").onclick = () => reel.scrollBy({left: reel.client
 
 /* ---------- MISSÕES ---------- */
 const DIFF = ["","Fácil","Fácil","Moderado","Difícil","Lendário"];
-function renderBoard(){
+function renderBoard(anim){
   const t = T.find(x => x.id === S.sel) || T[0];
   const d = doneCount(t), n = t.m.length;
   const cash = trackCash(t), max = trackMax(t);
@@ -456,7 +513,7 @@ function renderBoard(){
     if (state === "done") act = `<span class="status done">Cumprida</span><button class="btn ghost" data-undo="${i}">Desfazer</button>`;
     else if (state === "active") act = `<a class="btn ghost" href="${url}" target="_blank" rel="noopener">Ver aulas no YouTube</a><button class="btn pink" data-done="${i}">Cumprir missão</button>`;
     else act = `<span class="hint">Cumpra a missão anterior para liberar</span>`;
-    return `<li class="mission ${state}">
+    return `<li class="mission ${state}" style="--i:${i}">
       <span class="marker" aria-hidden="true">${state==="done" ? "✓" : i+1}</span>
       <div style="min-width:0">
         <h4>${title}</h4>
@@ -469,6 +526,7 @@ function renderBoard(){
   }).join("");
   const board = document.getElementById("board");
   board.style.setProperty("--a", t.a); board.style.setProperty("--b", t.b);
+  board.classList.remove("enter"); if (anim) { void board.offsetWidth; board.classList.add("enter"); }
   board.innerHTML = `
     <div class="board-top">
       <div class="portrait">${art(t)}</div>
@@ -553,7 +611,12 @@ function passed(html){
   const el = document.getElementById("passed");
   document.getElementById("passedSub").innerHTML = html;
   el.hidden = true; void el.offsetWidth; el.hidden = false;
-  const inner = el.querySelector(".inner"); inner.style.animation = "none"; void inner.offsetWidth; inner.style.animation = "";
+  el.querySelectorAll(".inner,.fl").forEach(n => { n.style.animation = "none"; void n.offsetWidth; n.style.animation = ""; });
+  const burst = document.getElementById("burst");
+  burst.innerHTML = reduce.matches ? "" : Array.from({length:16}, (_, i) => {
+    const a = (i / 16) * Math.PI * 2 + Math.random() * .3, d = 160 + Math.random() * 220;
+    return `<span style="--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d}px;--rot:${(Math.random()*720-360)|0}deg;animation-delay:${(Math.random()*120)|0}ms">${starSvg(true)}</span>`;
+  }).join("");
   clearTimeout(pt); pt = setTimeout(() => el.hidden = true, 2400);
 }
 
@@ -567,58 +630,106 @@ function refresh(){ renderReel(); renderBoard(); renderHud(); }
 refresh(); renderHeists();
 requestAnimationFrame(() => { const c = reel.querySelector('[aria-pressed="true"]'); if (c) reel.scrollLeft = Math.max(0, c.offsetLeft - reel.offsetLeft - 8); });
 
-/* ---------- CIDADE AO PÔR DO SOL (canvas) ---------- */
+/* ---------- CIDADE AO PÔR DO SOL (canvas animado) ---------- */
 const cv = document.getElementById("city"), ctx = cv.getContext("2d");
 function rnd(seed){ return () => (seed = (seed * 16807) % 2147483647) / 2147483647; }
-function draw(){
-  const w = cv.clientWidth, h = cv.clientHeight, dpr = Math.min(2, window.devicePixelRatio || 1);
-  if (!w || !h) return;
-  cv.width = w*dpr; cv.height = h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
-  const g = ctx.createLinearGradient(0,0,0,h);
+let W = 0, Hh = 0, DPR = 1, bg = null, fg = null, wins = [], cars = [], raf = 0, visible = true, last = 0;
+const heli = {x:-80};
+function layer(){ const c = document.createElement("canvas"); c.width = W*DPR; c.height = Hh*DPR; const x = c.getContext("2d"); x.setTransform(DPR,0,0,DPR,0,0); return [c,x]; }
+function build(){
+  W = cv.clientWidth; Hh = cv.clientHeight; DPR = Math.min(2, window.devicePixelRatio || 1);
+  if (!W || !Hh) return false;
+  cv.width = W*DPR; cv.height = Hh*DPR;
+  const [b, c] = layer(), h = Hh, w = W;
+  const g = c.createLinearGradient(0,0,0,h);
   g.addColorStop(0,"#1a0b33"); g.addColorStop(.38,"#6b1a6e"); g.addColorStop(.62,"#ff2d95"); g.addColorStop(.8,"#ffb02e"); g.addColorStop(1,"#ffb02e");
-  ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
-  // sol listrado
+  c.fillStyle = g; c.fillRect(0,0,w,h);
   const sx = w*.7, sy = h*.66, r = Math.min(w,h)*.3;
-  const sg = ctx.createLinearGradient(0,sy-r,0,sy+r); sg.addColorStop(0,"#ffe46b"); sg.addColorStop(1,"#ff3d7f");
-  ctx.save(); ctx.beginPath(); ctx.arc(sx,sy,r,0,Math.PI*2); ctx.clip();
-  ctx.fillStyle = sg; ctx.fillRect(sx-r,sy-r,r*2,r*2);
-  ctx.fillStyle = "#c21f6a";
-  for (let i=0;i<7;i++){ const y = sy + i*r*.14; ctx.fillRect(sx-r, y, r*2, 2 + i*1.6); }
-  ctx.restore();
-  const R = rnd(42);
-  // prédios ao fundo
-  const base = h*.86;
-  ctx.fillStyle = "#3a1440";
-  for (let x=-10; x<w; ){ const bw = 30+R()*60, bh = 60+R()*h*.35; ctx.fillRect(x, base-bh, bw, bh+h); x += bw+4; }
-  // prédios da frente com janelas
+  const sg = c.createLinearGradient(0,sy-r,0,sy+r); sg.addColorStop(0,"#ffe46b"); sg.addColorStop(1,"#ff3d7f");
+  c.save(); c.beginPath(); c.arc(sx,sy,r,0,Math.PI*2); c.clip();
+  c.fillStyle = sg; c.fillRect(sx-r,sy-r,r*2,r*2);
+  c.fillStyle = "#c21f6a"; for (let i=0;i<7;i++) c.fillRect(sx-r, sy + i*r*.14, r*2, 2 + i*1.6);
+  c.restore();
+  const R = rnd(42), base = h*.86; wins = [];
+  c.fillStyle = "#3a1440";
+  for (let x=-10; x<w; ){ const bw = 30+R()*60, bh = 60+R()*h*.35; c.fillRect(x, base-bh, bw, bh+h); x += bw+4; }
   for (let x=-10; x<w; ){
     const bw = 40+R()*80, bh = 40+R()*h*.28;
-    ctx.fillStyle = "#120a1c"; ctx.fillRect(x, base-bh+20, bw, bh+h);
-    if (R() > .7) ctx.fillRect(x+bw*.45, base-bh, 3, 22); // antena
-    for (let wy = base-bh+30; wy < h; wy += 12) for (let wx = x+6; wx < x+bw-8; wx += 10) {
-      const k = R(); if (k > .78) { ctx.fillStyle = k > .93 ? "#29e3ff" : "#ffd27a"; ctx.fillRect(wx, wy, 4, 6); }
+    c.fillStyle = "#120a1c"; c.fillRect(x, base-bh+20, bw, bh+h);
+    if (R() > .7) c.fillRect(x+bw*.45, base-bh, 3, 22);
+    for (let wy = base-bh+30; wy < h-30; wy += 12) for (let wx = x+6; wx < x+bw-8; wx += 10) {
+      const k = R(); if (k > .72) wins.push({x:wx, y:wy, c: k > .93 ? "#29e3ff" : "#ffd27a", on: k > .78});
     }
     x += bw + 6;
   }
-  // palmeiras
+  // avenida
+  c.fillStyle = "#07040c"; c.fillRect(0, h-28, w, 28);
+  c.fillStyle = "#ffb02e"; for (let x=0; x<w; x+=34) c.fillRect(x, h-15, 16, 2);
+  bg = b;
+  const [f, fx] = layer();
   const palm = (px, ph, lean) => {
-    ctx.strokeStyle = "#07040c"; ctx.fillStyle = "#07040c"; ctx.lineWidth = 7; ctx.lineCap = "round";
+    fx.strokeStyle = "#07040c"; fx.lineWidth = 7; fx.lineCap = "round";
     const tx = px + lean, ty = h - ph;
-    ctx.beginPath(); ctx.moveTo(px, h); ctx.quadraticCurveTo(px + lean*.2, h - ph*.5, tx, ty); ctx.stroke();
+    fx.beginPath(); fx.moveTo(px, h); fx.quadraticCurveTo(px + lean*.2, h - ph*.5, tx, ty); fx.stroke();
     for (let a = 0; a < 7; a++){
       const ang = -Math.PI*.95 + a*(Math.PI*.95/6), len = 70 + (a%2)*18;
       const ex = tx + Math.cos(ang)*len, ey = ty + Math.sin(ang)*len*.55 + 34;
-      ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(tx, ty);
-      ctx.quadraticCurveTo(tx + Math.cos(ang)*len*.5, ty + Math.sin(ang)*len*.6 - 12, ex, ey); ctx.stroke();
+      fx.lineWidth = 4; fx.beginPath(); fx.moveTo(tx, ty);
+      fx.quadraticCurveTo(tx + Math.cos(ang)*len*.5, ty + Math.sin(ang)*len*.6 - 12, ex, ey); fx.stroke();
     }
   };
   palm(w*.06, h*.62, 26); palm(w*.13, h*.48, -18); palm(w*.94, h*.58, -30);
-  // vinheta para leitura do texto
-  const v = ctx.createLinearGradient(0,0,w,0); v.addColorStop(0,"rgba(12,10,18,.55)"); v.addColorStop(.6,"rgba(12,10,18,0)");
-  ctx.fillStyle = v; ctx.fillRect(0,0,w,h);
+  const v = fx.createLinearGradient(0,0,w,0); v.addColorStop(0,"rgba(12,10,18,.55)"); v.addColorStop(.6,"rgba(12,10,18,0)");
+  fx.fillStyle = v; fx.fillRect(0,0,w,h);
+  fg = f;
+  const CR = rnd(7);
+  cars = Array.from({length: Math.max(4, Math.round(w/160))}, (_, i) => {
+    const dir = i % 2 ? -1 : 1;
+    return {x: CR()*w, dir, y: dir > 0 ? h-10 : h-22, v: 70 + CR()*110, len: 22 + CR()*14, col: ["#ff2d95","#29e3ff","#ffd23f","#e8e1f5"][i%4]};
+  });
+  return true;
 }
-draw();
-let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(draw, 120); });
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+function frame(t){
+  if (!bg) return;
+  const dt = last ? Math.min(.05, (t - last) / 1000) : 0; last = t;
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.drawImage(bg, 0, 0, W, Hh);
+  // janelas acendendo e apagando
+  for (const w of wins) if (w.on) { ctx.fillStyle = w.c; ctx.fillRect(w.x, w.y, 4, 6); }
+  if (dt && Math.random() < .5) { const w = wins[(Math.random()*wins.length)|0]; if (w) w.on = !w.on; }
+  // helicóptero com holofote
+  heli.x += 34 * dt; if (heli.x > W + 120) heli.x = -120;
+  const hx = heli.x, hy = Hh*.18 + Math.sin(t/900)*6, sweep = Math.sin(t/1400)*90;
+  const cg = ctx.createLinearGradient(hx, hy, hx + sweep, Hh);
+  cg.addColorStop(0, "rgba(255,250,210,.32)"); cg.addColorStop(1, "rgba(255,250,210,0)");
+  ctx.fillStyle = cg; ctx.beginPath(); ctx.moveTo(hx-3, hy+6); ctx.lineTo(hx + sweep - 70, Hh); ctx.lineTo(hx + sweep + 70, Hh); ctx.lineTo(hx+3, hy+6); ctx.fill();
+  ctx.fillStyle = "#07040c"; ctx.beginPath(); ctx.ellipse(hx, hy, 15, 7, 0, 0, Math.PI*2); ctx.fill();
+  ctx.fillRect(hx-34, hy-2, 22, 3); ctx.fillRect(hx-36, hy-7, 3, 9);
+  const rw = 30 * Math.abs(Math.sin(t/35)) + 4; ctx.fillRect(hx - rw, hy-10, rw*2, 2); ctx.fillRect(hx-1, hy-10, 2, 4);
+  if (((t/450)|0) % 2) { ctx.fillStyle = "#ff3030"; ctx.beginPath(); ctx.arc(hx-34, hy-1, 2.4, 0, Math.PI*2); ctx.fill(); }
+  // carros na avenida
+  for (const c of cars) {
+    c.x += c.v * c.dir * dt;
+    if (c.dir > 0 && c.x > W + 80) c.x = -80; if (c.dir < 0 && c.x < -80) c.x = W + 80;
+    const front = c.dir > 0 ? c.x + c.len : c.x, back = c.dir > 0 ? c.x : c.x + c.len;
+    const bm = ctx.createLinearGradient(front, 0, front + c.dir*70, 0);
+    bm.addColorStop(0, "rgba(255,246,200,.55)"); bm.addColorStop(1, "rgba(255,246,200,0)");
+    ctx.fillStyle = bm; ctx.beginPath(); ctx.moveTo(front, c.y-1); ctx.lineTo(front + c.dir*70, c.y-7); ctx.lineTo(front + c.dir*70, c.y+5); ctx.fill();
+    ctx.fillStyle = "#000"; ctx.fillRect(c.x, c.y-5, c.len, 7);
+    ctx.fillStyle = c.col; ctx.fillRect(c.x + c.len*.25, c.y-8, c.len*.5, 3);
+    ctx.fillStyle = "#fff6c8"; ctx.fillRect(front - (c.dir>0?2:0), c.y-3, 2, 2);
+    ctx.fillStyle = "#ff2a2a"; ctx.fillRect(back - (c.dir>0?0:2), c.y-3, 2, 2);
+  }
+  ctx.drawImage(fg, 0, 0, W, Hh);
+  if (!reduce.matches && visible) raf = requestAnimationFrame(frame);
+}
+function start(){ cancelAnimationFrame(raf); last = 0; if (build()) raf = requestAnimationFrame(frame); }
+start();
+if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => {
+  visible = e.isIntersecting; cancelAnimationFrame(raf); last = 0;
+  if (visible && bg) raf = requestAnimationFrame(frame);
+}).observe(cv);
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(start, 120); });
+reduce.addEventListener?.("change", start);
 })();
 </script>
