@@ -116,7 +116,11 @@
       "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-05-quanto-custa-tirar-sua-ideia-d.mp4",
       "redes": {
         "instagram": {
-          "status": "pendente"
+          "status": "postado",
+          "id": "18364490410222310",
+          "url": "https://www.instagram.com/reel/DgOYiyBKsb6/",
+          "em": "2026-11-27T00:31:30.430Z",
+          "confirmado": "2026-11-27T00:31:30.462Z"
         }
       },
       "metricas": {

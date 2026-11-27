@@ -112,7 +112,10 @@
       "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-05-quanto-custa-tirar-sua-ideia-d.mp4",
       "redes": {
         "tiktok": {
-          "status": "pendente"
+          "status": "postado",
+          "id": "manual-enviado",
+          "url": null,
+          "em": "2026-11-27T00:31:38.990Z"
         }
       },
       "metricas": {
