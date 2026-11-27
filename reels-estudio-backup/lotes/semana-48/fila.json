@@ -164,7 +164,11 @@
       "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-07-da-planilha-ao-sistema-proprio.mp4",
       "redes": {
         "instagram": {
-          "status": "pendente"
+          "status": "postado",
+          "id": "18148228318593375",
+          "url": "https://www.instagram.com/reel/DgPo-CPBaGi/",
+          "em": "2026-11-27T12:09:37.954Z",
+          "confirmado": "2026-11-27T12:09:38.000Z"
         }
       },
       "metricas": {
