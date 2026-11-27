@@ -7,6 +7,7 @@ import type {
   Cena, CenaAntesDepois, CenaCta, CenaGancho, CenaLista, CenaNumero, CenaTitulo, Cores,
 } from './tipos';
 import { pilhaSans, pilhaSerif } from './fontes';
+import { CenaInterface } from './cenas2';
 
 type Props<C> = { cena: C; cores: Cores; fonte: string; fonteItalica: string; duracao: number };
 
@@ -278,6 +279,8 @@ export const CenaVisual: React.FC<Props<Cena>> = (p) => {
     case 'numero': return <Numero {...(p as Props<CenaNumero>)} />;
     case 'antes-depois': return <AntesDepois {...(p as Props<CenaAntesDepois>)} />;
     case 'cta': return <Cta {...(p as Props<CenaCta>)} />;
+    case 'celular': case 'terminal': case 'cartoes': case 'checklist': case 'comentario':
+      return <CenaInterface {...(p as any)} />;
     default: return null;
   }
 };

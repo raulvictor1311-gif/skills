@@ -5,6 +5,7 @@ import { estimarTempos, montarLinhas } from './tempo';
 import { Fontes } from './fontes';
 import { Legenda } from './Legenda';
 import { CenaVisual } from './cenas';
+import { Progresso } from './cenas2';
 
 /** fundo com um brilho suave da cor de destaque que passeia devagar */
 const Fundo: React.FC<{ cores: Cores }> = ({ cores }) => {
@@ -32,7 +33,7 @@ export const Reel: React.FC<ReelProps> = (props) => {
   // sem legenda repetida: no CTA, e em cena cujo título já é a própria fala (o gancho, quase sempre)
   const so = (x: string) => x.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
   const cenasSemLegenda = props.cenas.flatMap((c, i) =>
-    c.tipo === 'cta' || ('titulo' in c && c.titulo && so(c.titulo) === so(c.fala)) ? [i] : [],
+    c.tipo === 'cta' || c.tipo === 'comentario' || ('titulo' in c && c.titulo && so(c.titulo) === so(c.fala)) ? [i] : [],
   );
   const temNarracao = Boolean(props.narracao);
   const volumeBase = props.volumeTrilha ?? (temNarracao ? 0.3 : 0.8);
@@ -59,6 +60,7 @@ export const Reel: React.FC<ReelProps> = (props) => {
   return (
     <AbsoluteFill>
       <Fundo cores={cores} />
+      {props.progresso !== false && <Progresso cores={cores} />}
       <Fontes fonte={fonte} fonteItalica={fonteItalica}>
         {props.cenas.map((cena, i) => {
           const b = tempos.cenas[i];
@@ -67,6 +69,7 @@ export const Reel: React.FC<ReelProps> = (props) => {
           return (
             <Sequence key={i} from={from} durationInFrames={dur} name={`${i + 1}. ${cena.tipo}`}>
               <CenaVisual cena={cena} cores={cores} fonte={fonte} fonteItalica={fonteItalica} duracao={dur / fps} />
+              {props.progresso !== false && cena.secao && <Progresso cores={cores} secao={cena.secao} />}
             </Sequence>
           );
         })}

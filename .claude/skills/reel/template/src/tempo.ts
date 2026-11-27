@@ -16,7 +16,7 @@ export const estimarTempos = (cenas: Cena[]): Tempos => {
   let t = 0;
   cenas.forEach((cena, i) => {
     const ps = separarPalavras(cena.fala);
-    const minimo = cena.tipo === 'cta' ? CTA_MINIMO : CENA_MINIMA;
+    const minimo = cena.tipo === 'cta' || cena.tipo === 'comentario' ? CTA_MINIMO : CENA_MINIMA;
     const dur = cena.duracao ?? Math.max(minimo, ps.length / PALAVRAS_POR_SEGUNDO + 0.35);
     // distribui as palavras pelo tamanho (palavra longa demora mais para ser dita)
     const pesos = ps.map((p) => p.length + 2);

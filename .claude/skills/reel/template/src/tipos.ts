@@ -15,6 +15,8 @@ export type Cores = {
 };
 
 type Base = {
+  /** rótulo pequeno no canto de cima (ex.: "// 01 · gancho"). Opcional. */
+  secao?: string;
   /** o que é dito nessa cena. Vira narração e legenda palavra por palavra. */
   fala: string;
   /** segundos. Só vale quando NÃO há narração; com narração, quem manda é o áudio. */
@@ -42,7 +44,30 @@ export type CenaAntesDepois = Base & {
 };
 export type CenaCta = Base & { tipo: 'cta'; palavra: string; chamada?: string; promessa?: string };
 
-export type Cena = CenaGancho | CenaTitulo | CenaLista | CenaNumero | CenaAntesDepois | CenaCta;
+export type CenaCelular = Base & {
+  tipo: 'celular';
+  /** o que aparece na tela do celular: site (padrão), chat ou dashboard */
+  tela?: 'site' | 'chat' | 'dashboard';
+  titulo?: string;
+  /** título dentro da tela (site e dashboard) */
+  textoTela?: string;
+  /** botão do site */
+  botao?: string;
+  /** balões do chat: pares = cliente, ímpares = você */
+  mensagens?: string[];
+  /** alturas das barras do dashboard (0 a 100) */
+  barras?: number[];
+  /** etiqueta embaixo do celular */
+  rotulo?: string;
+};
+export type CenaTerminal = Base & { tipo: 'terminal'; titulo?: string; comando: string; linhas?: string[]; janela?: string };
+export type CenaCartoes = Base & { tipo: 'cartoes'; titulo?: string; itens: { icone: string; titulo: string; texto?: string }[] };
+export type CenaChecklist = Base & { tipo: 'checklist'; titulo?: string; itens: { texto: string; ok: boolean }[] };
+export type CenaComentario = Base & { tipo: 'comentario'; palavra: string; chamada?: string; promessa?: string; perfil?: string };
+
+export type Cena =
+  | CenaGancho | CenaTitulo | CenaLista | CenaNumero | CenaAntesDepois | CenaCta
+  | CenaCelular | CenaTerminal | CenaCartoes | CenaChecklist | CenaComentario;
 
 export type Palavra = { texto: string; inicio: number; fim: number; cena: number };
 export type Tempos = {
@@ -67,6 +92,8 @@ export type ReelProps = {
   trilha?: string | null;
   /** volume da trilha de 0 a 1 (padrão: 0,3 com narração, 0,8 sem) */
   volumeTrilha?: number;
+  /** barra de progresso no topo (padrão: true) */
+  progresso?: boolean;
   cenas: Cena[];
   /** preenchido sozinho pelo calculateMetadata; não escreva no JSON */
   tempos?: Tempos;

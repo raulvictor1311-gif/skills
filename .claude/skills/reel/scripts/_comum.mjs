@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-export const TIPOS = ['gancho', 'titulo', 'lista', 'numero', 'antes-depois', 'cta'];
+export const TIPOS = ['gancho', 'titulo', 'lista', 'numero', 'antes-depois', 'cta', 'celular', 'terminal', 'cartoes', 'checklist', 'comentario'];
 
 /** lê --chave valor e --flag da linha de comando */
 export const lerArgs = (argv = process.argv.slice(2)) => {
@@ -63,6 +63,10 @@ export const validar = (d) => {
     if (c.tipo === 'lista' && (!Array.isArray(c.itens) || c.itens.length < 2 || !c.itens.every(texto))) erros.push(`${n}: "itens" precisa ter pelo menos 2 textos.`);
     if (c.tipo === 'numero' && typeof c.ate !== 'number') erros.push(`${n}: "ate" precisa ser número.`);
     if (c.tipo === 'antes-depois' && !(texto(c.antes) && texto(c.depois))) erros.push(`${n}: faltam "antes" e "depois".`);
+    if (c.tipo === 'terminal' && !texto(c.comando)) erros.push(`${n}: falta "comando".`);
+    if (c.tipo === 'cartoes' && (!Array.isArray(c.itens) || c.itens.length < 1 || !c.itens.every((x) => texto(x?.titulo)))) erros.push(`${n}: "itens" precisa de pelo menos 1 cartão com "titulo".`);
+    if (c.tipo === 'checklist' && (!Array.isArray(c.itens) || c.itens.length < 2 || !c.itens.every((x) => texto(x?.texto) && typeof x.ok === 'boolean'))) erros.push(`${n}: "itens" precisa de pelo menos 2 { texto, ok }.`);
+    if (c.tipo === 'comentario' && !texto(c.palavra)) erros.push(`${n}: falta "palavra".`);
     if (c.tipo === 'cta' && !texto(c.palavra)) erros.push(`${n}: falta "palavra" (a palavra-chave que a pessoa comenta).`);
   });
   if (d.volumeTrilha !== undefined && !(typeof d.volumeTrilha === 'number' && d.volumeTrilha >= 0 && d.volumeTrilha <= 1)) erros.push('"volumeTrilha" vai de 0 a 1.');
@@ -76,7 +80,7 @@ export const estimarTempos = (cenas) => {
   let t = 0;
   cenas.forEach((cena, i) => {
     const ps = cena.fala.trim().split(/\s+/).filter(Boolean);
-    const minimo = cena.tipo === 'cta' ? 3.0 : 1.8;
+    const minimo = cena.tipo === 'cta' || cena.tipo === 'comentario' ? 3.0 : 1.8;
     const dur = cena.duracao ?? Math.max(minimo, ps.length / 2.9 + 0.35);
     const pesos = ps.map((p) => p.length + 2);
     const soma = pesos.reduce((a, b) => a + b, 0) || 1;
