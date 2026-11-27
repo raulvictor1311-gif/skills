@@ -7,1517 +7,337 @@
 <meta name="description" content="Explore a Costa Solar. Escolha seu caminho. Aprenda programação completando missões.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&family=Silkscreen&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap">
 <style>
 /* =========================================================================
-   DEV CITY 3D · Costa Solar
-   Página separada do modo clássico: o 3D só é baixado quando a pessoa entra.
-   Camadas: canvas 3D (Three.js) ou canvas 2D → rótulos dos marcadores → HUD
-   → painéis (dialog). Visual único e noturno, por escolha.
+   DEV CITY 3D · Centro (protótipo realista)
+   Interface: vidro escuro, bordas finas, cantos discretos. Cor forte só para
+   objetivo (amarelo), concluído (verde), tecnologia/interação (ciano) e alerta.
    ========================================================================= */
 :root{
   color-scheme: dark;
-  --ink:#05030b;
-  --deep:#0b0a24;         /* azul profundo */
-  --panel:#16123a;
-  --panel-2:#211b4d;
-  --line:#3d3478;
-  --fg:#f6f3ff;
-  --muted:#cfc6f0;
-  --dim:#a99fd0;
-  --purple:#7b3cff;
-  --cyan:#2ff3ff;
-  --yellow:#ffd23f;
-  --pink:#ff3fa4;
-  --green:#7bf06a;
-  --gold:#ffb627;
-  --red:#ff6b6b;
-  --f-display:"Anton","Impact","Arial Narrow Bold",sans-serif;
-  --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-hud:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
-  --f-pix:"Silkscreen","Courier New",monospace;   /* detalhes pixel art, só em rótulos curtos */
-  --glow:0 0 0 1px rgba(47,243,255,.55),0 0 16px rgba(47,243,255,.25);
+  --bg:#0b111c;
+  --glass:rgba(10,16,28,.58);
+  --glass-strong:rgba(10,16,28,.86);
+  --line:rgba(255,255,255,.12);
+  --line-2:rgba(255,255,255,.2);
+  --fg:#eef2f7;
+  --muted:#aeb8c7;
+  --dim:#8792a3;
+  --yellow:#f5c84c;   /* objetivo e recompensa */
+  --green:#5fd38d;    /* concluído */
+  --cyan:#56d6e4;     /* tecnologia e itens interativos */
+  --blue:#6aa6ff;     /* em andamento */
+  --violet:#a891ff;   /* missão especial */
+  --amber:#f0a64a;    /* projeto final */
+  --red:#ef6060;      /* alertas */
+  --r:12px;
+  --shadow:0 12px 32px rgba(0,0,0,.35);
+  --f-ui:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-head:"Sora","Inter",system-ui,sans-serif;
 }
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;background:var(--deep);color:var(--fg);font-family:var(--f-body);font-size:17px;line-height:1.5;overflow:hidden;overscroll-behavior:none}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:var(--f-ui);font-size:16px;line-height:1.5;overflow:hidden;overscroll-behavior:none;-webkit-font-smoothing:antialiased}
 button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 a{color:var(--cyan)}
-:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
 .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+[hidden]{display:none!important}
 #app{position:fixed;inset:0;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
 #gl,#map2d{position:absolute;inset:0;width:100%;height:100%;display:block}
-#gl.pixel{image-rendering:pixelated;image-rendering:crisp-edges}
-#map2d{background:#120d24}
-[hidden]{display:none!important}
+#map2d{background:#0e1626}
+.glass{background:var(--glass);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+kbd{font-family:var(--f-ui);font-size:11px;font-weight:600;min-width:20px;padding:1px 6px;border:1px solid var(--line-2);border-bottom-width:2px;border-radius:5px;color:var(--fg);text-align:center;display:inline-block;line-height:1.4}
 
-/* ---------- HUD (identidade própria: cartões com canto cortado e borda ciano) ---------- */
-.cut{clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px))}
-.hud{position:absolute;inset:0;pointer-events:none;padding:max(10px,env(safe-area-inset-top,0px)) max(10px,env(safe-area-inset-right,0px)) max(10px,env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px))}
+/* ---------- HUD ---------- */
+.hud{position:absolute;inset:0;pointer-events:none;--pad-t:max(14px,env(safe-area-inset-top,0px));--pad-r:max(14px,env(safe-area-inset-right,0px));--pad-b:max(14px,env(safe-area-inset-bottom,0px));--pad-l:max(14px,env(safe-area-inset-left,0px))}
 .hud > *{pointer-events:auto}
-.card{background:rgba(11,10,36,.9);border:2px solid var(--cyan);box-shadow:var(--glow)}
-.player{position:absolute;left:max(10px,env(safe-area-inset-left,0px));top:max(10px,env(safe-area-inset-top,0px));width:260px;padding:10px 12px;display:grid;gap:4px}
-.p-row{display:flex;align-items:center;gap:10px}
-.avatar{width:40px;height:40px;flex:none;display:grid;place-items:center;background:var(--purple);border:2px solid var(--ink);font-family:var(--f-pix);font-size:14px;color:#fff}
-.p-lvl{font-family:var(--f-display);font-size:22px;line-height:1;letter-spacing:.02em}
-.p-rank{font-family:var(--f-hud);font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:var(--yellow)}
-.xpbar{height:10px;background:#2a2357;border:1px solid var(--ink);position:relative}
-.xpbar i{position:absolute;inset:0 auto 0 0;background:repeating-linear-gradient(90deg,var(--cyan) 0 6px,#18c5d1 6px 8px)}
-.p-stats{display:flex;flex-wrap:wrap;gap:4px 12px;font-family:var(--f-hud);font-weight:700;font-size:15px;letter-spacing:.04em}
-.p-stats .cash{color:var(--green);font-size:19px}
-.p-stats .resp{color:var(--pink)}
-.p-stats span{white-space:nowrap}
-.objective{position:absolute;left:50%;transform:translateX(-50%);top:max(10px,env(safe-area-inset-top,0px));max-width:min(440px,calc(100vw - 600px));min-width:260px;padding:8px 14px;display:flex;align-items:center;gap:12px;border-color:var(--yellow);box-shadow:0 0 0 1px rgba(255,210,63,.5),0 0 16px rgba(255,210,63,.2);cursor:pointer;text-align:left}
-.objective .k{display:block;font-family:var(--f-pix);font-size:11px;color:var(--yellow);letter-spacing:.04em}
-.objective b{display:block;font-family:var(--f-display);font-weight:400;font-size:19px;line-height:1.1;text-transform:uppercase}
-.objective .dist{display:block;font-family:var(--f-hud);font-weight:700;font-size:15px;color:var(--muted)}
-.arrow{width:38px;height:38px;flex:none;transition:transform .1s linear}
-.mini-wrap{position:absolute;right:max(10px,env(safe-area-inset-right,0px));top:max(10px,env(safe-area-inset-top,0px));display:grid;gap:6px;justify-items:end}
-.mini{width:176px;height:176px;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:var(--cyan);padding:3px;cursor:pointer;border:0;display:block}
-.mini canvas{width:100%;height:100%;display:block;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:#120d24}
-.clock{padding:4px 10px;font-family:var(--f-pix);font-size:12px;letter-spacing:.04em}
-.district-chip{padding:4px 10px;font-family:var(--f-hud);font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;border-color:var(--pink);box-shadow:0 0 0 1px rgba(255,63,164,.5)}
-.tools{position:absolute;right:max(10px,env(safe-area-inset-right,0px));bottom:max(10px,env(safe-area-inset-bottom,0px));display:grid;gap:8px;justify-items:end}
-.tool{display:flex;align-items:center;gap:8px;min-height:44px;padding:6px 12px;background:rgba(11,10,36,.9);border:2px solid var(--line);font-family:var(--f-hud);font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--fg)}
-.tool:hover{border-color:var(--cyan)}
-.tool kbd{font-family:var(--f-pix);font-size:11px;background:var(--cyan);color:var(--ink);padding:1px 5px}
-.prompt{position:absolute;left:50%;bottom:calc(max(10px,env(safe-area-inset-bottom,0px)) + 18px);transform:translateX(-50%);display:flex;align-items:center;gap:12px;padding:10px 16px;border-color:var(--yellow);font-weight:600;max-width:calc(100vw - 32px)}
-.prompt kbd{font-family:var(--f-pix);font-size:14px;background:var(--yellow);color:var(--ink);padding:4px 9px;border:2px solid var(--ink)}
-.banner{position:absolute;left:50%;top:96px;transform:translateX(-50%);text-align:center;pointer-events:none;padding:10px 22px;background:linear-gradient(90deg,transparent,rgba(11,10,36,.92) 15%,rgba(11,10,36,.92) 85%,transparent);transition:opacity .5s ease}
-.banner b{display:block;font-family:var(--f-display);font-weight:400;font-size:clamp(28px,5vw,44px);line-height:1;text-transform:uppercase;letter-spacing:.03em;color:#fff;text-shadow:0 0 12px rgba(255,63,164,.8),3px 3px 0 var(--ink)}
-.banner span{font-family:var(--f-hud);font-weight:700;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan)}
-.toast{position:absolute;left:50%;bottom:110px;transform:translateX(-50%);padding:10px 16px;background:var(--yellow);color:var(--ink);border:2px solid var(--ink);font-family:var(--f-hud);font-weight:700;font-size:17px;max-width:calc(100vw - 32px);text-align:center;box-shadow:4px 4px 0 var(--ink)}
+.player{position:absolute;left:var(--pad-l);top:var(--pad-t);display:flex;align-items:center;gap:12px;padding:10px 14px 10px 10px;min-width:250px}
+.ring{position:relative;width:46px;height:46px;flex:none}
+.ring svg{width:46px;height:46px;transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-head);font-size:16px;font-weight:700}
+.p-rank{font-size:13px;font-weight:600}
+.p-rank span{color:var(--muted);font-weight:500}
+.p-stats{display:flex;gap:12px;font-size:13px;color:var(--muted);margin-top:4px;flex-wrap:wrap}
+.p-stats .cash{color:var(--green);font-weight:600}
+.objective{position:absolute;left:var(--pad-l);top:calc(var(--pad-t) + 78px);display:flex;align-items:center;gap:12px;padding:10px 14px;max-width:340px;text-align:left;border-left:3px solid var(--yellow)}
+.objective b{display:block;font-family:var(--f-head);font-size:15px;font-weight:700;letter-spacing:.01em}
+.objective .meta{display:block;font-size:13px;color:var(--muted)}
+.objective .arrow{width:30px;height:30px;flex:none;transition:transform .12s linear}
+.mini-wrap{position:absolute;right:var(--pad-r);top:var(--pad-t);display:grid;gap:8px;justify-items:end}
+.mini{position:relative;width:184px;height:184px;border-radius:50%;padding:0;border:1px solid var(--line-2);background:#0e1626;box-shadow:var(--shadow);overflow:hidden;display:block}
+.mini canvas{width:100%;height:100%;display:block;border-radius:50%}
+.mini .north{position:absolute;left:50%;top:6px;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--fg);background:rgba(10,16,28,.8);border-radius:8px;padding:0 5px}
+.mini-row{display:flex;gap:6px;align-items:center}
+.icon-btn{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;border:1px solid var(--line);background:var(--glass);color:var(--fg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.icon-btn:hover{border-color:var(--line-2)}
+.clock{padding:6px 12px;font-size:13px;color:var(--muted);border-radius:10px}
+.clock b{color:var(--fg);font-weight:600}
+.toolbar{position:absolute;right:var(--pad-r);bottom:var(--pad-b);display:flex;flex-direction:column;gap:2px;padding:6px}
+.tool{display:flex;align-items:center;gap:10px;min-height:42px;padding:6px 10px;border:0;border-radius:9px;background:transparent;color:var(--fg);font-size:14px;font-weight:500;text-decoration:none;text-align:left}
+.tool:hover,.tool[aria-pressed="true"]{background:rgba(255,255,255,.08)}
+.tool svg{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tool kbd{margin-left:auto}
+.tool .t{min-width:76px}
+.prompt{position:absolute;left:50%;bottom:calc(var(--pad-b) + 18px);transform:translateX(-50%);display:flex;align-items:center;gap:14px;padding:12px 16px;border-left:3px solid var(--yellow);min-width:300px;max-width:calc(100vw - 32px);animation:fadeUp .25s ease}
+.prompt b{display:block;font-family:var(--f-head);font-size:17px;font-weight:700;letter-spacing:.02em;text-transform:uppercase}
+.prompt small{display:block;font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--yellow)}
+.prompt .pm{display:block;font-size:13px;color:var(--muted)}
+.prompt .key{display:flex;align-items:center;gap:8px;margin-left:auto;font-size:13px;color:var(--muted);white-space:nowrap}
+.prompt .key kbd{font-size:13px;padding:3px 9px;background:var(--yellow);color:#151515;border-color:var(--yellow)}
+.banner{position:absolute;left:50%;top:calc(var(--pad-t) + 6px);transform:translateX(-50%);text-align:center;pointer-events:none;padding:8px 18px;transition:opacity .5s ease}
+.banner b{display:block;font-family:var(--f-head);font-size:22px;font-weight:700;letter-spacing:.02em;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.banner span{font-size:13px;color:var(--fg);opacity:.85;text-shadow:0 1px 8px rgba(0,0,0,.7)}
+@keyframes fadeUp{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+.toast{position:absolute;left:50%;top:calc(max(14px,env(safe-area-inset-top,0px)) + 64px);transform:translateX(-50%);padding:10px 16px;font-size:14px;font-weight:500;max-width:calc(100vw - 32px);text-align:center;border-left:3px solid var(--cyan);z-index:30}
 
-/* Rótulos dos marcadores (HTML sobre o 3D: legíveis e clicáveis/tocáveis) */
+/* Rótulos do mundo: surgem com a proximidade */
 #labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.mlabel{position:absolute;left:0;top:0;pointer-events:auto;transform-origin:50% 100%;display:flex;align-items:center;gap:8px;padding:5px 10px 5px 5px;min-height:40px;background:rgba(11,10,36,.9);border:2px solid var(--c);color:var(--fg);text-align:left;white-space:nowrap;box-shadow:0 0 10px color-mix(in srgb,var(--c) 45%,transparent)}
-.mlabel .ic{width:28px;height:28px;flex:none;display:grid;place-items:center;background:var(--c);color:var(--ink);font-family:var(--f-pix);font-size:14px;border:2px solid var(--ink)}
-.mlabel b{display:block;font-family:var(--f-hud);font-weight:700;font-size:16px;letter-spacing:.03em;line-height:1.05}
-.mlabel small{display:block;font-family:var(--f-hud);font-weight:600;font-size:13px;color:var(--muted);letter-spacing:.04em}
+.mlabel{position:absolute;left:0;top:0;pointer-events:auto;display:flex;align-items:center;gap:8px;padding:6px 10px 6px 6px;min-height:40px;border-radius:10px;background:rgba(10,16,28,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--line);color:var(--fg);text-align:left;white-space:nowrap;transition:opacity .35s ease}
+.mlabel .ic{width:26px;height:26px;flex:none;display:grid;place-items:center;border-radius:7px;background:var(--c);color:#111;font-size:13px;font-weight:700}
+.mlabel b{display:block;font-size:13px;font-weight:600;line-height:1.15}
+.mlabel small{display:block;font-size:12px;color:var(--muted)}
 .mlabel.far small{display:none}
-.mlabel.far b{font-size:14px}
 
-/* Controles de toque */
-.joy{position:absolute;left:max(18px,env(safe-area-inset-left,0px));bottom:max(18px,env(safe-area-inset-bottom,0px));width:132px;height:132px;border-radius:50%;background:rgba(11,10,36,.55);border:2px solid var(--cyan);touch-action:none}
-.joy .knob{position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;background:var(--cyan);border:3px solid var(--ink);opacity:.9}
-.act{position:absolute;right:max(18px,env(safe-area-inset-right,0px));bottom:calc(max(18px,env(safe-area-inset-bottom,0px)) + 4px);min-width:112px;min-height:72px;padding:8px 16px;background:var(--yellow);color:var(--ink);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);font-family:var(--f-display);font-size:22px;text-transform:uppercase}
-.touch .tools{bottom:calc(max(18px,env(safe-area-inset-bottom,0px)) + 96px)}
-.touch .prompt{bottom:calc(max(18px,env(safe-area-inset-bottom,0px)) + 262px)}
-@media (max-height:520px){.tools{grid-template-columns:repeat(3,auto)}.touch .prompt{bottom:calc(max(18px,env(safe-area-inset-bottom,0px)) + 90px)}}
+/* Toque */
+.joy{position:absolute;left:var(--pad-l);bottom:var(--pad-b);width:128px;height:128px;border-radius:50%;background:rgba(10,16,28,.35);border:1px solid var(--line-2);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.joy .knob{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:rgba(238,242,247,.85);box-shadow:0 4px 14px rgba(0,0,0,.4)}
+.act{position:absolute;right:var(--pad-r);bottom:calc(var(--pad-b) + 4px);min-width:108px;min-height:64px;padding:8px 18px;border-radius:16px;border:0;background:var(--yellow);color:#151515;font-family:var(--f-head);font-weight:700;font-size:17px;box-shadow:var(--shadow)}
+
+/* Celular e tablet */
+@media (max-width:820px){
+  .player{min-width:0;padding:8px 12px 8px 8px;gap:10px}.ring,.ring svg{width:40px;height:40px}
+  .p-stats{gap:8px;font-size:12px}
+  .objective{top:auto;bottom:calc(var(--pad-b) + 140px);max-width:calc(100vw - 104px);padding:8px 12px}
+  .mini{width:124px;height:124px}
+  .toolbar{bottom:auto;top:calc(var(--pad-t) + 176px);right:var(--pad-r);flex-direction:column}
+  .tool .t,.tool kbd{display:none}.tool{min-height:44px;min-width:44px;justify-content:center;padding:6px}
+  .prompt{bottom:calc(var(--pad-b) + 214px);min-width:0}
+  .prompt .key{display:none}
+}
+@media (max-width:820px) and (max-height:500px){.toolbar{top:var(--pad-t);right:calc(var(--pad-r) + 134px);flex-direction:row}.objective{bottom:auto;top:calc(var(--pad-t) + 62px)}.prompt{bottom:calc(var(--pad-b) + 8px)}}
 
 /* ---------- ABERTURA ---------- */
-.intro{position:absolute;inset:0;z-index:20;display:grid;align-items:center;overflow:auto;background:linear-gradient(90deg,rgba(5,3,11,.92) 0%,rgba(5,3,11,.72) 50%,rgba(5,3,11,.25) 100%);padding:max(20px,env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) max(20px,env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px))}
-.intro-in{max-width:640px;display:grid;gap:16px;justify-items:start;margin-left:clamp(0px,5vw,80px)}
-.tag{font-family:var(--f-pix);font-size:13px;color:var(--yellow);background:var(--ink);padding:5px 10px;border:1px solid var(--yellow)}
-.intro h1{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(64px,12vw,140px);line-height:.85;color:#fff;-webkit-text-stroke:3px var(--ink);text-shadow:5px 5px 0 var(--purple),0 0 30px rgba(47,243,255,.35)}
-.intro h1 span{color:var(--cyan)}
-.phrase{margin:0;font-size:clamp(19px,2.4vw,24px);font-weight:600;background:rgba(5,3,11,.85);padding:12px 16px;border-left:4px solid var(--pink)}
-.btns{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:8px 18px;border:3px solid var(--ink);background:var(--yellow);color:var(--ink);font-family:var(--f-display);font-weight:400;font-size:19px;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;box-shadow:5px 5px 0 var(--ink);line-height:1.1;text-align:center}
-.btn:hover{transform:translate(-1px,-1px);box-shadow:6px 6px 0 var(--ink)}
-.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
-.btn.xl{font-size:clamp(21px,2.6vw,27px);padding:14px 26px;box-shadow:0 0 0 3px var(--cyan),7px 7px 0 var(--ink)}
-.btn.pink{background:var(--pink);color:#fff;text-shadow:1px 1px 0 var(--ink)}
+.intro{position:absolute;inset:0;z-index:20;display:grid;align-items:end;overflow:auto;background:linear-gradient(180deg,rgba(6,10,18,0) 35%,rgba(6,10,18,.75) 100%),linear-gradient(90deg,rgba(6,10,18,.75),rgba(6,10,18,0) 60%);padding:max(24px,env(safe-area-inset-top,0px)) max(24px,env(safe-area-inset-right,0px)) max(28px,env(safe-area-inset-bottom,0px)) max(24px,env(safe-area-inset-left,0px))}
+.intro-card{max-width:560px;padding:28px;display:grid;gap:16px;margin:0 0 4vh clamp(0px,4vw,64px)}
+.brand{margin:0;font-family:var(--f-head);font-weight:800;font-size:clamp(44px,7vw,76px);line-height:.95;letter-spacing:-.02em}
+.brand span{color:var(--yellow)}
+.phrase{margin:0;font-size:19px;color:var(--fg);line-height:1.45}
+.btns{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:10px 18px;border-radius:10px;border:1px solid transparent;background:var(--yellow);color:#141414;font-weight:600;font-size:15px;letter-spacing:.02em;text-decoration:none;line-height:1.1;text-align:center;transition:transform .12s ease,background .12s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn.lg{min-height:52px;padding:12px 24px;font-size:16px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.btn.ghost{background:rgba(255,255,255,.06);color:var(--fg);border-color:var(--line-2)}
+.btn.ghost:hover{background:rgba(255,255,255,.12)}
 .btn.cyan{background:var(--cyan)}
-.btn.ghost{background:var(--panel);color:var(--fg);border-color:var(--line);box-shadow:none;font-family:var(--f-hud);font-weight:700;font-size:16px;letter-spacing:.08em}
-.btn.ghost:hover{border-color:var(--cyan);transform:none}
-.btn.sm{min-height:44px;font-size:15px;padding:6px 12px}
-.btn[disabled]{background:#2a2357;color:#b4abd9;border-color:#3d3478;box-shadow:none;cursor:not-allowed;transform:none;text-shadow:none}
-.linkbtn{background:none;border:0;padding:6px 2px;min-height:44px;color:var(--cyan);text-decoration:underline;font-family:var(--f-hud);font-weight:700;font-size:16px;letter-spacing:.04em}
-.keys{margin:0;color:var(--muted);font-size:15px;background:rgba(5,3,11,.85);padding:8px 12px}
-.keys kbd{font-family:var(--f-pix);font-size:11px;background:var(--panel-2);border:1px solid var(--line);padding:1px 5px;color:var(--fg)}
-.loading{margin:0;font-family:var(--f-hud);font-weight:700;letter-spacing:.06em;color:var(--cyan)}
+.btn.green{background:var(--green)}
+.btn.sm{min-height:40px;padding:7px 13px;font-size:14px}
+.btn[disabled]{background:rgba(255,255,255,.08);color:var(--dim);border-color:var(--line);cursor:not-allowed;transform:none}
+.linkbtn{background:none;border:0;padding:8px 2px;min-height:40px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;font-size:14px}
+.linkbtn:hover{color:var(--fg)}
+.loadbar{height:4px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden}
+.loadbar i{display:block;height:100%;width:0;background:var(--yellow);transition:width .3s ease}
+.loading{margin:0;font-size:13px;color:var(--muted)}
+.keys{margin:0;font-size:13px;color:var(--muted)}
+.keys kbd{margin:0 1px}
 
 /* ---------- PAINÉIS ---------- */
-dialog{border:2px solid var(--cyan);background:var(--deep);color:var(--fg);padding:0;width:min(760px,calc(100vw - 20px));max-height:calc(100dvh - 20px);box-shadow:0 0 0 1px rgba(47,243,255,.5),0 0 40px rgba(47,243,255,.18),10px 10px 0 var(--ink)}
-dialog.wide{width:min(1100px,calc(100vw - 20px))}
-dialog::backdrop{background:rgba(5,3,11,.72)}
-.d-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--panel);border-bottom:2px solid var(--line)}
-.d-head h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(24px,4vw,32px);line-height:1;text-transform:uppercase;letter-spacing:.02em}
-.d-head .k{display:block;font-family:var(--f-pix);font-size:12px;color:var(--yellow);margin-bottom:4px}
-.x{width:44px;height:44px;flex:none;border:2px solid var(--line);background:transparent;font-size:24px;line-height:1}
-.d-body{padding:16px;display:grid;gap:14px;font-size:18px}
-.meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-@media (max-width:620px){.meta{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.meta div{background:var(--panel);border:1px solid var(--line);padding:8px 10px;min-width:0}
-.meta span{display:block;font-family:var(--f-hud);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
-.meta b{font-weight:600;font-size:17px;overflow-wrap:anywhere}
-.meta .rw{color:var(--green)}
-.npc{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:start}
-.npc .face{width:56px;height:56px;display:grid;place-items:center;font-family:var(--f-pix);font-size:18px;color:var(--ink);border:2px solid var(--ink)}
-.npc .bubble{position:relative;background:var(--panel-2);border:2px solid var(--line);padding:10px 12px}
-.npc .bubble b{display:block;font-family:var(--f-hud);font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--yellow)}
-.sec h3{margin:0 0 4px;font-family:var(--f-hud);font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
+dialog{border:1px solid var(--line-2);border-radius:16px;background:var(--glass-strong);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:var(--fg);padding:0;width:min(720px,calc(100vw - 24px));max-height:calc(100dvh - 24px);box-shadow:0 24px 60px rgba(0,0,0,.5)}
+dialog::backdrop{background:rgba(4,8,14,.35)}
+dialog[open]{animation:dlgIn .22s ease}
+@keyframes dlgIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+dialog.drawer{margin:16px 16px 16px auto;height:calc(100dvh - 32px);max-height:none;width:min(440px,calc(100vw - 32px))}
+dialog.drawer::backdrop{background:transparent}
+dialog.drawer[open]{animation:drawIn .26s cubic-bezier(.2,.8,.2,1)}
+@keyframes drawIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+dialog.wide{width:min(1100px,calc(100vw - 24px))}
+@media (max-width:700px){
+  dialog.drawer{margin:auto 0 0 0;width:100vw;max-width:100vw;height:auto;max-height:78dvh;border-radius:18px 18px 0 0}
+  dialog.drawer[open]{animation:sheetIn .26s cubic-bezier(.2,.8,.2,1)}
+}
+@keyframes sheetIn{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.d-head{position:sticky;top:0;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 18px 14px;background:linear-gradient(180deg,rgba(10,16,28,.96),rgba(10,16,28,.86));border-bottom:1px solid var(--line)}
+.d-head h2{margin:2px 0 0;font-family:var(--f-head);font-weight:700;font-size:22px;line-height:1.15}
+.x{width:40px;height:40px;flex:none;border-radius:10px;border:1px solid var(--line);background:transparent;font-size:20px;line-height:1;color:var(--muted)}
+.x:hover{color:var(--fg);border-color:var(--line-2)}
+.d-body{padding:16px 18px 20px;display:grid;gap:14px;font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);font-size:12px;font-weight:600;color:var(--muted)}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.chip.rw{color:var(--yellow);border-color:rgba(245,200,76,.35)}
+button.chip{min-height:34px;padding:4px 12px;background:transparent}
+button.chip[aria-pressed="true"]{background:rgba(255,255,255,.1);color:var(--fg);border-color:var(--line-2)}
+.meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.meta div{padding:9px 11px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid var(--line);min-width:0}
+.meta span{display:block;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.meta b{font-weight:600;font-size:15px;overflow-wrap:anywhere}
+.meta .rw{color:var(--yellow)}
+.npc{display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:start}
+.npc .face{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;color:#111}
+.npc .bubble{padding:10px 12px;border-radius:4px 12px 12px 12px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
+.npc .bubble b{display:block;font-size:13px;color:var(--muted);font-weight:600}
+.sec h3{margin:0 0 4px;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .sec p{margin:0}
-.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .steps{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-.steps > li{border:2px solid var(--line);background:var(--panel);padding:12px}
-.steps > li.ok{border-color:#3f8a39}
-.steps h4{margin:0 0 6px;font-family:var(--f-display);font-weight:400;font-size:20px;text-transform:uppercase}
-.check{display:inline-flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;font-weight:600}
-.check input{appearance:none;-webkit-appearance:none;width:26px;height:26px;margin:0;flex:none;border:2px solid var(--muted);display:grid;place-items:center;cursor:pointer}
-.check input:checked{background:var(--green);border-color:var(--ink)}
-.check input:checked::after{content:"";width:8px;height:13px;border:solid var(--ink);border-width:0 3px 3px 0;transform:translateY(-2px) rotate(45deg)}
+.steps > li{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03);padding:12px}
+.steps > li.ok{border-color:rgba(95,211,141,.45);background:rgba(95,211,141,.06)}
+.steps h4{margin:0 0 6px;font-family:var(--f-head);font-size:15px;font-weight:700}
+.check{display:inline-flex;align-items:center;gap:10px;min-height:42px;cursor:pointer;font-weight:500}
+.check input{appearance:none;-webkit-appearance:none;width:22px;height:22px;margin:0;flex:none;border-radius:6px;border:1.5px solid var(--muted);display:grid;place-items:center;cursor:pointer}
+.check input:checked{background:var(--green);border-color:var(--green)}
+.check input:checked::after{content:"";width:6px;height:11px;border:solid #0b111c;border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
 .check input:disabled{opacity:.5;cursor:not-allowed}
 .field{display:grid;gap:4px}
-.field label{font-size:15px;color:var(--muted)}
-.field input,textarea.io{width:100%;min-height:44px;padding:8px 10px;background:var(--ink);border:2px solid var(--line);color:var(--fg)}
-textarea.io{min-height:140px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;resize:vertical}
+.field label{font-size:13px;color:var(--muted)}
+.field input,textarea.io{width:100%;min-height:42px;padding:8px 10px;border-radius:9px;background:rgba(0,0,0,.25);border:1px solid var(--line);color:var(--fg)}
+textarea.io{min-height:130px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;resize:vertical}
 fieldset{border:0;margin:0 0 10px;padding:0}
-legend{font-weight:700;margin-bottom:6px;padding:0}
-.opt{display:flex;align-items:center;gap:10px;min-height:46px;padding:6px 10px;margin-bottom:6px;border:2px solid var(--line);background:var(--deep);cursor:pointer}
-.opt input{width:20px;height:20px;margin:0;flex:none;accent-color:var(--yellow)}
-.opt:has(input:checked){border-color:var(--yellow)}
-.fb{margin:8px 0 0;font-weight:700;min-height:1.4em}
+legend{font-weight:600;margin-bottom:6px;padding:0}
+.opt{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 12px;margin-bottom:6px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.03);cursor:pointer}
+.opt input{width:18px;height:18px;margin:0;flex:none;accent-color:var(--yellow)}
+.opt:has(input:checked){border-color:rgba(245,200,76,.6);background:rgba(245,200,76,.06)}
+.fb{margin:6px 0 0;font-weight:600;min-height:1.4em}
 .fb.good{color:var(--green)}
 .fb.bad{color:var(--red)}
-.deliver{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;border:2px solid var(--pink);background:rgba(255,63,164,.1);padding:12px}
-.deliver p{margin:0}
-.note{border:2px dashed var(--line);padding:10px 12px;color:var(--muted)}
-.done{border:2px solid #3f8a39;background:rgba(123,240,106,.1);padding:10px 12px}
+.deliver{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;border:1px solid rgba(245,200,76,.35);background:rgba(245,200,76,.06)}
+.deliver p{margin:0;font-size:14px}
+.note{border:1px dashed var(--line-2);border-radius:10px;padding:10px 12px;color:var(--muted)}
+.done{border:1px solid rgba(95,211,141,.45);border-radius:10px;background:rgba(95,211,141,.07);padding:10px 12px}
 .list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-.item{display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;border:2px solid var(--line);background:var(--panel);padding:8px 10px}
-.item .ic{width:36px;height:36px;display:grid;place-items:center;font-family:var(--f-pix);font-size:14px;color:var(--ink);border:2px solid var(--ink)}
-.item b{display:block;font-family:var(--f-hud);font-size:18px;letter-spacing:.03em}
-.item small{display:block;color:var(--muted);font-size:15px}
+.item{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03);padding:9px 12px}
+.item .ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:13px;font-weight:700;color:#111;background:var(--c)}
+.item b{display:block;font-size:15px;font-weight:600}
+.item small{display:block;color:var(--muted);font-size:13px}
 .item .acts{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
-@media (max-width:560px){.item{grid-template-columns:36px 1fr}.item .acts{grid-column:1/-1;justify-content:flex-start}}
-.dh{margin:6px 0 0;font-family:var(--f-display);font-weight:400;font-size:22px;text-transform:uppercase;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
-.dh small{font-family:var(--f-hud);font-size:14px;color:var(--dim);letter-spacing:.08em}
-.map-wrap{position:relative;border:2px solid var(--line);background:#120d24;overflow:hidden}
+@media (max-width:560px){.item{grid-template-columns:30px 1fr}.item .acts{grid-column:1/-1;justify-content:flex-start}}
+.dh{margin:8px 0 2px;font-family:var(--f-head);font-weight:700;font-size:17px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.dh small{font-family:var(--f-ui);font-weight:500;font-size:13px;color:var(--muted)}
+.progress{height:6px;border-radius:6px;background:rgba(255,255,255,.1);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--green)}
+.map-wrap{position:relative;border-radius:12px;border:1px solid var(--line);background:#0e1626;overflow:hidden}
 #bigmap{display:block;width:100%;height:auto;cursor:crosshair}
-.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-family:var(--f-hud);font-weight:600;font-size:15px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
-.legend i{width:22px;height:22px;display:grid;place-items:center;font-style:normal;font-family:var(--f-pix);font-size:11px;color:var(--ink);border:2px solid var(--ink)}
-.sel-card{border:2px solid var(--yellow);background:var(--panel);padding:10px 12px;display:grid;gap:6px}
-.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.legend i{width:18px;height:18px;border-radius:5px;display:grid;place-items:center;font-style:normal;font-size:10px;font-weight:700;color:#111}
+.sel-card{border:1px solid rgba(245,200,76,.4);border-radius:12px;background:rgba(245,200,76,.05);padding:12px;display:grid;gap:6px}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 @media (max-width:760px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.tile{background:var(--panel);border:2px solid var(--line);padding:10px;min-width:0}
-.tile span{display:block;font-family:var(--f-hud);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
-.tile b{display:block;font-family:var(--f-display);font-weight:400;font-size:26px;line-height:1.1;overflow-wrap:anywhere}
-.achs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
-.ach{display:grid;grid-template-columns:40px 1fr;gap:10px;align-items:center;border:2px solid var(--line);padding:8px;background:var(--panel)}
-.ach .ic{width:40px;height:40px;display:grid;place-items:center;background:#2a2357;color:var(--dim);font-family:var(--f-pix);font-size:13px;border:2px solid var(--ink)}
-.ach.on{border-color:var(--yellow)}
-.ach.on .ic{background:var(--yellow);color:var(--ink)}
-.ach b{display:block;font-family:var(--f-hud);font-size:16px;letter-spacing:.04em;text-transform:uppercase}
-.ach small{color:var(--muted);font-size:14px}
-.set{display:grid;gap:10px}
-.set .opt{justify-content:space-between}
-.medal{width:140px;height:auto;margin:0 auto;display:block}
-.result-title{margin:0;text-align:center;font-family:var(--f-display);font-weight:400;font-size:clamp(34px,7vw,54px);line-height:.95;color:var(--yellow);text-transform:uppercase;-webkit-text-stroke:2px var(--ink);text-shadow:4px 4px 0 var(--purple)}
-.share-img{max-width:100%;height:auto;border:2px solid var(--line);display:block;margin:0 auto}
+.tile{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.03);padding:10px 12px;min-width:0}
+.tile span{display:block;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.tile b{display:block;font-family:var(--f-head);font-weight:700;font-size:22px;line-height:1.2;overflow-wrap:anywhere}
+.tile small{color:var(--muted)}
+.achs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.ach{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:8px 10px;background:rgba(255,255,255,.03)}
+.ach .ic{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.07);color:var(--dim);font-weight:700;font-size:13px}
+.ach.on{border-color:rgba(245,200,76,.45)}
+.ach.on .ic{background:var(--yellow);color:#111}
+.ach b{display:block;font-size:14px;font-weight:600}
+.ach small{color:var(--muted);font-size:12px}
+.set{display:grid;gap:12px}
+.seg{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:6px}
+.seg label{position:relative;display:flex;align-items:center;justify-content:center;text-align:center;min-height:44px;padding:6px 8px;border-radius:10px;border:1px solid var(--line);cursor:pointer;font-size:14px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){border-color:var(--yellow);background:rgba(245,200,76,.08)}
+.seg label:has(input:focus-visible){outline:2px solid var(--yellow)}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:6px 12px;border-radius:10px;border:1px solid var(--line);cursor:pointer}
+.toggle small{display:block;color:var(--muted);font-size:13px}
+.toggle input{width:20px;height:20px;accent-color:var(--yellow)}
+.medal{width:120px;height:auto;margin:0 auto;display:block}
+.result-title{margin:0;text-align:center;font-family:var(--f-head);font-weight:800;font-size:clamp(26px,5vw,36px)}
+.share-img{max-width:100%;height:auto;border-radius:12px;border:1px solid var(--line);display:block;margin:0 auto}
 
-/* Celebração */
-.passed{position:absolute;inset:0;z-index:40;display:grid;place-items:center;pointer-events:none;background:radial-gradient(ellipse at center,rgba(5,3,11,.6),transparent 70%)}
-.passed .t{font-family:var(--f-display);font-size:clamp(44px,10vw,108px);line-height:.95;color:var(--yellow);text-align:center;-webkit-text-stroke:3px var(--ink);text-shadow:6px 6px 0 var(--purple);text-transform:uppercase;animation:pop 2.2s ease forwards}
-.passed .s{font-family:var(--f-hud);font-weight:700;font-size:clamp(20px,4vw,30px);color:#fff;text-align:center;text-shadow:2px 2px 0 var(--ink);animation:pop 2.2s ease forwards}
-.passed .s b{color:var(--green)}
-@keyframes pop{0%{opacity:0;transform:scale(1.3)}12%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0}}
-.reduce .passed .t,.reduce .passed .s{animation:none}
-
-/* Layout de celular / tablet */
-@media (max-width:820px){
-  .p-lvl{font-size:18px}.avatar{width:32px;height:32px;font-size:11px}.p-rank{font-size:12px}.p-stats{font-size:13px;gap:2px 8px}.p-stats .cash{font-size:16px}
-  .touch .toast{bottom:auto;top:34%}
-  .objective{left:max(10px,env(safe-area-inset-left,0px));right:auto;transform:none;top:auto;bottom:calc(max(18px,env(safe-area-inset-bottom,0px)) + 150px);max-width:calc(100vw - 20px);min-width:0}
-  .player{width:auto;max-width:calc(100vw - 150px);padding:8px 10px}
-  .mini{width:118px;height:118px}
-  .banner{top:150px}
-  .tool kbd{display:none}
-  .tool{min-height:44px;padding:4px 10px;font-size:13px}
-}
-@media (max-width:820px) and (orientation:landscape){.objective{bottom:auto;top:max(10px,env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);max-width:40vw}}
+/* Celebração discreta */
+.passed{position:absolute;inset:0;z-index:40;display:grid;place-items:center;pointer-events:none}
+.passed .card{text-align:center;padding:22px 34px;border-radius:16px;background:rgba(10,16,28,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(245,200,76,.45);animation:celebrate 2.2s ease forwards}
+.passed .t{font-family:var(--f-head);font-weight:800;font-size:clamp(28px,6vw,44px);letter-spacing:.02em;text-transform:uppercase}
+.passed .s{font-size:16px;color:var(--muted)}
+.passed .s b{color:var(--yellow)}
+@keyframes celebrate{0%{opacity:0;transform:translateY(10px) scale(.96)}12%{opacity:1;transform:none}82%{opacity:1}100%{opacity:0;transform:translateY(-6px)}}
+.reduce .passed .card{animation:none}
+.reduce dialog[open],.reduce .prompt{animation:none}
 </style>
 </head>
 <body>
 <div id="app">
-  <canvas id="gl" aria-label="Cidade 3D da Costa Solar" role="img"></canvas>
-  <canvas id="map2d" aria-label="Mapa 2D da cidade, visto de cima" role="img" hidden></canvas>
-  <div id="labels" aria-label="Marcadores de missão visíveis" hidden></div>
+  <canvas id="gl" aria-label="Centro da Dev City em 3D" role="img"></canvas>
+  <canvas id="map2d" aria-label="Mapa 2D do Centro, visto de cima" role="img" hidden></canvas>
+  <div id="labels" aria-label="Locais de missão próximos" hidden></div>
 
-  <!-- HUD -->
   <div class="hud" id="hud" hidden>
-    <section class="player card cut" aria-label="Seu jogador" role="group">
-      <div class="p-row"><span class="avatar" aria-hidden="true">DC</span>
-        <div><div class="p-lvl" id="hLvl">NV 1</div><div class="p-rank" id="hRank">Novato</div></div></div>
-      <div class="xpbar" role="progressbar" aria-label="XP até o próximo nível" aria-valuemin="0" aria-valuemax="100" id="hXpWrap"><i id="hXp"></i></div>
-      <div class="p-stats"><span id="hXpTxt">0 XP</span><span class="cash" id="hCash">$0</span><span class="resp" id="hResp">Respeito 0</span><span id="hStreak">0 dias</span></div>
+    <section class="player glass" aria-label="Seu progresso" role="group">
+      <div class="ring" aria-hidden="true"><svg viewBox="0 0 46 46"><circle cx="23" cy="23" r="20" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="4"/><circle id="hRing" cx="23" cy="23" r="20" fill="none" stroke="#56d6e4" stroke-width="4" stroke-linecap="round" stroke-dasharray="125.66" stroke-dashoffset="125.66"/></svg><b id="hLvl">1</b></div>
+      <div><div class="p-rank" id="hRank">Nível 1 <span>· Novato</span></div>
+        <div class="p-stats"><span class="cash" id="hCash">$0</span><span id="hResp">Respeito 0</span><span id="hXpTxt">0 XP</span></div></div>
     </section>
-    <button type="button" class="objective card cut" id="objective" aria-label="Missão atual">
-      <svg class="arrow" id="objArrow" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 L34 34 L20 26 L6 34 Z" fill="#ffd23f" stroke="#05030b" stroke-width="3" stroke-linejoin="round"/></svg>
-      <span><span class="k">MISSÃO ATUAL</span><b id="objName">—</b><span class="dist" id="objDist"></span></span>
+    <button type="button" class="objective glass" id="objective" aria-label="Missão atual">
+      <span><span class="eyebrow" style="color:var(--yellow)">Objetivo</span><b id="objName">—</b><span class="meta" id="objDist"></span></span>
+      <svg class="arrow" id="objArrow" viewBox="0 0 30 30" aria-hidden="true"><path d="M15 3 L24 25 L15 20 L6 25 Z" fill="#f5c84c"/></svg>
     </button>
     <div class="mini-wrap">
-      <button type="button" class="mini" id="miniBtn" aria-label="Abrir mapa (tecla M)"><canvas id="mini" width="352" height="352"></canvas></button>
-      <div class="clock card" id="clock" aria-live="off">16:00</div>
-      <div class="district-chip card" id="dChip">Centro</div>
+      <button type="button" class="mini" id="miniBtn" aria-label="Abrir mapa (tecla M)"><canvas id="mini" width="368" height="368"></canvas><span class="north" aria-hidden="true">N</span></button>
+      <div class="mini-row">
+        <button type="button" class="icon-btn" id="zIn" aria-label="Aproximar minimapa">+</button>
+        <button type="button" class="icon-btn" id="zOut" aria-label="Afastar minimapa">−</button>
+        <div class="clock glass" id="clock"></div>
+      </div>
     </div>
-    <nav class="tools" aria-label="Painéis">
-      <button type="button" class="tool" id="tMap"><kbd>M</kbd><span class="t">Mapa</span><span class="sr-only">Mapa</span></button>
-      <button type="button" class="tool" id="tJournal"><kbd>J</kbd><span class="t">Diário</span><span class="sr-only">Diário de missões</span></button>
-      <button type="button" class="tool" id="tInv"><kbd>I</kbd><span class="t">Inventário</span><span class="sr-only">Inventário e conquistas</span></button>
-      <button type="button" class="tool" id="tMode"><kbd>2D</kbd><span class="t" id="tModeTxt">Modo 2D</span><span class="sr-only" id="tModeSr">Alternar para o modo 2D</span></button>
-      <button type="button" class="tool" id="tSet"><kbd>⚙</kbd><span class="t">Ajustes</span><span class="sr-only">Ajustes</span></button>
-      <a class="tool" href="index.html"><kbd>≡</kbd><span class="t">Clássico</span><span class="sr-only">Voltar ao modo clássico</span></a>
+    <nav class="toolbar glass" aria-label="Painéis e modos">
+      <button type="button" class="tool" id="tMap"><svg viewBox="0 0 24 24"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg><span class="t">Mapa</span><kbd>M</kbd><span class="sr-only">Abrir mapa</span></button>
+      <button type="button" class="tool" id="tJournal"><svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg><span class="t">Missões</span><kbd>J</kbd><span class="sr-only">Lista de missões</span></button>
+      <button type="button" class="tool" id="tInv"><svg viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="t">Inventário</span><kbd>I</kbd><span class="sr-only">Inventário e conquistas</span></button>
+      <button type="button" class="tool" id="tCam"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span class="t" id="tCamTxt">Câmera</span><kbd>C</kbd><span class="sr-only" id="tCamSr">Trocar câmera</span></button>
+      <button type="button" class="tool" id="tSet"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span class="t">Ajustes</span><span class="sr-only">Ajustes</span></button>
+      <a class="tool" href="index.html"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 9h16M9 9v10"/></svg><span class="t">Clássico</span><span class="sr-only">Ir para o modo clássico</span></a>
     </nav>
-    <div class="prompt card cut" id="prompt" hidden role="status"><kbd>E</kbd><span id="promptTxt"></span></div>
+    <div class="prompt glass" id="prompt" hidden role="status">
+      <div><small id="pKind">MISSÃO</small><b id="pName"></b><span class="pm" id="pMeta"></span></div>
+      <span class="key"><kbd>E</kbd> Interagir</span>
+    </div>
     <div class="banner" id="banner" hidden aria-hidden="true"><b id="bannerT"></b><span id="bannerS"></span></div>
     <div class="joy" id="joy" hidden aria-hidden="true"><div class="knob" id="knob"></div></div>
-    <button type="button" class="act" id="actBtn" hidden>Falar</button>
+    <button type="button" class="act" id="actBtn" hidden>Interagir</button>
   </div>
-  <div class="toast" id="toast" role="status" hidden></div>
-  <div class="passed" id="passed" hidden><div><div class="t" id="passedT"></div><div class="s" id="passedS"></div></div></div>
+  <div class="toast glass" id="toast" role="status" hidden></div>
+  <div class="passed" id="passed" hidden><div class="card"><div class="t" id="passedT"></div><div class="s" id="passedS"></div></div></div>
 
-  <!-- ABERTURA -->
   <section class="intro" id="intro" aria-labelledby="introTitle">
-    <div class="intro-in">
-      <span class="tag">COSTA SOLAR · DEV CITY 3D</span>
-      <h1 id="introTitle">DEV <span>CITY</span></h1>
+    <div class="intro-card glass">
+      <span class="eyebrow">Costa Solar · Centro</span>
+      <h1 class="brand" id="introTitle">Dev <span>City</span></h1>
       <p class="phrase">Explore a Costa Solar. Escolha seu caminho. Aprenda programação completando missões.</p>
       <div class="btns">
-        <button type="button" class="btn xl" id="enterBtn">Entrar na cidade ▸</button>
+        <button type="button" class="btn lg" id="enterBtn" disabled>Entrar na cidade</button>
         <a class="btn ghost" href="index.html#personagens">Ver todas as trilhas</a>
       </div>
       <div class="btns">
         <button type="button" class="linkbtn" id="continueBtn" hidden>Continuar de onde parei</button>
-        <button type="button" class="linkbtn" id="enter2d">Entrar no modo 2D (aparelhos mais simples)</button>
-        <a class="linkbtn" href="index.html">Modo clássico, sem mapa</a>
+        <button type="button" class="linkbtn" id="enter2d">Modo 2D</button>
+        <button type="button" class="linkbtn" id="enterList">Lista de missões</button>
+        <a class="linkbtn" href="index.html">Modo clássico</a>
       </div>
-      <p class="keys"><b>Computador:</b> <kbd>W A S D</kbd> andar · arraste o mouse para girar a câmera · <kbd>Q</kbd> <kbd>R</kbd> girar · <kbd>E</kbd> interagir · <kbd>M</kbd> mapa · <kbd>J</kbd> diário · <kbd>I</kbd> inventário · <kbd>Esc</kbd> fechar.<br><b>Celular:</b> joystick para andar, arraste a tela para girar, toque nos marcadores.</p>
-      <p class="loading" id="loading" role="status">Carregando a cidade…</p>
+      <div class="loadbar" aria-hidden="true"><i id="loadBar"></i></div>
+      <p class="loading" id="loading" role="status">Preparando a cidade…</p>
+      <p class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> andar · <kbd>Shift</kbd> correr · arraste o mouse para olhar · <kbd>E</kbd> interagir · <kbd>M</kbd> mapa · <kbd>J</kbd> missões · <kbd>C</kbd> câmera. No celular: joystick e toque.</p>
     </div>
   </section>
 
-  <!-- PAINÉIS -->
-  <dialog id="dMission" aria-labelledby="mTitle"><div class="d-head"><div><span class="k" id="mKind">MISSÃO</span><h2 id="mTitle">Missão</h2></div><button class="x" type="button" data-close aria-label="Fechar painel da missão">×</button></div><div class="d-body" id="mBody"></div></dialog>
-  <dialog id="dMap" class="wide" aria-labelledby="mapTitle"><div class="d-head"><div><span class="k">COSTA SOLAR</span><h2 id="mapTitle">Mapa da cidade</h2></div><button class="x" type="button" data-close aria-label="Fechar mapa">×</button></div><div class="d-body" id="mapBody"></div></dialog>
-  <dialog id="dJournal" aria-labelledby="jTitle"><div class="d-head"><div><span class="k">DIÁRIO</span><h2 id="jTitle">Missões</h2></div><button class="x" type="button" data-close aria-label="Fechar diário">×</button></div><div class="d-body" id="jBody"></div></dialog>
-  <dialog id="dInv" class="wide" aria-labelledby="iTitle"><div class="d-head"><div><span class="k">INVENTÁRIO</span><h2 id="iTitle">Progresso e conquistas</h2></div><button class="x" type="button" data-close aria-label="Fechar inventário">×</button></div><div class="d-body" id="iBody"></div></dialog>
-  <dialog id="dSet" aria-labelledby="sTitle"><div class="d-head"><div><span class="k">AJUSTES</span><h2 id="sTitle">Ajustes</h2></div><button class="x" type="button" data-close aria-label="Fechar ajustes">×</button></div><div class="d-body" id="sBody"></div></dialog>
-  <dialog id="dResult" aria-labelledby="rTitle"><div class="d-head"><div><span class="k">PROJETO FINAL</span><h2 id="rTitle">Projeto entregue</h2></div><button class="x" type="button" data-close aria-label="Fechar resultado">×</button></div><div class="d-body" id="rBody"></div></dialog>
-  <dialog id="dIO" aria-labelledby="ioTitle"><div class="d-head"><div><span class="k">SALVAMENTO</span><h2 id="ioTitle">Progresso</h2></div><button class="x" type="button" data-close aria-label="Fechar">×</button></div><div class="d-body" id="ioBody"></div></dialog>
-
+  <dialog id="dMission" class="drawer" aria-labelledby="mTitle"><div class="d-head"><div><span class="eyebrow" id="mKind">Missão</span><h2 id="mTitle">Missão</h2></div><button class="x" type="button" data-close aria-label="Voltar ao mapa">×</button></div><div class="d-body" id="mBody"></div></dialog>
+  <dialog id="dMap" class="wide" aria-labelledby="mapTitle"><div class="d-head"><div><span class="eyebrow">Costa Solar</span><h2 id="mapTitle">Mapa da cidade</h2></div><button class="x" type="button" data-close aria-label="Fechar mapa">×</button></div><div class="d-body" id="mapBody"></div></dialog>
+  <dialog id="dJournal" class="drawer" aria-labelledby="jTitle"><div class="d-head"><div><span class="eyebrow">Diário</span><h2 id="jTitle">Lista de missões</h2></div><button class="x" type="button" data-close aria-label="Fechar lista">×</button></div><div class="d-body" id="jBody"></div></dialog>
+  <dialog id="dInv" class="wide" aria-labelledby="iTitle"><div class="d-head"><div><span class="eyebrow">Inventário</span><h2 id="iTitle">Progresso e conquistas</h2></div><button class="x" type="button" data-close aria-label="Fechar inventário">×</button></div><div class="d-body" id="iBody"></div></dialog>
+  <dialog id="dSet" class="drawer" aria-labelledby="sTitle"><div class="d-head"><div><span class="eyebrow">Ajustes</span><h2 id="sTitle">Gráficos e acessibilidade</h2></div><button class="x" type="button" data-close aria-label="Fechar ajustes">×</button></div><div class="d-body" id="sBody"></div></dialog>
+  <dialog id="dResult" aria-labelledby="rTitle"><div class="d-head"><div><span class="eyebrow">Projeto final</span><h2 id="rTitle">Projeto entregue</h2></div><button class="x" type="button" data-close aria-label="Fechar">×</button></div><div class="d-body" id="rBody"></div></dialog>
+  <dialog id="dIO" aria-labelledby="ioTitle"><div class="d-head"><div><span class="eyebrow">Salvamento</span><h2 id="ioTitle">Progresso</h2></div><button class="x" type="button" data-close aria-label="Fechar">×</button></div><div class="d-body" id="ioBody"></div></dialog>
   <div class="sr-only" id="live" aria-live="polite"></div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/utils/BufferGeometryUtils.js"></script>
 <script src="data.js"></script>
-<script>
-(() => {
-"use strict";
-const DC = window.DC;
-const $ = id => document.getElementById(id);
-const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const safeUrl = u => /^https:\/\//.test(u || "") ? esc(u) : "";
-const fmt = n => "$" + Math.round(n).toLocaleString("pt-BR");
-const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-const lerp = (a, b, t) => a + (b - a) * t;
-function rng(seed){ return () => (seed = (seed * 16807) % 2147483647) / 2147483647; }
-
-/* =====================================================================
-   1. AJUSTES (salvos à parte, só neste aparelho)
-   ===================================================================== */
-const SET_KEY = "devcity.city.settings";
-const isTouch = matchMedia("(pointer: coarse)").matches;
-const SET = Object.assign({reduce: matchMedia("(prefers-reduced-motion: reduce)").matches, effects: true, sound: true,
-  quality: isTouch ? "pixel" : "pixel", crowd: isTouch ? "low" : "normal", time: "cycle", mode: "3d", sens: 1}, (() => { try { return JSON.parse(localStorage.getItem(SET_KEY)) || {}; } catch (e) { return {}; } })());
-const saveSet = () => { try { localStorage.setItem(SET_KEY, JSON.stringify(SET)); } catch (e) {} };
-document.documentElement.classList.toggle("reduce", SET.reduce);
-
-/* =====================================================================
-   2. PROGRESSO (mesma chave do modo clássico: tudo vale nos dois modos)
-   ===================================================================== */
-let S;
-function loadS(){
-  try { S = JSON.parse(localStorage.getItem(DC.KEY) || "null"); } catch (e) { S = null; }
-  if (!S || typeof S !== "object") {
-    S = {app:"dev-city", v:3, sel:null, done:{}, steps:{}, proj:{}, heist:{}, openHeist:null, days:[], bestStreak:0, bonus:0, firstTries:0, profile:null, ach:{}};
-    try { const o = JSON.parse(localStorage.getItem("devcity.v2") || "null"); if (o) { S.sel = o.sel || null; S.done = o.done || {}; S.heist = o.heist || {}; } } catch (e) {}
-  }
-  S.city = DC.sanitizeCity(S.city);
-  if (!Array.isArray(S.days)) S.days = [];
-}
-let leaving = false;   // true durante reset/importação: impede que o salvamento automático regrave o progresso antigo
-const save = () => { if (leaving) return; try { localStorage.setItem(DC.KEY, JSON.stringify(S)); } catch (e) {} };
-loadS();
-function streak(){
-  const set = new Set(S.days); const d = new Date(); let n = 0;
-  const key = x => x.getFullYear() + "-" + String(x.getMonth()+1).padStart(2,"0") + "-" + String(x.getDate()).padStart(2,"0");
-  if (!set.has(key(d))) d.setDate(d.getDate() - 1);
-  while (set.has(key(d))) { n++; d.setDate(d.getDate() - 1); }
-  return n;
-}
-function touch(){ const d = DC.today(); if (!S.days.includes(d)) { S.days.push(d); S.days.sort(); } S.bestStreak = Math.max(S.bestStreak || 0, streak()); }
-
-/* =====================================================================
-   3. BAIRROS, MISSÕES E PROJETOS (protótipo: 3 bairros jogáveis)
-   As aulas vêm das trilhas existentes (data.js) — links preservados.
-   ===================================================================== */
-const D = {
-  centro:    {name:"Centro", x0:-43, x1:43, z0:-43, z1:43, open:true, color:"#3b2f7a", hue:"#7b3cff", sub:"Lógica · Git · Carreira · Organização", act:h => h >= 7 && h < 19 ? 1 : h >= 19 && h < 23 ? .45 : .15},
-  orla:      {name:"Orla Azul", x0:43, x1:112, z0:-43, z1:43, unlock:"expediente", color:"#1d5f7a", hue:"#2ff3ff", sub:"Front End · HTML · CSS · JavaScript · UI/UX", act:h => h >= 16 && h < 22 ? 1 : h >= 9 && h < 16 ? .6 : .25},
-  caribe:    {name:"Barrio Caribe", x0:-104, x1:-43, z0:-43, z1:43, unlock:"commit", color:"#7a2f5a", hue:"#ff3fa4", sub:"Back End · APIs · Bancos de dados · Java · Python · Node", act:h => h >= 18 || h < 1 ? 1 : h >= 10 && h < 18 ? .55 : .2},
-  tecnologia:{name:"Distrito de Tecnologia", x0:-43, x1:43, z0:-110, z1:-43, soon:true, color:"#1f2f6a", sub:"IA · Dados · Cloud · DevOps"},
-  neon:      {name:"Distrito Neon", x0:43, x1:112, z0:-110, z1:-43, soon:true, color:"#5a1f6a", sub:"GameDev · JS avançado · Canvas"},
-  porto:     {name:"Porto Solar", x0:-43, x1:112, z0:43, z1:110, soon:true, color:"#2a3a4a", sub:"Docker · Linux · Infra · CI/CD"},
-  seguranca: {name:"Área de Segurança", x0:-104, x1:-43, z0:43, z1:110, soon:true, color:"#2a2a3a", sub:"Cybersecurity · Redes · Testes"}
-};
-const T = Object.fromEntries(DC.T.map(t => [t.id, t]));
-const HRS = [0, 4, 6, 10, 14, 20];
-const DIFF = ["", "Fácil", "Fácil", "Moderada", "Difícil", "Lendária"];
-/* Missões principais: cada uma aponta para uma aula de uma trilha existente (track + índice). */
-const MIS = [
-  {id:"expediente", name:"Primeiro Expediente", d:"centro", track:"backend", i:0, pos:[-10,4.6], type:"main", req:[],
-    npc:["Dona Bia","coordenadora do coworking Nó Central","#ffd23f","Primeiro dia por aqui? Toda carreira começa pela lógica: sem ela, nenhum código fica de pé."],
-    concept:"Variáveis, condições e repetições", ex:"Crie um programa que receba três notas e calcule a média. Mostre Aprovado (média 7 ou mais), Recuperação (de 5 a 7) ou Reprovado. Pode usar Portugol, Python ou JavaScript."},
-  {id:"commit", name:"Commit na Estação", d:"centro", track:"backend", i:2, pos:[10,24.6], type:"main", req:["expediente"],
-    npc:["Téo","operador do Metrô Central","#2ff3ff","Aqui nenhum trem sai sem registro. No código é igual: cada mudança vira um commit."], concept:"Versionamento com Git e GitHub"},
-  {id:"interface", name:"Interface à Beira-Mar", d:"orla", track:"frontend", i:0, pos:[98,-6], type:"main", req:["expediente"],
-    npc:["Kauê","dono do Quiosque Coral","#ff8a3c","Meu quiosque precisa aparecer bonito no celular. Me ajuda a montar um cartão de apresentação?"],
-    concept:"HTML semântico, CSS e Flexbox", ex:"Crie um cartão de perfil responsivo com HTML e CSS: foto, nome, uma frase e três links. Ele precisa ficar bom no celular e no computador."},
-  {id:"pedidos", name:"Pedidos na Areia", d:"orla", track:"frontend", i:3, pos:[98,24], type:"main", req:["interface"],
-    npc:["Marina","chef da barraca Maré Mansa","#7bf06a","Os pedidos chegam todos de uma vez! Preciso de uma lista que eu consiga marcar e limpar."],
-    concept:"Arrays, funções e eventos em JavaScript", ex:"Crie uma lista de pedidos em JavaScript: um campo de texto, um botão Adicionar e, em cada pedido, um botão para marcar como pronto e outro para remover."},
-  {id:"bairro", name:"Sistema do Bairro", d:"caribe", track:"backend", i:4, pos:[-66,4], type:"main", req:["commit"],
-    npc:["Seu Ramón","dono do Mercadito Ramón","#ff3fa4","¡Hola! Quero cadastrar os produtos da venda num sistema. Dá para fazer uma API para mim?"],
-    concept:"APIs REST: rotas, métodos HTTP e JSON", ex:"Crie uma API para registrar os produtos de uma loja do bairro, com rotas de cadastro (POST), listagem (GET), atualização (PUT) e exclusão (DELETE). Teste no Postman ou Insomnia."}
-];
-const SPECIAL = {id:"carreira", name:"Conversa de Carreira", d:"centro", pos:[30,-4.6], type:"special", req:["expediente"], xp:150,
-  npc:["Lia","recrutadora, sempre no Café Byte","#b98cff","Senta aí! Vou te contar o que eu olho no perfil de quem está começando."],
-  concept:"Carreira e organização dos estudos", ex:"Monte um plano de estudos de 4 semanas: escolha uma trilha, defina 3 horários fixos por semana e crie um repositório no GitHub para guardar os exercícios.",
-  quiz:[["Para quem está começando, o que mais ajuda a conseguir a primeira vaga?",["Decorar o nome de muitas linguagens","Ter projetos práticos publicados no GitHub","Esperar terminar todos os cursos para praticar"],1],
-        ["Qual rotina de estudo costuma render mais?",["10 horas seguidas uma vez por mês","Pouco tempo, mas com frequência e prática","Só assistir vídeos, sem programar"],1]]};
-const DAILY = {id:"diario", name:"Desafio do Dia", d:"centro", pos:[-10,-10], type:"daily", xp:50,
-  npc:["Painel da Praça","tela pública da Praça Central","#ff3fa4","Uma pergunta nova todo dia. Acertou, levou."]};
-const PROJ = {
-  centro:{name:"Sistema de Organização de Estudos", pos:[-24.6,-10], needs:["expediente","commit"], tech:["Lógica de programação","Git e GitHub","Markdown"],
-    desc:"Um sistema simples para organizar seus estudos: metas da semana, tarefas e registro do que foi feito.", reqs:["Cadastro de metas e tarefas (pode ser no terminal)","Cálculo de quanto da semana foi concluído","Código versionado no GitHub com commits claros","README explicando como usar"]},
-  orla:{name:"Portfólio Pessoal Responsivo", pos:[91.5,-28], needs:["interface","pedidos"], tech:["HTML","CSS","JavaScript"],
-    desc:"Seu site de apresentação, bonito no celular, com projetos e contato.", reqs:["Seções Sobre, Projetos e Contato","Layout responsivo no celular e no computador","Uma interação em JavaScript (filtro, tema ou lista)","Publicado online (GitHub Pages, Netlify ou Vercel)"]},
-  caribe:{name:"API de Comércio Local", pos:[-80,20.6], needs:["bairro"], tech:["Node.js ou Java","API REST","Banco de dados SQL"],
-    desc:"A API completa do Mercadito: produtos, estoque e vendas do dia.", reqs:["CRUD de produtos","Dados salvos em banco SQL","Rota de relatório de vendas do dia","Documentação das rotas com exemplos"]}
-};
-const PROJ_XP = 500, PROJ_CASH = 5000, QUIZ_BONUS = 250;
-const POINTS_RAW = () => [...MIS, SPECIAL, DAILY];
-
-/* Junta as informações da aula (link, curso, professor) a partir da trilha original */
-function lesson(m){
-  if (!m.track) return null;
-  const t = T[m.track], r = t.m[m.i];
-  return {track: t, title: r[0], course: r[1], prof: r[2], link: r[3], diff: r[4], xp: r[5], desc: r[6], topic: DC.topicFor(r[0])};
-}
-const rec = k => S.city.rec[k];
-const isDone = m => m.type === "daily" ? !!rec("d:" + DC.today()) : m.type === "project" ? !!rec("p:" + m.d) : !!rec((m.type === "special" ? "s:" : "m:") + m.id);
-const districtOpen = d => !!D[d].open || (!!D[d].unlock && !!rec("m:" + D[d].unlock));
-function reqsMet(m){ return (m.req || m.needs || []).every(id => rec("m:" + id)); }
-function stateOf(m){
-  if (isDone(m)) return "done";
-  if (!districtOpen(m.d) || !reqsMet(m)) return "locked";
-  const st = S.city.m[m.id];
-  return st && (st.acc || st.w || st.p || st.q) ? "progress" : "available";
-}
-/* Lista única de pontos interativos do mapa */
-const POINTS = [
-  ...MIS,
-  SPECIAL, DAILY,
-  ...Object.entries(PROJ).map(([d, p]) => Object.assign({id:"proj-" + d, type:"project", d, req:p.needs}, p))
-];
-/* Aparência de cada tipo/estado de marcador: cor + ícone + texto (nunca só cor) */
-function look(m){
-  const st = stateOf(m);
-  if (st === "done") return {c:"#7bf06a", ic:"✓", label:"Concluída", st};
-  if (st === "locked") return {c:"#8c84b0", ic:"×", label:"Bloqueada", st};
-  if (m.type === "project") return {c:"#ffb627", ic:"P", label: st === "progress" ? "Projeto em andamento" : "Projeto final", st};
-  if (m.type === "special") return {c:"#b98cff", ic:"★", label: st === "progress" ? "Especial em andamento" : "Missão especial", st};
-  if (m.type === "daily") return {c:"#ff3fa4", ic:"D", label:"Desafio diário", st};
-  if (st === "progress") return {c:"#2ff3ff", ic:"…", label:"Em andamento", st};
-  return {c:"#ffd23f", ic:"!", label:"Disponível", st};
-}
-function reward(m){
-  if (m.type === "project") return {xp: PROJ_XP, cash: PROJ_CASH};
-  if (m.type === "daily") return {xp: DAILY.xp, cash: DAILY.xp * DC.CASH_X};
-  if (m.type === "special") return {xp: SPECIAL.xp, cash: SPECIAL.xp * DC.CASH_X};
-  const l = lesson(m); return {xp: l.xp, cash: l.xp * DC.CASH_X};
-}
-const titleOf = m => m.type === "project" ? "Projeto: " + m.name : m.name;
-const npcOf = m => m.npc || (m.type === "project" ? ["Mural do bairro", "projeto final de " + D[m.d].name, "#ffb627", "Juntou o que aprendeu por aqui? Hora de construir algo seu."] : null);
-
-/* =====================================================================
-   4. DESCRIÇÃO DO MUNDO (dados puros → 3D, minimapa, mapa e modo 2D)
-   ===================================================================== */
-const Wd = {roads:[], blocks:[], buildings:[], plazas:[], obstacles:[], signs:[], palms:[], kiosks:[], chairs:[], benches:[]};
-const GRIDS = {
-  centro:{xs:[[-40,6],[-20,6],[0,6],[20,6],[40,6]], zs:[[-40,6],[-20,6],[0,6],[20,6],[40,6]]},
-  orla:{xs:[[40,6],[63,6],[86,8]], zs:[[-40,6],[-20,6],[0,6],[20,6],[40,6]]},
-  caribe:{xs:[[-104,0],[-88,5],[-72,5],[-56,5],[-40,6]], zs:[[-40,6],[-24,5],[-8,5],[8,5],[24,5],[40,6]]}
-};
-for (const [d, g] of Object.entries(GRIDS)) {
-  const zmin = g.zs[0][0], zmax = g.zs[g.zs.length-1][0], xmin = g.xs[0][0], xmax = g.xs[g.xs.length-1][0];
-  for (const [x, w] of g.xs) if (w) Wd.roads.push({x0:x-w/2, x1:x+w/2, z0:zmin-3, z1:zmax+3, w, v:true});
-  for (const [z, w] of g.zs) if (w) Wd.roads.push({x0:xmin-(d === "caribe" ? 0 : 3), x1:xmax+3, z0:z-w/2, z1:z+w/2, w, v:false});
-  for (let i = 0; i < g.xs.length - 1; i++) for (let j = 0; j < g.zs.length - 1; j++) {
-    const b = {d, i, j, x0:g.xs[i][0] + g.xs[i][1]/2, x1:g.xs[i+1][0] - g.xs[i+1][1]/2, z0:g.zs[j][0] + g.zs[j][1]/2, z1:g.zs[j+1][0] - g.zs[j+1][1]/2};
-    if (d === "orla" && i === 1) b.x1 = 82;
-    Wd.blocks.push(b);
-  }
-}
-const R = rng(20261127);
-const pick = a => a[Math.floor(R() * a.length)];
-const PAL = {
-  centro:["#2c2a6e","#3a2f8f","#24366e","#40306e","#1f2c5a","#33275f"],
-  orla:["#58c7c4","#f28c8c","#b9a4f2","#f2cf8c","#7fd1f2","#f2a6d0"],
-  caribe:["#ffcf3f","#ff7a5a","#3fd6c6","#a5e05a","#ff5fa8","#5aa8ff","#ffa53f"]
-};
-function addBuilding(d, x0, x1, z0, z1, h, color, kind){ const b = {d, x0, x1, z0, z1, h, color, kind: kind || "tower"}; Wd.buildings.push(b); Wd.obstacles.push(b); return b; }
-function addSign(text, x, y, z, rot, w, colors){ Wd.signs.push({text, x, y, z, rot, w, colors}); }
-for (const b of Wd.blocks) {
-  const ix0 = b.x0 + 2.5, ix1 = b.x1 - 2.5, iz0 = b.z0 + 2.5, iz1 = b.z1 - 2.5, cx = (b.x0 + b.x1) / 2, cz = (b.z0 + b.z1) / 2;
-  const key = b.d + ":" + b.i + ":" + b.j;
-  if (key === "centro:1:1") { Wd.plazas.push({x0:b.x0, x1:b.x1, z0:b.z0, z1:b.z1, name:"Praça Central", fountain:[cx - 3, cz + 3]}); Wd.obstacles.push({x0:cx-5.5, x1:cx-0.5, z0:cz+0.5, z1:cz+5.5, low:true});
-    addSign("DESAFIO DO DIA", -10, 4.5, -14.5, 0, 7, ["#ff3fa4", "#05030b"]); Wd.obstacles.push({x0:-14, x1:-6, z0:-15.2, z1:-14, low:true});
-    for (let k = 0; k < 4; k++) Wd.benches.push({x: -16 + k * 3.5, z: -4.5}); continue; }
-  if (key === "centro:2:3") { addBuilding("centro", ix0, ix1, iz0 + 2, iz1, 5, "#26245a", "station"); addSign("METRÔ CENTRAL", cx, 6.2, iz0 + 1.9, 0, 9, ["#2ff3ff", "#05030b"]); continue; }
-  if (key === "centro:1:2") { addBuilding("centro", ix0, ix1, iz0, iz1, 44, "#3a2f8f"); addSign("NÓ CENTRAL · COWORKING", cx, 6, iz0 - 0.15, 0, 10, ["#ffd23f", "#05030b"]); continue; }
-  if (key === "centro:3:1") { addBuilding("centro", ix0 + 2, ix1, iz0, iz1 - 5, 4.5, "#5a2f6e", "cafe"); addSign("CAFÉ BYTE", cx + 1, 5.5, iz1 - 4.85, 0, 7, ["#ff3fa4", "#05030b"]);
-    for (let k = 0; k < 3; k++) { Wd.kiosks.push({x: ix0 + 3 + k * 4, z: iz1 - 2.2, r: .7, kind:"table"}); Wd.chairs.push({x: ix0 + 3 + k * 4 + 1.1, z: iz1 - 2.2, d:"centro", rot: -Math.PI/2}); } continue; }
-  if (key === "centro:0:1") { addBuilding("centro", ix0, ix1 - 1, iz0, iz1, 12, "#24366e", "library"); addSign("BIBLIOTECA PÚBLICA", ix1 - 0.85, 7, cz, Math.PI/2, 9, ["#ffb627", "#05030b"]); continue; }
-  if (key === "caribe:2:2") { Wd.plazas.push({x0:b.x0, x1:b.x1, z0:b.z0, z1:b.z1, name:"Plaza del Barrio", fountain:[cx, cz]}); Wd.obstacles.push({x0:cx-2.5, x1:cx+2.5, z0:cz-2.5, z1:cz+2.5, low:true}); for (let k = 0; k < 3; k++) Wd.benches.push({x: b.x0 + 3, z: b.z0 + 3 + k * 4}); continue; }
-  if (b.d === "centro") {
-    if (R() < .5) addBuilding("centro", ix0, ix1, iz0, iz1, 18 + R() * 40, pick(PAL.centro));
-    else { const mx = (ix0 + ix1) / 2; addBuilding("centro", ix0, mx - .6, iz0, iz1, 16 + R() * 38, pick(PAL.centro)); addBuilding("centro", mx + .6, ix1, iz0, iz1, 14 + R() * 30, pick(PAL.centro)); }
-  } else if (b.d === "orla") {
-    const front = b.i === 1;   // quadras viradas para a avenida da praia
-    addBuilding("orla", ix0, front ? ix1 - 5 : ix1, iz0, iz1, 9 + R() * 18, pick(PAL.orla), "hotel");
-    if (front) { addBuilding("orla", ix1 - 4.2, ix1, iz0 + 1, iz1 - 1, 4, pick(PAL.orla), "shop"); }
-  } else if (b.d === "caribe") {
-    const w = ix1 - ix0, half = w / 2;
-    for (let a = 0; a < 2; a++) for (let c = 0; c < 2; c++) {
-      if (R() < .2) continue;
-      const x0 = ix0 + a * half + (a ? .4 : 0), z0 = iz0 + c * ((iz1 - iz0) / 2) + (c ? .4 : 0);
-      addBuilding("caribe", x0, x0 + half - .4, z0, z0 + (iz1 - iz0) / 2 - .4, 4 + R() * 5, pick(PAL.caribe), "house");
-    }
-  }
-}
-/* Letreiros originais (português e espanhol no Barrio Caribe) */
-addSign("HOTEL MARÉ ALTA", 77.5, 6.5, -30, Math.PI/2, 8, ["#2ff3ff","#05030b"]);
-addSign("SORVETES 404", 81.9, 3.4, -10, Math.PI/2, 6, ["#ff3fa4","#05030b"]);
-addSign("RESTAURANTE CORAL", 81.9, 3.4, 10, Math.PI/2, 7, ["#ffd23f","#05030b"]);
-addSign("HOTEL BRISA", 77.5, 6.5, 30, Math.PI/2, 7, ["#b98cff","#05030b"]);
-addSign("MERCADITO RAMÓN", -80, 5.4, -1.6, Math.PI/2, 7, ["#ff3fa4","#05030b"]);
-addSign("PANADERÍA LA SOL", -61, 4.8, -26.5, 0, 7, ["#ffd23f","#05030b"]);
-addSign("OFICINA · TALLER", -93, 4.6, 26.4, Math.PI, 7, ["#2ff3ff","#05030b"]);
-addSign("SALÃO SALSA", -48.5, 5, 10, -Math.PI/2, 6, ["#ff5fa8","#05030b"]);
-addSign("FARMÁCIA · FARMACIA", -77, 4.6, -26.5, 0, 8, ["#7bf06a","#05030b"]);
-addSign("BAIRRO CARIBE · BIENVENIDOS", -43.6, 7, 0, -Math.PI/2, 11, ["#ff3fa4","#05030b"]);
-/* Mercadito (prédio do Seu Ramón) */
-addBuilding("caribe", -86, -76, -6, 6, 5, "#ffcf3f", "shop");
-/* Praia: areia, calçadão, quiosques e palmeiras */
-Wd.beach = {x0:90, x1:112, z0:-46, z1:46}; Wd.promenade = {x0:90, x1:93};
-for (let z = -40; z <= 40; z += 8) { Wd.palms.push({x:91.5, z}); if (R() < .6) Wd.palms.push({x:80.5, z: z + 4}); }
-for (let k = 0; k < 6; k++) Wd.palms.push({x: 100 + R() * 8, z: -36 + k * 14 + R() * 4});
-Wd.kiosks.push({x:101, z:-6, r:1.6, kind:"kiosk", c:"#ff8a3c"}, {x:101, z:24, r:1.6, kind:"kiosk", c:"#7bf06a"}, {x:104, z:8, r:1.2, kind:"tower", c:"#ff3fa4"});
-for (const k of Wd.kiosks) if (k.kind !== "table") Wd.obstacles.push({x0:k.x-k.r, x1:k.x+k.r, z0:k.z-k.r, z1:k.z+k.r, low:true});
-for (const z of [-6, 24]) for (let a = 0; a < 2; a++) Wd.chairs.push({x: 97 + a * 1.4, z: z + 2.4, d:"orla", rot:0});
-for (let a = 0; a < 4; a++) Wd.chairs.push({x: -64 + a * 1.4 - 2, z: 7.2, d:"caribe", rot:Math.PI});
-/* Distritos "em breve": silhuetas */
-const SOON_B = [];
-for (const [k, d] of Object.entries(D)) if (d.soon) for (let n = 0; n < 14; n++) {
-  const w = 6 + R() * 10, x = d.x0 + 6 + R() * (d.x1 - d.x0 - 12 - w), z = d.z0 + 6 + R() * (d.z1 - d.z0 - 12 - w);
-  SOON_B.push({x0:x, x1:x + w, z0:z, z1:z + w, h: k === "porto" ? 4 + R() * 8 : 10 + R() * 40, d:k});
-}
-/* Personagens das missões são sólidos (não dá para atravessar) */
-for (const m of POINTS_RAW()) if (m.npc && m.type !== "daily") Wd.obstacles.push({x0:m.pos[0]-.5, x1:m.pos[0]+.5, z0:m.pos[1]-1.7, z1:m.pos[1]-.7, low:true});
-/* Limites onde o jogador pode andar */
-const BOUNDS = {x0:-102, x1:110, z0:-39, z1:39};
-const barriers = {orla:{x0:42.5, x1:44, z0:-43, z1:43}, caribe:{x0:-44, x1:-42.5, z0:-43, z1:43}};
-
-/* =====================================================================
-   5. PEDESTRES, CARROS E HORÁRIO (cidade viva, leve)
-   ===================================================================== */
-const CROWD = () => SET.crowd === "low" ? .45 : 1;
-const peds = [];
-(function makePeds(){
-  const R2 = rng(77);
-  const open = Wd.blocks.filter(b => ["centro","orla","caribe"].includes(b.d));
-  const per = {centro:30, orla:22, caribe:20};
-  const skins = ["#f1c7a5","#d9a27a","#a8714f","#7a4b33","#5a3826","#e8b48f"];
-  const shirts = ["#ff3fa4","#2ff3ff","#ffd23f","#7bf06a","#b98cff","#ff8a3c","#f6f3ff","#3f6bff","#e04a5a"];
-  for (const [d, n] of Object.entries(per)) {
-    const bl = open.filter(b => b.d === d);
-    for (let k = 0; k < n; k++) {
-      const b = bl[Math.floor(R2() * bl.length)];
-      let r = {x0:b.x0 + 1.1, x1:b.x1 - 1.1, z0:b.z0 + 1.1, z1:b.z1 - 1.1};
-      if (R2() < .25) { const nb = bl.find(o => o.j === b.j && o.i === b.i + 1); if (nb) r.x1 = nb.x1 - 1.1; }   // atravessa a rua
-      const per2 = 2 * ((r.x1 - r.x0) + (r.z1 - r.z0));
-      peds.push({d, r, len: per2, t: R2() * per2, dir: R2() < .5 ? 1 : -1, sp: 1 + R2() * .7, th: R2(), skin: skins[Math.floor(R2()*skins.length)], shirt: shirts[Math.floor(R2()*shirts.length)],
-        pause: 0, hidden: 0, x:0, z:0, rot:0, ph: R2() * 6, kind:"walk"});
-    }
-  }
-  for (let k = 0; k < 4; k++) peds.push({d:"orla", kind:"bike", r:{x0:91, x1:92, z0:-42, z1:42}, len:168, t: k * 42, dir: k % 2 ? 1 : -1, sp: 4 + R2(), th: R2() * .8, skin: skins[k], shirt: shirts[k + 2], pause:0, hidden:0, x:0, z:0, rot:0, ph:0});
-  for (const c of Wd.chairs) peds.push({d:c.d, kind:"sit", fx:c.x, fz:c.z, rot:c.rot, th: R2(), skin: skins[Math.floor(R2()*skins.length)], shirt: shirts[Math.floor(R2()*shirts.length)], x:c.x, z:c.z, ph:R2()*6});
-  for (const [x, z, d] of [[-60, -2, "caribe"], [-60, 2, "caribe"], [92, 2, "orla"], [-14, -6, "centro"]]) peds.push({d, kind:"music", fx:x, fz:z, rot: 0, th: R2() * .5, skin: skins[Math.floor(R2()*skins.length)], shirt: "#ffd23f", x, z, ph:R2()*6});
-})();
-function perimeterPoint(r, t){
-  const w = r.x1 - r.x0, h = r.z1 - r.z0; t = ((t % (2*(w+h))) + 2*(w+h)) % (2*(w+h));
-  if (t < w) return [r.x0 + t, r.z0, Math.PI/2];
-  if (t < w + h) return [r.x1, r.z0 + (t - w), 0];
-  if (t < 2*w + h) return [r.x1 - (t - w - h), r.z1, -Math.PI/2];
-  return [r.x0, r.z1 - (t - 2*w - h), Math.PI];
-}
-const cars = [];
-(function makeCars(){
-  const ring = [[-41.5,-41.5],[41.5,-41.5],[41.5,41.5],[-41.5,41.5]];
-  const mid = [[-40,-1.5],[40,-1.5],[40,1.5],[-40,1.5]];
-  const ave = [[84.5,-41],[84.5,41],[87.5,41],[87.5,-41]];
-  const cols = ["#ff3fa4","#2ff3ff","#ffd23f","#f6f3ff","#7b3cff","#ff8a3c","#7bf06a"];
-  const add = (path, n, sp) => { let L = 0; const seg = path.map((p, k) => { const q = path[(k+1) % path.length], l = Math.hypot(q[0]-p[0], q[1]-p[1]); L += l; return l; });
-    for (let k = 0; k < n; k++) cars.push({path, seg, L, t: L * k / n, sp, c: cols[cars.length % cols.length], x:0, z:0, rot:0, wait:0}); };
-  add(ring, 4, 9); add(mid, 2, 8); add(ave, 3, 8);
-})();
-function carPos(c, t){
-  t = ((t % c.L) + c.L) % c.L;
-  for (let k = 0; k < c.path.length; k++) { if (t <= c.seg[k]) { const p = c.path[k], q = c.path[(k+1) % c.path.length], f = t / c.seg[k];
-    return [lerp(p[0], q[0], f), lerp(p[1], q[1], f), Math.atan2(q[0]-p[0], q[1]-p[1])]; } t -= c.seg[k]; }
-  return [c.path[0][0], c.path[0][1], 0];
-}
-let gameMin = 16 * 60;   // começa no fim da tarde
-const hourNow = () => SET.time === "day" ? 12 : SET.time === "night" ? 22 : (gameMin / 60) % 24;
-function dayFactor(h){ return clamp(Math.sin((h - 6) / 12 * Math.PI) * 1.4, 0, 1); }   // 0 noite → 1 meio-dia
-const SKY = [[0,"#0b0820"],[5,"#22164a"],[6.5,"#ff8a6a"],[8,"#6fb7ff"],[16,"#7cc4ff"],[17.5,"#ff9a5a"],[18.7,"#c2477a"],[20,"#2a1650"],[24,"#0b0820"]];
-function skyColor(h){ for (let k = 0; k < SKY.length - 1; k++) { const [a, ca] = SKY[k], [b, cb] = SKY[k+1]; if (h >= a && h <= b) return mix(ca, cb, (h - a) / (b - a)); } return SKY[0][1]; }
-function mix(c1, c2, f){ const a = parseInt(c1.slice(1), 16), b = parseInt(c2.slice(1), 16);
-  const r = Math.round(lerp(a >> 16, b >> 16, f)), g = Math.round(lerp(a >> 8 & 255, b >> 8 & 255, f)), bl = Math.round(lerp(a & 255, b & 255, f));
-  return "#" + ((1 << 24) + (r << 16) + (g << 8) + bl).toString(16).slice(1); }
-const periodName = h => h < 5 ? "madrugada" : h < 12 ? "manhã" : h < 17 ? "tarde" : h < 19 ? "fim de tarde" : "noite";
-
-/* =====================================================================
-   6. JOGADOR, ENTRADA E COLISÃO
-   ===================================================================== */
-const P = {x:0, z:30, rot:Math.PI, vx:0, vz:0, moving:false, speed:0};
-const CAM = {yaw:0, pitch:.42, dist:11};
-const keys = new Set();
-const joy = {x:0, y:0, active:false};
-function blocked(x, z){
-  const r = .55;
-  if (x < BOUNDS.x0 || x > BOUNDS.x1 || z < BOUNDS.z0 || z > BOUNDS.z1) return true;
-  for (const [d, b] of Object.entries(barriers)) if (!districtOpen(d) && x + r > b.x0 && x - r < b.x1 && z + r > b.z0 && z - r < b.z1) return d;
-  for (const o of Wd.obstacles) if (x + r > o.x0 && x - r < o.x1 && z + r > o.z0 && z - r < o.z1) return true;
-  return false;
-}
-let lastBlockMsg = 0;
-function movePlayer(dt){
-  let ix = 0, iz = 0;
-  if (keys.has("KeyW") || keys.has("ArrowUp")) iz += 1;
-  if (keys.has("KeyS") || keys.has("ArrowDown")) iz -= 1;
-  if (keys.has("KeyA") || keys.has("ArrowLeft")) ix -= 1;
-  if (keys.has("KeyD") || keys.has("ArrowRight")) ix += 1;
-  if (joy.active) { ix += joy.x; iz += -joy.y; }
-  const mag = Math.hypot(ix, iz);
-  if (mag > 1) { ix /= mag; iz /= mag; }
-  const run = keys.has("ShiftLeft") || keys.has("ShiftRight") || (joy.active && Math.hypot(joy.x, joy.y) > .92);
-  const yaw = mode === "2d" ? 0 : CAM.yaw;
-  const fx = -Math.sin(yaw), fz = -Math.cos(yaw), rx = Math.cos(yaw), rz = -Math.sin(yaw);
-  const sp = (run ? 11 : 6.5);
-  const vx = (fx * iz + rx * ix) * sp, vz = (fz * iz + rz * ix) * sp;
-  P.moving = Math.hypot(vx, vz) > .1; P.speed = Math.hypot(vx, vz);
-  if (!P.moving) return;
-  P.rot = Math.atan2(vx, vz);
-  const nx = P.x + vx * dt, nz = P.z + vz * dt;
-  const bx = blocked(nx, P.z), bz = blocked(P.x, nz);
-  if (!bx) P.x = nx; if (!bz) P.z = nz;
-  const bd = typeof bx === "string" ? bx : typeof bz === "string" ? bz : null;
-  if (bd && performance.now() - lastBlockMsg > 3500) { lastBlockMsg = performance.now();
-    const need = MIS.find(m => m.id === D[bd].unlock); toast(`${D[bd].name} está bloqueado. Conclua “${need.name}” para liberar.`); sfx("deny"); }
-}
-const districtAt = (x, z) => Object.keys(D).find(k => x >= D[k].x0 && x < D[k].x1 && z >= D[k].z0 && z < D[k].z1) || "centro";
-
-/* =====================================================================
-   7. RENDERIZAÇÃO 3D (Three.js · low poly, sem texturas externas)
-   ===================================================================== */
-let mode = "3d", three = null;
-function webglOK(){ try { const c = document.createElement("canvas"); return !!(window.WebGLRenderingContext && (c.getContext("webgl2") || c.getContext("webgl"))); } catch (e) { return false; } }
-const HAS3D = !!window.THREE && webglOK();
-
-function canvasTex(w, h, draw){ const c = document.createElement("canvas"); c.width = w; c.height = h; draw(c.getContext("2d"), w, h);
-  const t = new THREE.CanvasTexture(c); t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; return t; }
-function build3D(){
-  const canvas = $("gl");
-  const renderer = new THREE.WebGLRenderer({canvas, antialias:false, powerPreference:"high-performance"});
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(60, 1, .5, 420);
-  scene.fog = new THREE.Fog(0x22164a, 90, 260);
-  const hemi = new THREE.HemisphereLight(0xbfd8ff, 0x302050, .6); scene.add(hemi);
-  const sun = new THREE.DirectionalLight(0xffffff, .8); sun.position.set(60, 100, 30); scene.add(sun);
-  const L = (c, o) => new THREE.MeshLambertMaterial(Object.assign({color:c}, o || {}));
-  const B = (c, o) => new THREE.MeshBasicMaterial(Object.assign({color:c}, o || {}));
-  const flat = (w, d, c, y, x, z, mat) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat || L(c)); m.rotation.x = -Math.PI/2; m.position.set(x, y, z); scene.add(m); return m; };
-  /* chão, distritos, ruas */
-  flat(700, 700, "#1a1533", 0, 0, 0);
-  for (const [k, d] of Object.entries(D)) flat(d.x1 - d.x0, d.z1 - d.z0, d.soon ? "#151128" : "#2a2440", .01, (d.x0 + d.x1)/2, (d.z0 + d.z1)/2);
-  const sidewalk = L("#4a4268");
-  for (const b of Wd.blocks) flat(b.x1 - b.x0, b.z1 - b.z0, null, .05, (b.x0 + b.x1)/2, (b.z0 + b.z1)/2, sidewalk);
-  const roadMat = L("#232036"), lineTex = canvasTex(8, 32, (g) => { g.fillStyle = "#232036"; g.fillRect(0,0,8,32); g.fillStyle = "#ffd23f"; g.fillRect(3,0,2,16); });
-  lineTex.wrapS = lineTex.wrapT = THREE.RepeatWrapping;
-  for (const r of Wd.roads) {
-    flat(r.x1 - r.x0, r.z1 - r.z0, null, .04, (r.x0 + r.x1)/2, (r.z0 + r.z1)/2, roadMat);
-    const len = r.v ? r.z1 - r.z0 : r.x1 - r.x0, t = lineTex.clone(); t.needsUpdate = true; t.repeat.set(1, len / 6);
-    const m = flat(.35, len, null, .06, (r.x0 + r.x1)/2, (r.z0 + r.z1)/2, new THREE.MeshBasicMaterial({map:t}));
-    if (!r.v) m.rotation.z = Math.PI/2;
-  }
-  for (const p of Wd.plazas) { flat(p.x1 - p.x0, p.z1 - p.z0, "#2f5a4a", .07, (p.x0+p.x1)/2, (p.z0+p.z1)/2);
-    const f = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 2.6, .8, 10), L("#6a6390")); f.position.set(p.fountain[0], .4, p.fountain[1]); scene.add(f);
-    const w = new THREE.Mesh(new THREE.CylinderGeometry(2, 2, .1, 10), B("#2ff3ff")); w.position.set(p.fountain[0], .82, p.fountain[1]); scene.add(w); }
-  const beach = Wd.beach; flat(beach.x1 - beach.x0, beach.z1 - beach.z0, "#e8c98a", .03, (beach.x0+beach.x1)/2, 0);
-  const promTex = canvasTex(16, 16, g => { g.fillStyle = "#f2a6c0"; g.fillRect(0,0,16,16); g.fillStyle = "#c86a9a"; g.fillRect(0,0,8,8); g.fillRect(8,8,8,8); });
-  promTex.wrapS = promTex.wrapT = THREE.RepeatWrapping; promTex.repeat.set(1.5, 46);
-  flat(3, 92, null, .045, 91.5, 0, L("#fff", {map:promTex}));
-  const seaGeo = new THREE.PlaneGeometry(220, 600, 28, 60); const sea = new THREE.Mesh(seaGeo, L("#1b5f9a", {transparent:true, opacity:.95})); sea.rotation.x = -Math.PI/2; sea.position.set(222, -.1, 0); scene.add(sea);
-  const seaBase = seaGeo.attributes.position.array.slice();
-  /* prédios com janelas (textura gerada) */
-  const winTex = [0,1,2].map(s => canvasTex(32, 32, (g) => { const r = rng(s * 99 + 5); g.fillStyle = "#ffffff"; g.fillRect(0,0,32,32);
-    for (let y = 2; y < 32; y += 8) for (let x = 2; x < 32; x += 8) { g.fillStyle = r() < .55 ? "#ffd98a" : r() < .5 ? "#9ff6ff" : "#3a3360"; g.fillRect(x, y, 4, 5); } }));
-  const winEmi = [0,1,2].map(s => canvasTex(32, 32, (g) => { const r = rng(s * 99 + 5); g.fillStyle = "#000"; g.fillRect(0,0,32,32);
-    for (let y = 2; y < 32; y += 8) for (let x = 2; x < 32; x += 8) { const v = r(); g.fillStyle = v < .55 ? "#ffcf6a" : r() < .5 ? "#6ff0ff" : "#000"; g.fillRect(x, y, 4, 5); } }));
-  const roofMat = L("#2a2448");
-  const buildingMats = [];
-  for (const b of Wd.buildings) {
-    const w = b.x1 - b.x0, d = b.z1 - b.z0, v = Math.floor(R() * 3);
-    const tm = winTex[v].clone(), te = winEmi[v].clone(); tm.needsUpdate = te.needsUpdate = true;
-    tm.wrapS = tm.wrapT = te.wrapS = te.wrapT = THREE.RepeatWrapping; tm.repeat.set(Math.max(1, Math.round(w / 4)), Math.max(1, Math.round(b.h / 4))); te.repeat.copy(tm.repeat);
-    const side = L(b.color, {map: b.kind === "house" || b.kind === "shop" || b.kind === "cafe" || b.kind === "station" ? null : tm, emissive:0xffffff, emissiveMap: b.kind === "house" || b.kind === "shop" || b.kind === "cafe" || b.kind === "station" ? null : te, emissiveIntensity:.1});
-    if (!side.emissiveMap) side.emissive.set(0x000000);
-    buildingMats.push(side);
-    const m = new THREE.Mesh(new THREE.BoxGeometry(w, b.h, d), [side, side, roofMat, roofMat, side, side]);
-    m.position.set((b.x0 + b.x1)/2, b.h/2, (b.z0 + b.z1)/2); scene.add(m);
-    if (b.kind === "house") { const aw = new THREE.Mesh(new THREE.BoxGeometry(w + .2, .25, d + .2), L(mix(b.color, "#ffffff", .4))); aw.position.set((b.x0+b.x1)/2, b.h + .12, (b.z0+b.z1)/2); scene.add(aw); }
-    if (b.kind === "hotel") { const top = new THREE.Mesh(new THREE.BoxGeometry(w * .5, 1.2, d * .5), B("#ff3fa4")); top.position.set((b.x0+b.x1)/2, b.h + .6, (b.z0+b.z1)/2); scene.add(top); }
-  }
-  const soonMat = L("#191431", {emissive:0x3a2a7a, emissiveIntensity:.25});
-  for (const b of SOON_B) { const m = new THREE.Mesh(new THREE.BoxGeometry(b.x1 - b.x0, b.h, b.z1 - b.z0), soonMat); m.position.set((b.x0+b.x1)/2, b.h/2, (b.z0+b.z1)/2); scene.add(m); }
-  /* hologramas: barreiras de bairros bloqueados e de distritos "em breve" */
-  const holoTex = canvasTex(64, 64, (g) => { g.fillStyle = "rgba(0,0,0,0)"; g.clearRect(0,0,64,64); g.strokeStyle = "#2ff3ff"; g.lineWidth = 2;
-    for (let k = -64; k < 128; k += 12) { g.beginPath(); g.moveTo(k, 0); g.lineTo(k + 64, 64); g.stroke(); } g.fillStyle = "rgba(47,243,255,.12)"; g.fillRect(0,0,64,64); });
-  holoTex.wrapS = holoTex.wrapT = THREE.RepeatWrapping;
-  const holo = {};
-  const wall = (x0, x1, z0, z1, h, key, color) => { const t = holoTex.clone(); t.needsUpdate = true; const len = Math.max(x1 - x0, z1 - z0); t.repeat.set(len / 6, h / 6);
-    const mat = new THREE.MeshBasicMaterial({map:t, transparent:true, opacity:.75, side:THREE.DoubleSide, depthWrite:false, color: color || 0xffffff});
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(len, h), mat); m.position.set((x0+x1)/2, h/2, (z0+z1)/2); if (x1 - x0 < z1 - z0) m.rotation.y = Math.PI/2; scene.add(m); if (key) holo[key] = m; return m; };
-  wall(43, 43, -43, 43, 9, "orla"); wall(-43, -43, -43, 43, 9, "caribe");
-  wall(-104, 112, -43, -43, 7, null, 0xff3fa4); wall(-104, 112, 43, 43, 7, null, 0xff3fa4);
-  /* letreiros (texto original, sempre aceso à noite) */
-  const signMats = [];
-  for (const s of Wd.signs) {
-    const t = canvasTex(256, 48, (g, w, h) => { g.fillStyle = s.colors[1]; g.fillRect(0,0,w,h); g.strokeStyle = s.colors[0]; g.lineWidth = 4; g.strokeRect(3,3,w-6,h-6);
-      g.fillStyle = s.colors[0]; g.font = "bold 26px 'Barlow Condensed', 'Arial Narrow', sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(s.text, w/2, h/2 + 1); });
-    t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearFilter;
-    const mat = new THREE.MeshBasicMaterial({map:t, side:THREE.DoubleSide}); signMats.push(mat);
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(s.w, s.w * 48 / 256), mat); m.position.set(s.x, s.y, s.z); m.rotation.y = s.rot; scene.add(m);
-  }
-  /* palmeiras (instanciadas) */
-  const trunkG = new THREE.CylinderGeometry(.18, .28, 6, 5); trunkG.translate(0, 3, 0);
-  const leafG = new THREE.ConeGeometry(.7, 3.2, 4); leafG.rotateZ(Math.PI/2); leafG.translate(1.5, 0, 0); leafG.scale(1, .25, 1);
-  const trunks = new THREE.InstancedMesh(trunkG, L("#8a5a3a"), Wd.palms.length), leaves = new THREE.InstancedMesh(leafG, L("#2fae6a"), Wd.palms.length * 6);
-  const M4 = new THREE.Matrix4(), Q = new THREE.Quaternion(), E = new THREE.Euler(), V = new THREE.Vector3(), SC = new THREE.Vector3(1,1,1);
-  Wd.palms.forEach((p, k) => { M4.compose(V.set(p.x, 0, p.z), Q.setFromEuler(E.set(0, k, .06 * Math.sin(k))), SC.set(1,1,1)); trunks.setMatrixAt(k, M4);
-    for (let l = 0; l < 6; l++) { M4.compose(V.set(p.x, 6, p.z), Q.setFromEuler(E.set(0, l / 6 * Math.PI * 2 + k, -.35)), SC.set(1,1,1)); leaves.setMatrixAt(k * 6 + l, M4); } });
-  scene.add(trunks, leaves);
-  /* quiosques, mesas, bancos, postes */
-  for (const k of Wd.kiosks) {
-    if (k.kind === "table") { const t = new THREE.Mesh(new THREE.CylinderGeometry(.6, .6, .9, 8), L("#c9c2e6")); t.position.set(k.x, .45, k.z); scene.add(t);
-      const u = new THREE.Mesh(new THREE.ConeGeometry(1.4, .6, 8), L("#ff3fa4")); u.position.set(k.x, 2.4, k.z); scene.add(u); continue; }
-    const base = new THREE.Mesh(new THREE.BoxGeometry(k.r * 2, 2.2, k.r * 2), L(k.c)); base.position.set(k.x, 1.1, k.z); scene.add(base);
-    const roof = new THREE.Mesh(new THREE.ConeGeometry(k.r * 1.7, 1.2, 4), L("#f6f3ff")); roof.position.set(k.x, 2.8, k.z); roof.rotation.y = Math.PI/4; scene.add(roof);
-  }
-  for (const b of Wd.benches) { const m = new THREE.Mesh(new THREE.BoxGeometry(2, .5, .6), L("#8a5a3a")); m.position.set(b.x, .25, b.z); scene.add(m); }
-  const lampPos = []; for (let x = -38; x <= 82; x += 16) for (const z of [-3.6, 3.6]) if (Math.abs(x) > 3) lampPos.push([x, z]);
-  for (let z = -36; z <= 36; z += 12) lampPos.push([80.6, z], [-37.6, z]);
-  const poles = new THREE.InstancedMesh(new THREE.CylinderGeometry(.08, .1, 4.5, 4).translate(0, 2.25, 0), L("#3a3360"), lampPos.length);
-  const bulbMat = B("#ffe7a0"); const bulbs = new THREE.InstancedMesh(new THREE.SphereGeometry(.28, 6, 4).translate(0, 4.6, 0), bulbMat, lampPos.length);
-  lampPos.forEach(([x, z], k) => { M4.makeTranslation(x, 0, z); poles.setMatrixAt(k, M4); bulbs.setMatrixAt(k, M4); }); scene.add(poles, bulbs);
-  /* pedestres e ciclistas (instanciados: 2 draw calls para todos) */
-  const pedN = peds.length;
-  const bodyG = new THREE.CylinderGeometry(.26, .3, 1.05, 6); bodyG.translate(0, 1.0, 0);
-  const headG = new THREE.BoxGeometry(.42, .42, .42); headG.translate(0, 1.78, 0);
-  const legG = new THREE.BoxGeometry(.36, .5, .24); legG.translate(0, .25, 0);
-  const pBody = new THREE.InstancedMesh(bodyG, L("#ffffff"), pedN), pHead = new THREE.InstancedMesh(headG, L("#ffffff"), pedN), pLeg = new THREE.InstancedMesh(legG, L("#2a2448"), pedN);
-  const bikeG = new THREE.BoxGeometry(.18, .7, 1.6); bikeG.translate(0, .45, 0);
-  const bikeIdx = peds.map((p, k) => p.kind === "bike" ? k : -1).filter(k => k >= 0);
-  const bikes = new THREE.InstancedMesh(bikeG, L("#2ff3ff"), bikeIdx.length);
-  const col = new THREE.Color();
-  peds.forEach((p, k) => { pBody.setColorAt(k, col.set(p.shirt)); pHead.setColorAt(k, col.set(p.skin)); });
-  pBody.instanceColor.needsUpdate = pHead.instanceColor.needsUpdate = true;
-  scene.add(pBody, pHead, pLeg, bikes);
-  /* carros */
-  const carGroup = cars.map(c => { const g = new THREE.Group();
-    const body = new THREE.Mesh(new THREE.BoxGeometry(1.8, .7, 3.6), L(c.c)); body.position.y = .55; g.add(body);
-    const cab = new THREE.Mesh(new THREE.BoxGeometry(1.5, .6, 1.8), L("#1a1533")); cab.position.set(0, 1.15, -.2); g.add(cab);
-    const hl = new THREE.Mesh(new THREE.BoxGeometry(1.4, .2, .1), B("#fff6c8")); hl.position.set(0, .6, 1.82); g.add(hl);
-    scene.add(g); return g; });
-  /* personagens das missões (originais, simples) */
-  const person = (shirt, skin, hat) => { const g = new THREE.Group();
-    const legs = new THREE.Mesh(new THREE.BoxGeometry(.5, .8, .3), L("#2a2448")); legs.position.y = .4; g.add(legs);
-    const body = new THREE.Mesh(new THREE.BoxGeometry(.7, .9, .4), L(shirt)); body.position.y = 1.25; g.add(body);
-    const head = new THREE.Mesh(new THREE.BoxGeometry(.5, .5, .5), L(skin)); head.position.y = 1.95; g.add(head);
-    if (hat) { const h = new THREE.Mesh(new THREE.BoxGeometry(.56, .16, .62), L(hat)); h.position.set(0, 2.26, .04); g.add(h); }
-    return g; };
-  const npcs = {};
-  for (const m of POINTS) { if (!m.npc || m.type === "daily") continue; const g = person(m.npc[2], ["#d9a27a","#a8714f","#f1c7a5","#7a4b33"][m.id.length % 4], "#05030b");
-    g.position.set(m.pos[0], 0, m.pos[1] - 1.2); g.scale.setScalar(1.12); scene.add(g); npcs[m.id] = g; }
-  /* jogador: roupa roxa, boné ciano */
-  const player = new THREE.Group();
-  const legL = new THREE.Mesh(new THREE.BoxGeometry(.24, .8, .3), L("#1f2c5a")); legL.position.set(-.14, .4, 0);
-  const legR = legL.clone(); legR.position.x = .14;
-  const torso = new THREE.Mesh(new THREE.BoxGeometry(.72, .9, .42), L("#7b3cff")); torso.position.y = 1.25;
-  const head = new THREE.Mesh(new THREE.BoxGeometry(.5, .5, .5), L("#d9a27a")); head.position.y = 1.95;
-  const cap = new THREE.Mesh(new THREE.BoxGeometry(.56, .16, .7), L("#2ff3ff")); cap.position.set(0, 2.26, .08);
-  const back = new THREE.Mesh(new THREE.BoxGeometry(.5, .6, .2), L("#ffd23f")); back.position.set(0, 1.3, -.3);
-  player.add(legL, legR, torso, head, cap, back); scene.add(player);
-  const ring = new THREE.Mesh(new THREE.RingGeometry(.7, .9, 20), B("#2ff3ff", {transparent:true, opacity:.6})); ring.rotation.x = -Math.PI/2; ring.position.y = .08; player.add(ring);
-  /* marcadores: forma diferente por tipo + anel + feixe de luz */
-  const markers = {};
-  const shapeFor = (m, st) => st === "done" ? new THREE.SphereGeometry(.45, 10, 8) : st === "locked" ? new THREE.BoxGeometry(.7, .7, .7)
-    : m.type === "project" ? new THREE.CylinderGeometry(.6, .6, .5, 6) : m.type === "special" ? new THREE.IcosahedronGeometry(.6) : m.type === "daily" ? new THREE.DodecahedronGeometry(.55)
-    : st === "progress" ? new THREE.TorusGeometry(.5, .16, 6, 16) : new THREE.OctahedronGeometry(.65);
-  function refreshMarkers(){
-    for (const m of POINTS) {
-      const lk = look(m); let mk = markers[m.id];
-      if (!mk) { mk = {g:new THREE.Group()}; mk.g.position.set(m.pos[0], 0, m.pos[1]); scene.add(mk.g); markers[m.id] = mk;
-        mk.pick = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 5, 6), new THREE.MeshBasicMaterial({visible:false})); mk.pick.position.y = 2.5; mk.pick.userData.id = m.id; mk.g.add(mk.pick); }
-      if (mk.st === lk.st) continue;
-      mk.st = lk.st;
-      for (const k of ["icon","ring","beam"]) if (mk[k]) { mk.g.remove(mk[k]); mk[k].geometry.dispose(); }
-      mk.icon = new THREE.Mesh(shapeFor(m, lk.st), B(lk.c)); mk.icon.position.y = 3.4; mk.g.add(mk.icon);
-      mk.ring = new THREE.Mesh(new THREE.RingGeometry(1.2, 1.55, 6), B(lk.c, {transparent:true, opacity:.85, side:THREE.DoubleSide})); mk.ring.rotation.x = -Math.PI/2; mk.ring.position.y = .09; mk.g.add(mk.ring);
-      mk.beam = new THREE.Mesh(new THREE.CylinderGeometry(.35, .9, 7, 6, 1, true), B(lk.c, {transparent:true, opacity: lk.st === "locked" ? .08 : .22, depthWrite:false, side:THREE.DoubleSide, blending:THREE.AdditiveBlending})); mk.beam.position.y = 3.5; mk.g.add(mk.beam);
-    }
-  }
-  refreshMarkers();
-  const raycaster = new THREE.Raycaster(), ndc = new THREE.Vector2();
-  function pickAt(cx, cy){
-    const r = canvas.getBoundingClientRect(); ndc.set((cx - r.left) / r.width * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
-    raycaster.setFromCamera(ndc, camera);
-    const hit = raycaster.intersectObjects(Object.values(markers).map(m => m.pick), false)[0];
-    return hit ? hit.object.userData.id : null;
-  }
-  function resize(){
-    const w = innerWidth, h = innerHeight;
-    const pr = SET.quality === "pixel" ? Math.min(devicePixelRatio, 2) * (isTouch ? .5 : .55) : Math.min(devicePixelRatio, 1.5);
-    renderer.setPixelRatio(pr); renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
-    canvas.classList.toggle("pixel", SET.quality === "pixel");
-  }
-  resize();
-  /* atualização por quadro */
-  const sky = new THREE.Color();
-  function update(dt, t){
-    const h = hourNow(), day = dayFactor(h), night = 1 - day;
-    sky.set(skyColor(h)); renderer.setClearColor(sky); scene.fog.color.copy(sky);
-    hemi.intensity = .35 + day * .45; sun.intensity = .15 + day * .85;
-    sun.position.set(Math.cos((h - 6) / 12 * Math.PI) * 120, 40 + day * 80, 40);
-    for (const m of buildingMats) if (m.emissiveMap) m.emissiveIntensity = .08 + night * .95;
-    bulbMat.color.setScalar(.35 + night * .65); bulbMat.color.r = .4 + night * .6;
-    for (const m of signMats) m.color.setScalar(SET.effects && night > .5 && Math.random() < .002 ? .4 : .55 + night * .45);
-    for (const [k, w] of Object.entries(holo)) { const open = districtOpen(k); w.material.opacity = lerp(w.material.opacity, open ? 0 : .75, Math.min(1, dt * 2)); w.visible = w.material.opacity > .02; }
-    if (SET.effects && !SET.reduce) { const a = seaGeo.attributes.position.array; for (let k = 0; k < a.length; k += 3) a[k+2] = seaBase[k+2] + Math.sin(seaBase[k] * .3 + t * 1.2) * .25 + Math.cos(seaBase[k+1] * .25 + t) * .2; seaGeo.attributes.position.needsUpdate = true; }
-    /* jogador */
-    player.position.set(P.x, 0, P.z);
-    player.rotation.y = lerpAngle(player.rotation.y, P.rot, Math.min(1, dt * 12));
-    const sw = P.moving && !SET.reduce ? Math.sin(t * (P.speed > 8 ? 14 : 10)) * .5 : 0;
-    legL.rotation.x = sw; legR.rotation.x = -sw; torso.position.y = 1.25 + (P.moving && !SET.reduce ? Math.abs(Math.sin(t * 10)) * .05 : 0);
-    /* câmera em terceira pessoa */
-    const cp = Math.cos(CAM.pitch), tx = P.x, ty = 1.6, tz = P.z;
-    const want = camClear(tx, tz, CAM.yaw, CAM.pitch, CAM.dist);
-    camD = want < camD ? want : lerp(camD, want, Math.min(1, dt * 3));
-    const cd = camD;
-    camera.position.set(tx + Math.sin(CAM.yaw) * cp * cd, Math.max(1.2, ty + Math.sin(CAM.pitch) * cd), tz + Math.cos(CAM.yaw) * cp * cd);
-    camera.lookAt(tx, ty + .6, tz);
-    /* pedestres */
-    let bi = 0;
-    peds.forEach((p, k) => {
-      const vis = p.th < D[p.d].act(h) * CROWD() && districtOpen(p.d) && !p.hidden;
-      if (!vis) { M4.makeScale(0, 0, 0); pBody.setMatrixAt(k, M4); pHead.setMatrixAt(k, M4); pLeg.setMatrixAt(k, M4); if (p.kind === "bike") bikes.setMatrixAt(bi++, M4); return; }
-      const sit = p.kind === "sit", bob = p.kind === "music" && !SET.reduce ? Math.abs(Math.sin(t * 4 + p.ph)) * .12 : p.moving && !SET.reduce ? Math.abs(Math.sin(t * 9 + p.ph)) * .06 : 0;
-      M4.compose(V.set(p.x, (sit ? -.45 : p.kind === "bike" ? .35 : 0) + bob, p.z), Q.setFromEuler(E.set(0, p.rot, 0)), SC.set(1, 1, 1));
-      pBody.setMatrixAt(k, M4); pHead.setMatrixAt(k, M4);
-      M4.compose(V.set(p.x, sit ? .05 : p.kind === "bike" ? .35 : 0, p.z), Q, SC.set(1, sit ? .3 : 1, sit ? 2 : 1)); pLeg.setMatrixAt(k, M4);
-      if (p.kind === "bike") { M4.compose(V.set(p.x, 0, p.z), Q, SC.set(1,1,1)); bikes.setMatrixAt(bi++, M4); }
-    });
-    pBody.instanceMatrix.needsUpdate = pHead.instanceMatrix.needsUpdate = pLeg.instanceMatrix.needsUpdate = bikes.instanceMatrix.needsUpdate = true;
-    cars.forEach((c, k) => { carGroup[k].position.set(c.x, 0, c.z); carGroup[k].rotation.y = c.rot; carGroup[k].visible = districtOpen(districtAt(c.x, c.z)) || districtAt(c.x, c.z) === "centro"; });
-    /* marcadores e personagens */
-    for (const m of POINTS) { const mk = markers[m.id]; if (!mk) continue;
-      if (!SET.reduce) { mk.icon.rotation.y = t * 1.4; mk.icon.position.y = 3.4 + Math.sin(t * 2 + m.pos[0]) * .2; }
-      const dm = Math.hypot(P.x - m.pos[0], P.z - m.pos[1]);
-      mk.beam.visible = SET.effects && dm > 5; mk.icon.visible = dm > 3.2;
-      const n = npcs[m.id]; if (n) { const dd = Math.hypot(P.x - n.position.x, P.z - n.position.z); if (dd < 8) n.rotation.y = lerpAngle(n.rotation.y, Math.atan2(P.x - n.position.x, P.z - n.position.z), Math.min(1, dt * 6)); } }
-    renderer.render(scene, camera);
-  }
-  function project(x, y, z){ V.set(x, y, z).project(camera); return {x:(V.x + 1) / 2 * innerWidth, y:(1 - V.y) / 2 * innerHeight, front: V.z < 1}; }
-  return {update, resize, refreshMarkers, pickAt, project, renderer};
-}
-/* Aproxima a câmera quando um prédio fica entre ela e o personagem */
-let camD = 11;
-function camClear(tx, tz, yaw, pitch, want){
-  const cp = Math.cos(pitch);
-  for (let s = 1.5; s <= want; s += .5) {
-    const x = tx + Math.sin(yaw) * cp * s, y = 1.6 + Math.sin(pitch) * s, z = tz + Math.cos(yaw) * cp * s;
-    for (const b of Wd.buildings) if (y < b.h + .4 && x > b.x0 - .4 && x < b.x1 + .4 && z > b.z0 - .4 && z < b.z1 + .4) return Math.max(2.2, s - .7);
-  }
-  return want;
-}
-function lerpAngle(a, b, t){ let d = ((b - a + Math.PI) % (2 * Math.PI)) - Math.PI; if (d < -Math.PI) d += 2 * Math.PI; return a + d * t; }
-
-/* =====================================================================
-   8. SIMULAÇÃO (pedestres, carros, relógio) — usada no 3D e no 2D
-   ===================================================================== */
-function simulate(dt){
-  if (SET.time === "cycle") gameMin = (gameMin + dt * 1.5) % 1440;
-  for (const p of peds) {
-    if (p.kind === "sit" || p.kind === "music") { p.x = p.fx; p.z = p.fz; p.moving = false; continue; }
-    if (p.hidden > 0) { p.hidden -= dt; continue; }
-    if (p.pause > 0) { p.pause -= dt; p.moving = false; continue; }
-    const before = Math.floor(p.t / 9);
-    p.t += p.dir * p.sp * dt; p.moving = true;
-    const [x, z, rot] = perimeterPoint(p.r, p.t); p.x = x; p.z = z; p.rot = p.dir > 0 ? rot : rot + Math.PI;
-    if (p.kind === "walk" && Math.floor(p.t / 9) !== before) {
-      const r = Math.random();
-      if (r < .06) p.hidden = 4 + Math.random() * 6;          // entrou numa loja
-      else if (r < .16) p.pause = 2 + Math.random() * 4;     // parou para conversar
-    }
-  }
-  for (const c of cars) {
-    const [x, z, rot] = carPos(c, c.t + c.sp * .6);
-    const ahead = Math.hypot(P.x - x, P.z - z) < 3.2;
-    if (!ahead) c.t += c.sp * dt;
-    const [cx, cz, cr] = carPos(c, c.t); c.x = cx; c.z = cz; c.rot = cr;
-  }
-}
-
-/* =====================================================================
-   9. MAPA BASE (pré-desenhado uma vez: minimapa, mapa grande e modo 2D)
-   ===================================================================== */
-const MAP = {x0:-112, x1:132, z0:-112, z1:112, s:4};
-const mapCanvas = document.createElement("canvas");
-const wx = x => (x - MAP.x0) * MAP.s, wz = z => (z - MAP.z0) * MAP.s;
-function drawBaseMap(){
-  const c = mapCanvas; c.width = (MAP.x1 - MAP.x0) * MAP.s; c.height = (MAP.z1 - MAP.z0) * MAP.s;
-  const g = c.getContext("2d"), s = MAP.s;
-  const rect = (o, col) => { g.fillStyle = col; g.fillRect(wx(o.x0), wz(o.z0), (o.x1 - o.x0) * s, (o.z1 - o.z0) * s); };
-  g.fillStyle = "#120d24"; g.fillRect(0, 0, c.width, c.height);
-  rect({x0:112, x1:MAP.x1, z0:MAP.z0, z1:MAP.z1}, "#163f6e");
-  g.strokeStyle = "rgba(127,200,255,.25)"; g.lineWidth = 2; for (let y = 10; y < c.height; y += 26) { g.beginPath(); g.moveTo(wx(114), y); g.lineTo(c.width, y + 6); g.stroke(); }
-  for (const [k, d] of Object.entries(D)) {
-    rect(d, d.soon ? "#17122c" : districtOpen(k) ? "#221c3c" : "#1c1630");
-    if (d.soon || !districtOpen(k)) { g.save(); g.beginPath(); g.rect(wx(d.x0), wz(d.z0), (d.x1-d.x0)*s, (d.z1-d.z0)*s); g.clip(); g.strokeStyle = d.soon ? "rgba(255,63,164,.18)" : "rgba(47,243,255,.22)"; g.lineWidth = 3;
-      for (let k2 = -c.height; k2 < c.width; k2 += 18) { g.beginPath(); g.moveTo(k2, 0); g.lineTo(k2 + c.height, c.height); g.stroke(); } g.restore(); }
-  }
-  for (const b of SOON_B) rect(b, "#241c44");
-  rect(Wd.beach, "#e3c27f"); rect({x0:90, x1:93, z0:-46, z1:46}, "#e59ab8");
-  for (const r of Wd.roads) rect(r, "#2f2950");
-  g.strokeStyle = "rgba(255,210,63,.55)"; g.setLineDash([6, 6]); g.lineWidth = 1.5;
-  for (const r of Wd.roads) { g.beginPath(); if (r.v) { g.moveTo(wx((r.x0+r.x1)/2), wz(r.z0)); g.lineTo(wx((r.x0+r.x1)/2), wz(r.z1)); } else { g.moveTo(wx(r.x0), wz((r.z0+r.z1)/2)); g.lineTo(wx(r.x1), wz((r.z0+r.z1)/2)); } g.stroke(); }
-  g.setLineDash([]);
-  for (const b of Wd.blocks) rect(b, "#3e3762");
-  for (const p of Wd.plazas) { rect(p, "#2f5a4a"); g.fillStyle = "#2ff3ff"; g.beginPath(); g.arc(wx(p.fountain[0]), wz(p.fountain[1]), 2.4 * s, 0, 7); g.fill(); }
-  for (const b of Wd.buildings) { const col = b.kind === "station" ? "#2ff3ff" : b.kind === "cafe" ? "#ff3fa4" : b.kind === "library" ? "#ffb627" : b.color;
-    rect(b, col); g.strokeStyle = "rgba(5,3,11,.8)"; g.lineWidth = 2; g.strokeRect(wx(b.x0), wz(b.z0), (b.x1-b.x0)*s, (b.z1-b.z0)*s); }
-  for (const p of Wd.palms) { g.fillStyle = "#2fae6a"; g.beginPath(); g.arc(wx(p.x), wz(p.z), 1.6 * s / 2, 0, 7); g.fill(); }
-}
-/* Nomes dos bairros: desenhados por cima no mapa grande e no modo 2D (no minimapa ficariam enormes) */
-function drawDistrictNames(g, toX, toY, k1){
-  g.save(); g.textAlign = "center"; g.textBaseline = "middle"; g.lineJoin = "round";
-  for (const [k, d] of Object.entries(D)) {
-    const cx = toX((d.x0 + d.x1) / 2), cy = toY(d.soon ? (d.z0 + d.z1) / 2 : d.z0 + 9);
-    g.font = `bold ${Math.round(34 * k1)}px 'Barlow Condensed', sans-serif`; g.lineWidth = 6 * k1; g.strokeStyle = "#05030b"; g.strokeText(d.name.toUpperCase(), cx, cy);
-    g.fillStyle = d.soon ? "#ff8ac8" : districtOpen(k) ? "#f6f3ff" : "#9ff6ff"; g.fillText(d.name.toUpperCase(), cx, cy);
-    if (d.soon || !districtOpen(k)) { g.font = `bold ${Math.round(22 * k1)}px 'Barlow Condensed', sans-serif`; const t = d.soon ? "EM BREVE" : "BLOQUEADO";
-      g.strokeText(t, cx, cy + 32 * k1); g.fillStyle = d.soon ? "#ffd23f" : "#9ff6ff"; g.fillText(t, cx, cy + 32 * k1);
-      if (d.soon) { g.font = `600 ${Math.round(18 * k1)}px 'Barlow Condensed', sans-serif`; g.strokeText(d.sub, cx, cy + 56 * k1); g.fillStyle = "#cfc6f0"; g.fillText(d.sub, cx, cy + 56 * k1); } }
-  }
-  g.font = `bold ${Math.round(26 * k1)}px 'Barlow Condensed', sans-serif`; g.fillStyle = "#9fd0ff"; g.fillText("OCEANO", toX(122), toY(0));
-  g.restore();
-}
-function drawMarkerIcon(g, m, x, y, r){
-  const lk = look(m);
-  g.save(); g.translate(x, y); g.lineWidth = 2.5; g.strokeStyle = "#05030b"; g.fillStyle = lk.c; g.beginPath();
-  if (lk.st === "locked") g.rect(-r, -r, 2*r, 2*r);
-  else if (lk.st === "done") g.arc(0, 0, r, 0, 7);
-  else if (m.type === "project") for (let k = 0; k < 6; k++) { const a = k / 6 * Math.PI * 2; g.lineTo(Math.cos(a) * r * 1.1, Math.sin(a) * r * 1.1); }
-  else if (m.type === "special") for (let k = 0; k < 10; k++) { const a = k / 10 * Math.PI * 2 - Math.PI/2, rr = k % 2 ? r * .55 : r * 1.25; g.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); }
-  else if (m.type === "daily") { g.roundRect ? g.roundRect(-r, -r, 2*r, 2*r, r*.4) : g.rect(-r, -r, 2*r, 2*r); }
-  else if (lk.st === "progress") g.arc(0, 0, r, 0, 7);
-  else { g.moveTo(0, -r * 1.3); g.lineTo(r * 1.1, 0); g.lineTo(0, r * 1.3); g.lineTo(-r * 1.1, 0); }
-  g.closePath(); g.fill(); g.stroke();
-  g.fillStyle = "#05030b"; g.font = `bold ${Math.round(r * 1.15)}px 'Silkscreen', monospace`; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(lk.ic, 0, 1);
-  g.restore();
-}
-function drawPlayerArrow(g, x, y, rot, r){ g.save(); g.translate(x, y); g.rotate(-rot + Math.PI); g.beginPath(); g.moveTo(0, -r * 1.3); g.lineTo(r, r); g.lineTo(0, r * .45); g.lineTo(-r, r); g.closePath();
-  g.fillStyle = "#2ff3ff"; g.fill(); g.lineWidth = 2.5; g.strokeStyle = "#05030b"; g.stroke(); g.restore(); }
-
-/* Minimapa: norte para cima, centrado no jogador */
-const mini = $("mini"), mg = mini.getContext("2d");
-function drawMini(){
-  const W = mini.width, H = mini.height, sc = 2.4;   // px do minimapa por px do mapa base
-  mg.fillStyle = "#120d24"; mg.fillRect(0, 0, W, H);
-  const cx = wx(P.x), cy = wz(P.z), vw = W / sc, vh = H / sc;
-  mg.imageSmoothingEnabled = false;
-  mg.drawImage(mapCanvas, cx - vw/2, cy - vh/2, vw, vh, 0, 0, W, H);
-  const toM = (x, z) => [(wx(x) - cx) * sc + W/2, (wz(z) - cy) * sc + H/2];
-  for (const p of peds) if (p.th < (D[p.d].act ? D[p.d].act(hourNow()) : 0) * CROWD() && !p.hidden && districtOpen(p.d)) { const [x, y] = toM(p.x, p.z); if (x > 0 && y > 0 && x < W && y < H) { mg.fillStyle = "rgba(246,243,255,.7)"; mg.fillRect(x - 2, y - 2, 4, 4); } }
-  const tr = tracked();
-  for (const m of POINTS) { let [x, y] = toM(m.pos[0], m.pos[1]); const inside = x > 14 && y > 14 && x < W - 14 && y < H - 14;
-    if (!inside) { if (m !== tr) continue; const a = Math.atan2(y - H/2, x - W/2); x = W/2 + Math.cos(a) * (W/2 - 22); y = H/2 + Math.sin(a) * (H/2 - 22); }
-    drawMarkerIcon(mg, m, x, y, m === tr ? 13 : 10); }
-  drawPlayerArrow(mg, W/2, H/2, P.rot, 11);
-}
-
-/* Modo 2D (visto de cima): mesma cidade, mesmos controles e marcadores */
-const m2 = $("map2d"), m2g = m2.getContext("2d");
-let zoom2d = 1.6;
-function draw2D(){
-  const dpr = Math.min(devicePixelRatio, 2), W = innerWidth, H = innerHeight;
-  if (m2.width !== Math.round(W * dpr)) { m2.width = Math.round(W * dpr); m2.height = Math.round(H * dpr); }
-  const g = m2g; g.setTransform(dpr, 0, 0, dpr, 0, 0); g.imageSmoothingEnabled = false;
-  const sc = zoom2d, cx = wx(P.x), cy = wz(P.z);
-  g.fillStyle = "#120d24"; g.fillRect(0, 0, W, H);
-  g.drawImage(mapCanvas, cx - W / sc / 2, cy - H / sc / 2, W / sc, H / sc, 0, 0, W, H);
-  const night = 1 - dayFactor(hourNow()); g.fillStyle = `rgba(10,6,30,${night * .45})`; g.fillRect(0, 0, W, H);
-  const toS = (x, z) => [(wx(x) - cx) * sc + W/2, (wz(z) - cy) * sc + H/2];
-  for (const p of peds) if (p.th < D[p.d].act(hourNow()) * CROWD() && !p.hidden && districtOpen(p.d)) { const [x, y] = toS(p.x, p.z); g.fillStyle = p.shirt; g.beginPath(); g.arc(x, y, Math.max(2.5, .4 * MAP.s * sc), 0, 7); g.fill(); }
-  for (const c of cars) { const [x, y] = toS(c.x, c.z); g.save(); g.translate(x, y); g.rotate(-c.rot); g.fillStyle = c.c; const w = 1.8 * MAP.s * sc, l = 3.6 * MAP.s * sc; g.fillRect(-w/2, -l/2, w, l); g.restore(); }
-  drawDistrictNames(g, x => (wx(x) - cx) * sc + W/2, z => (wz(z) - cy) * sc + H/2, Math.min(1.1, sc / 2.2));
-  for (const m of POINTS) { const [x, y] = toS(m.pos[0], m.pos[1]); if (x < -40 || y < -40 || x > W + 40 || y > H + 40) continue; drawMarkerIcon(g, m, x, y, 14); }
-  const [px, py] = toS(P.x, P.z); drawPlayerArrow(g, px, py, P.rot, 13);
-}
-
-/* =====================================================================
-   10. RÓTULOS DOS MARCADORES (HTML, acessíveis)
-   ===================================================================== */
-const labelEls = {};
-const LIM = {top:150, bottom:innerHeight - 20};
-function measureLimits(){
-  const pr = document.querySelector(".player").getBoundingClientRect(), mw = document.querySelector(".mini-wrap").getBoundingClientRect();
-  LIM.top = Math.max(pr.bottom, isTouch ? mw.bottom : pr.bottom) + 60;
-  LIM.bottom = innerHeight - (isTouch ? 250 : 30);
-}
-function buildLabels(){
-  const box = $("labels"); box.innerHTML = "";
-  for (const m of POINTS) { const b = document.createElement("button"); b.type = "button"; b.className = "mlabel"; b.dataset.id = m.id; b.hidden = true; box.appendChild(b); labelEls[m.id] = b; b.addEventListener("click", () => openPoint(m.id)); }
-  refreshLabels();
-}
-function refreshLabels(){
-  for (const m of POINTS) { const b = labelEls[m.id], lk = look(m), rw = reward(m); if (!b) continue;
-    b.style.setProperty("--c", lk.c);
-    b.innerHTML = `<span class="ic" aria-hidden="true">${lk.ic}</span><span><b>${esc(titleOf(m))}</b><small>${lk.label} · +${rw.xp} XP · ${fmt(rw.cash)}</small></span>`;
-    b.setAttribute("aria-label", `${titleOf(m)}. ${lk.label}. ${D[m.d].name}. Recompensa ${rw.xp} XP e ${fmt(rw.cash)}. Abrir painel.`); }
-}
-function placeLabels(){
-  for (const m of POINTS) { const b = labelEls[m.id]; if (!b) continue;
-    const d = Math.hypot(P.x - m.pos[0], P.z - m.pos[1]);
-    let x, y, show;
-    const range = look(m).st === "locked" ? 16 : m === tracked() ? 90 : 55;
-    if (mode === "3d" && three) { const p = three.project(m.pos[0], 4.6, m.pos[1]); x = p.x; y = p.y; show = p.front && d < range; }
-    else { x = (wx(m.pos[0]) - wx(P.x)) * zoom2d + innerWidth/2; y = (wz(m.pos[1]) - wz(P.z)) * zoom2d + innerHeight/2 - 22; show = d < range; }
-    show = show && x > -100 && x < innerWidth + 100 && y > LIM.top && y < LIM.bottom;
-    if (b.hidden === show) b.hidden = !show;
-    if (show) { b.classList.toggle("far", d > 28); b.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px) translate(-50%, -100%)`; b.style.zIndex = String(1000 - Math.round(d)); }
-  }
-}
-
-/* =====================================================================
-   11. HUD
-   ===================================================================== */
-function tracked(){
-  const t = POINTS.find(m => m.id === S.city.track);
-  if (t && stateOf(t) !== "done" && stateOf(t) !== "locked") return t;
-  return POINTS.find(m => m.type === "main" && ["progress","available"].includes(stateOf(m))) || POINTS.find(m => m.type === "project" && stateOf(m) !== "done" && stateOf(m) !== "locked") || null;
-}
-let shownCash = null;
-function renderHUD(){
-  const s = DC.playerTotals(S), L = s.level, lo = DC.xpForLevel(L), hi = DC.xpForLevel(L + 1), pct = Math.round((s.xp - lo) / (hi - lo) * 100);
-  $("hLvl").textContent = "NV " + L; $("hRank").textContent = DC.RANKS[s.rank];
-  $("hXp").style.width = pct + "%"; $("hXpWrap").setAttribute("aria-valuenow", pct);
-  $("hXpTxt").textContent = `${s.xp.toLocaleString("pt-BR")} XP`;
-  $("hCash").textContent = fmt(s.cash); $("hResp").textContent = "Respeito " + s.respect;
-  const st = streak(); $("hStreak").textContent = st === 1 ? "1 dia seguido" : `${st} dias seguidos`;
-}
-let lastDistrict = null, bannerT;
-function updateObjective(){
-  const t = tracked();
-  if (!t) { $("objName").textContent = "Tudo concluído por aqui"; $("objDist").textContent = "Novos bairros em breve"; $("objArrow").style.visibility = "hidden"; return; }
-  const dx = t.pos[0] - P.x, dz = t.pos[1] - P.z, dist = Math.hypot(dx, dz);
-  $("objName").textContent = titleOf(t);
-  $("objDist").textContent = `${D[t.d].name} · ${dist < 4 ? "você chegou" : Math.round(dist) + " m"}`;
-  const yaw = mode === "2d" ? 0 : CAM.yaw, ang = Math.atan2(dx, dz) - (yaw + Math.PI);
-  $("objArrow").style.visibility = "visible"; $("objArrow").style.transform = `rotate(${-ang * 180 / Math.PI}deg)`;
-  $("objective").setAttribute("aria-label", `Missão atual: ${titleOf(t)}, ${D[t.d].name}, a ${Math.round(dist)} metros. Abrir diário.`);
-}
-function updateDistrict(){
-  const d = districtAt(P.x, P.z);
-  if (d === lastDistrict) return;
-  lastDistrict = d; $("dChip").textContent = D[d].name;
-  if (!S.city.visited.includes(d)) { S.city.visited.push(d); save(); checkAch(); }
-  $("bannerT").textContent = D[d].name; $("bannerS").textContent = D[d].sub; $("banner").hidden = false;
-  announce(`Você entrou em ${D[d].name}. ${D[d].sub}.`);
-  clearTimeout(bannerT); bannerT = setTimeout(() => $("banner").hidden = true, 2600);
-}
-let near = null;
-function updatePrompt(){
-  let best = null, bd = 3.6;
-  for (const m of POINTS) { const d = Math.hypot(P.x - m.pos[0], P.z - m.pos[1]); if (d < bd) { bd = d; best = m; } }
-  if (best !== near) { near = best;
-    if (best) { const n = npcOf(best), lk = look(best); $("promptTxt").textContent = `${best.type === "project" ? "Abrir projeto" : best.type === "daily" ? "Ver o painel" : "Falar com " + n[0]} · ${titleOf(best)} (${lk.label})`;
-      $("prompt").hidden = false; $("actBtn").hidden = !isTouch; $("actBtn").textContent = best.type === "project" ? "Abrir" : "Falar";
-      $("actBtn").setAttribute("aria-label", `${n ? "Falar com " + n[0] : "Abrir"}: ${titleOf(best)}`); sfx("near"); }
-    else { $("prompt").hidden = true; $("actBtn").hidden = true; } }
-}
-let clockT = 0;
-function updateClock(){ const h = hourNow(), hh = Math.floor(h), mm = Math.floor((h - hh) * 60);
-  $("clock").textContent = `${String(hh).padStart(2,"0")}:${String(mm).padStart(2,"0")} · ${periodName(h)}`; if (hh < 5 && !S.city.ach.coruja) checkAch(); }
-
-/* =====================================================================
-   12. PAINEL DE MISSÃO / PROJETO / DESAFIO
-   ===================================================================== */
-const answers = {};
-let openId = null;
-function openPoint(id){
-  const m = POINTS.find(p => p.id === id); if (!m) return;
-  openId = id; renderMission(m); openDialog($("dMission")); sfx("open");
-}
-function stepState(id){ return S.city.m[id] || (S.city.m[id] = {acc:false, w:false, p:false, q:false, tries:0, link:""}); }
-function quizOf(m){
-  if (m.type === "special") return SPECIAL.quiz;
-  if (m.type === "daily") { const all = DC.K.flatMap(k => k[1].q); const d = DC.today(); let hsh = 0; for (const ch of d) hsh = (hsh * 31 + ch.charCodeAt(0)) >>> 0; return [all[hsh % all.length]]; }
-  return lesson(m).topic.q;
-}
-function renderMission(m){
-  const lk = look(m), st = lk.st, rw = reward(m), n = npcOf(m), l = lesson(m), body = $("mBody");
-  const kind = {main:"MISSÃO", special:"MISSÃO ESPECIAL", daily:"DESAFIO DIÁRIO", project:"PROJETO FINAL"}[m.type];
-  $("mKind").textContent = `${kind} · ${lk.label.toUpperCase()}`; $("mTitle").textContent = titleOf(m);
-  const url = l ? safeUrl(l.link) : "";
-  const meta = `<div class="meta">
-      <div><span>Bairro</span><b>${esc(D[m.d].name)}</b></div>
-      <div><span>Trilha</span><b>${l ? esc(l.track.area) : m.type === "project" ? esc(m.tech.join(", ")) : m.type === "special" ? "Carreira" : "Revisão geral"}</b></div>
-      <div><span>Responsável</span><b>${n ? esc(n[0]) : "—"}</b></div>
-      <div><span>Dificuldade</span><b>${l ? DIFF[l.diff] : m.type === "project" ? "Difícil" : "Fácil"}</b></div>
-      <div><span>Tempo estimado</span><b>${l ? "≈ " + HRS[l.diff] + " h" : m.type === "project" ? "≈ 20 h" : m.type === "daily" ? "≈ 2 min" : "≈ 30 min"}</b></div>
-      <div><span>Recompensa</span><b class="rw">+${rw.xp} XP e ${fmt(rw.cash)}</b></div></div>`;
-  const npcHtml = n ? `<div class="npc"><span class="face" style="background:${n[2]}" aria-hidden="true">${esc(n[0].split(" ").map(w => w[0]).join("").slice(0,2))}</span>
-      <div class="bubble"><b>${esc(n[0])} · ${esc(n[1])}</b>${esc(n[3])}</div></div>` : "";
-  const objective = m.type === "project" ? m.desc : l ? l.topic.o : m.type === "daily" ? "Acertar a pergunta do dia sobre programação." : "Organizar seus estudos para não parar no meio do caminho.";
-  const exercise = m.type === "project" ? "" : m.ex || (l ? l.topic.e : "");
-  const lessonHtml = l ? `<div class="sec"><h3>Aula recomendada</h3><p>${esc(l.course)} · ${esc(l.prof)}</p></div>` : "";
-  let html = meta + npcHtml + `<div class="sec"><h3>Objetivo</h3><p>${esc(objective)}</p></div>`;
-  if (m.concept) html += `<div class="sec"><h3>Conceito ensinado</h3><p>${esc(m.concept)}</p></div>`;
-  html += lessonHtml;
-  if (exercise) html += `<div class="sec" id="exSec"><h3>Desafio</h3><p>${esc(exercise)}</p></div>`;
-  const s = stepState(m.id);
-  const btnRow = (extra) => `<div class="row">${extra || ""}${url ? `<a class="btn ghost sm" href="${url}" target="_blank" rel="noopener" aria-label="Ver aula ${esc(l.course)} em nova aba">Ver aula</a>` : ""}<button type="button" class="btn ghost sm" data-close>Voltar ao mapa</button></div>`;
-  if (st === "locked") {
-    const need = (m.req || []).filter(id => !rec("m:" + id)).map(id => MIS.find(x => x.id === id).name);
-    const why = !districtOpen(m.d) ? `O bairro ${D[m.d].name} libera quando você concluir “${MIS.find(x => x.id === D[m.d].unlock).name}”.` : `Conclua antes: ${need.join(", ")}.`;
-    html += `<p class="note"><strong>Bloqueada.</strong> ${esc(why)}</p>` + btnRow();
-  } else if (st === "done") {
-    const r = rec(m.type === "daily" ? "d:" + DC.today() : m.type === "project" ? "p:" + m.d : (m.type === "special" ? "s:" : "m:") + m.id);
-    html += `<p class="done"><strong>Concluída${r && r.at ? " em " + r.at.split("-").reverse().join("/") : ""}.</strong> Você recebeu +${r ? r.xp : rw.xp} XP e ${fmt(r ? r.cash : rw.cash)}.${m.type === "daily" ? " Volte amanhã para um desafio novo." : ""}</p>`;
-    if (m.type === "project") html += `<div class="row"><button type="button" class="btn sm" data-act="result">Ver resultado do projeto</button></div>`;
-    html += btnRow();
-  } else if (m.type === "project") {
-    const pj = S.city.proj[m.d] || (S.city.proj[m.d] = {reqs:[], link:""});
-    const ok = m.reqs.every((_, k) => pj.reqs[k]);
-    html += `<div class="sec"><h3>Tecnologias</h3><p>${esc(m.tech.join(" · "))}</p></div>
-      <ul class="steps" aria-label="Requisitos do projeto">${m.reqs.map((r, k) => `<li class="${pj.reqs[k] ? "ok" : ""}"><label class="check"><input type="checkbox" id="req-${m.d}-${k}" data-req="${k}" ${pj.reqs[k] ? "checked" : ""}> ${esc(r)}</label></li>`).join("")}</ul>
-      <div class="field"><label for="plink">Link do projeto ou repositório (opcional)</label><input id="plink" type="url" data-plink="1" placeholder="https://..." value="${esc(pj.link)}"></div>
-      <div class="deliver"><p id="pdm">${ok ? `Tudo pronto. Recompensa: <strong>+${PROJ_XP} XP e ${fmt(PROJ_CASH)}</strong>.` : "Marque todos os requisitos para entregar."}</p>
-      <button type="button" class="btn pink" data-act="deliverProj" ${ok ? "" : "disabled"} aria-describedby="pdm">Entregar projeto</button></div>` + btnRow();
-  } else if (m.type === "daily") {
-    html += quizHtml(m, s, true) + btnRow();
-  } else if (!s.acc) {
-    html += `<div class="row"><button type="button" class="btn xl" data-act="accept">Aceitar missão</button>
-      ${exercise ? `<button type="button" class="btn ghost sm" data-act="peek">Abrir desafio</button>` : ""}</div>` + btnRow();
-  } else {
-    const missing = [!s.w && (l ? "assistir à aula" : "ouvir a conversa"), !s.p && "fazer o desafio", !s.q && "acertar o quiz"].filter(Boolean);
-    html += `<ol class="steps" aria-label="Etapas da missão">
-        <li class="${s.w ? "ok" : ""}"><h4>1 · ${l ? "Assistir à aula" : "Conversar"}</h4>
-          <div class="row">${url ? `<a class="btn cyan sm" href="${url}" target="_blank" rel="noopener">▶ Abrir aula</a>` : ""}<label class="check"><input type="checkbox" id="st-w" data-step="w" ${s.w ? "checked" : ""}> ${l ? "Assisti às aulas" : "Li as dicas da Lia"}</label></div></li>
-        <li class="${s.p ? "ok" : ""}" id="stepEx"><h4>2 · Desafio prático</h4><p>${esc(exercise)}</p>
-          <label class="check"><input type="checkbox" id="st-p" data-step="p" ${s.p ? "checked" : ""}> Fiz o desafio</label>
-          <div class="field"><label for="st-link">Link do seu código ou anotações (opcional)</label><input id="st-link" type="url" data-link="1" placeholder="https://github.com/..." value="${esc(s.link)}"></div></li>
-        <li class="${s.q ? "ok" : ""}"><h4>3 · Mini quiz</h4>${quizHtml(m, s, false)}</li></ol>
-      <div class="deliver"><p id="dm">${missing.length ? "Para entregar falta: " + missing.join(", ") + "." : `Tudo pronto. Recompensa: <strong>+${rw.xp} XP e ${fmt(rw.cash)}</strong>.`}</p>
-        <button type="button" class="btn pink" data-act="deliver" ${missing.length ? "disabled" : ""} aria-describedby="dm">Entregar missão</button></div>` + btnRow();
-  }
-  body.innerHTML = html;
-}
-function quizHtml(m, s, isDaily){
-  const qs = quizOf(m), sel = answers[m.id] || [];
-  const done = isDaily ? false : s.q;
-  return `<div class="quiz">${qs.map((q, qi) => `<fieldset><legend>${qi + 1}. ${esc(q[0])}</legend>${q[1].map((o, oi) => `<label class="opt"><input type="radio" name="q-${m.id}-${qi}" id="q-${m.id}-${qi}-${oi}" value="${oi}" data-q="${qi}" ${sel[qi] === oi ? "checked" : ""} ${done ? "disabled" : ""}> ${esc(o)}</label>`).join("")}</fieldset>`).join("")}
-    ${done ? `<p class="fb good">Quiz certo${s.tries === 0 ? " de primeira" : ""}.</p>` : `<button type="button" class="btn cyan sm" data-act="${isDaily ? "daily" : "quiz"}">Responder</button>`}
-    <p class="fb" id="qfb" role="status"></p></div>`;
-}
-$("mBody").addEventListener("click", e => {
-  const m = POINTS.find(p => p.id === openId); if (!m) return;
-  const a = e.target.closest("[data-act]"); if (!a || a.disabled) return;
-  const s = stepState(m.id), act = a.dataset.act;
-  if (act === "accept") { s.acc = true; S.city.track = m.id; touch(); save(); refreshAll(); renderMission(m); sfx("ok"); announce(`Missão aceita: ${m.name}.`); focusFirst(); return; }
-  if (act === "peek") { const ex = $("exSec"); if (ex) { ex.scrollIntoView({block:"center"}); ex.setAttribute("tabindex", "-1"); ex.focus(); } return; }
-  if (act === "quiz" || act === "daily") return answerQuiz(m, s, act === "daily");
-  if (act === "deliver") return deliver(m);
-  if (act === "deliverProj") return deliverProject(m);
-  if (act === "result") return showResult(m);
-});
-$("mBody").addEventListener("change", e => {
-  const m = POINTS.find(p => p.id === openId), el = e.target; if (!m) return;
-  if (el.dataset.step) { const s = stepState(m.id); s[el.dataset.step] = el.checked; if (el.checked) touch(); save(); keepFocus(() => renderMission(m)); refreshAll(); }
-  else if (el.dataset.q) (answers[m.id] = answers[m.id] || [])[+el.dataset.q] = +el.value;
-  else if (el.dataset.req) { const pj = S.city.proj[m.d]; pj.reqs[+el.dataset.req] = el.checked; save(); keepFocus(() => renderMission(m)); }
-});
-$("mBody").addEventListener("input", e => {
-  const m = POINTS.find(p => p.id === openId), el = e.target; if (!m) return;
-  if (el.dataset.link) { stepState(m.id).link = el.value.slice(0, 300); save(); }
-  if (el.dataset.plink) { S.city.proj[m.d].link = el.value.slice(0, 300); save(); }
-});
-function keepFocus(fn){ const id = document.activeElement && document.activeElement.id; fn(); if (id && $(id)) $(id).focus(); }
-function focusFirst(){ const f = $("mBody").querySelector("input,button:not([disabled]),a"); f && f.focus(); }
-function answerQuiz(m, s, isDaily){
-  const qs = quizOf(m), sel = answers[m.id] || [], fb = $("qfb");
-  if (qs.some((_, k) => sel[k] === undefined)) { fb.className = "fb bad"; fb.textContent = "Responda todas as perguntas."; return; }
-  const wrong = qs.map((q, k) => sel[k] === q[2] ? null : k + 1).filter(Boolean);
-  touch();
-  if (wrong.length) { s.tries++; save(); fb.className = "fb bad"; fb.textContent = (wrong.length === 1 ? `A pergunta ${wrong[0]} não está certa.` : `As perguntas ${wrong.join(" e ")} não estão certas.`) + " Tente de novo."; sfx("deny"); return; }
-  if (isDaily) { const rw = reward(m); S.city.rec["d:" + DC.today()] = {xp: rw.xp, cash: rw.cash, at: DC.today()}; save(); complete(m, rw); return; }
-  s.q = true; let msg = "Quiz certo!";
-  if (s.tries === 0) { S.bonus = (S.bonus || 0) + QUIZ_BONUS; S.firstTries = (S.firstTries || 0) + 1; msg = `Na lata, de primeira! Bônus de +${fmt(QUIZ_BONUS)}.`; }
-  save(); renderMission(m); refreshAll(); sfx("ok");
-  const f2 = $("qfb"); if (f2) { f2.className = "fb good"; f2.textContent = msg; }
-  const dv = $("mBody").querySelector('[data-act="deliver"]'); if (dv && !dv.disabled) dv.focus();
-  announce(msg);
-}
-function deliver(m){
-  const s = stepState(m.id); if (!(s.w && s.p && s.q)) return;
-  const rw = reward(m);
-  S.city.rec[(m.type === "special" ? "s:" : "m:") + m.id] = {xp: rw.xp, cash: rw.cash, at: DC.today()};
-  touch(); save(); complete(m, rw);
-}
-function deliverProject(m){
-  const pj = S.city.proj[m.d]; if (!m.reqs.every((_, k) => pj.reqs[k])) return;
-  S.city.rec["p:" + m.d] = {xp: PROJ_XP, cash: PROJ_CASH, at: DC.today()}; touch(); save();
-  closeDialog($("dMission")); refreshAll(); celebrate("Projeto entregue", `<b>+${PROJ_XP} XP</b> · ${fmt(PROJ_CASH)}`); checkAch();
-  setTimeout(() => showResult(m), reduceNow() ? 50 : 1400);
-}
-function complete(m, rw){
-  const opened = D.orla.unlock === m.id ? "orla" : D.caribe.unlock === m.id ? "caribe" : null;
-  closeDialog($("dMission"));
-  if (S.city.track === m.id) S.city.track = null;
-  const nx = tracked(); if (nx) S.city.track = nx.id; save();
-  refreshAll(); drawBaseMap();
-  celebrate(m.type === "daily" ? "Desafio do dia" : "Missão cumprida", `<b>+${rw.xp} XP</b> · ${fmt(rw.cash)}`);
-  checkAch();
-  setTimeout(() => toast(opened ? `${D[opened].name} liberado! A barreira caiu.` : nx ? `Próximo objetivo: ${titleOf(nx)}` : "Tudo concluído por aqui!"), reduceNow() ? 0 : 1500);
-  announce(`${m.name} concluída. Mais ${rw.xp} XP e ${fmt(rw.cash)}.${opened ? " " + D[opened].name + " liberado." : ""}`);
-}
-
-/* Resultado do projeto final: medalha, compartilhar, exportar texto e imagem */
-function showResult(m){
-  const ms = MIS.filter(x => x.d === m.d), done = ms.filter(x => rec("m:" + x.id)).length, s = DC.playerTotals(S);
-  const text = `Entreguei o projeto “${m.name}” no Dev City (${D[m.d].name}, Costa Solar)! Tecnologias: ${m.tech.join(", ")}. ${done}/${ms.length} missões do bairro, +${PROJ_XP} XP, nível ${s.level}.`;
-  $("rTitle").textContent = m.name;
-  $("rBody").innerHTML = `<svg class="medal" viewBox="0 0 120 150" aria-hidden="true"><path d="M38 0h18l8 40H46zM64 0h18L74 40H56z" fill="#7b3cff" stroke="#05030b" stroke-width="3"/>
-      <polygon points="60,40 103,65 103,115 60,140 17,115 17,65" fill="#ffd23f" stroke="#05030b" stroke-width="4"/><polygon points="60,54 91,72 91,108 60,126 29,108 29,72" fill="#2ff3ff" stroke="#05030b" stroke-width="3"/>
-      <text x="60" y="100" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="30" fill="#05030b">${esc(D[m.d].name.split(" ")[0].slice(0,6).toUpperCase())}</text></svg>
-    <p class="result-title">Projeto entregue</p>
-    <div class="meta"><div><span>Projeto</span><b>${esc(m.name)}</b></div><div><span>Tecnologias</span><b>${esc(m.tech.join(", "))}</b></div>
-      <div><span>Missões do bairro</span><b>${done}/${ms.length}</b></div><div><span>XP recebido</span><b class="rw">+${PROJ_XP} XP</b></div>
-      <div><span>Dinheiro</span><b class="rw">${fmt(PROJ_CASH)}</b></div><div><span>Medalha</span><b>Obra de ${esc(D[m.d].name)}</b></div></div>
-    <label class="sr-only" for="shareTxt">Texto do resultado</label><textarea id="shareTxt" class="io" readonly style="min-height:90px">${esc(text)}</textarea>
-    <div class="row"><button type="button" class="btn pink" id="rShare">Compartilhar</button><button type="button" class="btn ghost" id="rCopy">Copiar texto</button><button type="button" class="btn ghost" id="rImg">Gerar imagem</button></div>
-    <p class="fb" id="rMsg" role="status"></p><div id="rImgBox"></div>`;
-  $("rShare").onclick = async () => { try { if (navigator.share) { await navigator.share({title:"Dev City", text}); $("rMsg").textContent = "Compartilhado!"; return; } } catch (e) { if (e && e.name === "AbortError") return; } copyText(text, $("shareTxt"), $("rMsg")); };
-  $("rCopy").onclick = () => copyText(text, $("shareTxt"), $("rMsg"));
-  $("rImg").onclick = () => { const url = shareImage(m, done, ms.length, s.level);
-    $("rImgBox").innerHTML = `<img class="share-img" src="${url}" alt="Imagem do resultado: ${esc(m.name)}, ${done} de ${ms.length} missões, mais ${PROJ_XP} XP"><div class="row" style="margin-top:8px"><a class="btn sm" href="${url}" download="dev-city-${m.d}.png">Baixar imagem</a></div><p class="note">No celular, você também pode tocar e segurar a imagem para salvar.</p>`; };
-  openDialog($("dResult"));
-}
-async function copyText(t, ta, msg){ try { await navigator.clipboard.writeText(t); msg.className = "fb good"; msg.textContent = "Copiado!"; } catch (e) { ta.focus(); ta.select(); msg.className = "fb"; msg.textContent = "Texto selecionado. Use Copiar do seu aparelho."; } }
-function shareImage(m, done, total, level){
-  const c = document.createElement("canvas"); c.width = 1080; c.height = 1080; const g = c.getContext("2d");
-  const gr = g.createLinearGradient(0, 0, 0, 1080); gr.addColorStop(0, "#2a1650"); gr.addColorStop(1, "#0b0a24"); g.fillStyle = gr; g.fillRect(0, 0, 1080, 1080);
-  g.fillStyle = "rgba(47,243,255,.08)"; for (let x = 0; x < 1080; x += 24) g.fillRect(x, 0, 2, 1080); for (let y = 0; y < 1080; y += 24) g.fillRect(0, y, 1080, 2);
-  g.strokeStyle = "#2ff3ff"; g.lineWidth = 8; g.strokeRect(40, 40, 1000, 1000);
-  g.fillStyle = "#ffd23f"; g.font = "bold 44px 'Silkscreen', monospace"; g.textAlign = "center"; g.fillText("DEV CITY · COSTA SOLAR", 540, 140);
-  g.beginPath(); for (let k = 0; k < 6; k++) { const a = k / 6 * Math.PI * 2 - Math.PI/2; g.lineTo(540 + Math.cos(a) * 150, 360 + Math.sin(a) * 150); } g.closePath(); g.fillStyle = "#ffd23f"; g.fill(); g.lineWidth = 10; g.strokeStyle = "#05030b"; g.stroke();
-  g.fillStyle = "#05030b"; g.font = "120px Anton, Impact, sans-serif"; g.fillText("★", 540, 405);
-  g.fillStyle = "#fff"; g.font = "88px Anton, Impact, sans-serif"; g.fillText("PROJETO ENTREGUE", 540, 640);
-  g.fillStyle = "#2ff3ff"; g.font = "bold 54px 'Barlow Condensed', sans-serif"; wrapText(g, m.name.toUpperCase(), 540, 720, 920, 60);
-  g.fillStyle = "#cfc6f0"; g.font = "bold 40px 'Barlow Condensed', sans-serif"; g.fillText(m.tech.join(" · "), 540, 840);
-  g.fillStyle = "#7bf06a"; g.font = "bold 46px 'Barlow Condensed', sans-serif"; g.fillText(`+${PROJ_XP} XP · ${done}/${total} MISSÕES · NÍVEL ${level}`, 540, 920);
-  return c.toDataURL("image/png");
-}
-function wrapText(g, t, x, y, maxW, lh){ const words = t.split(" "); let line = ""; for (const w of words) { const test = line ? line + " " + w : w; if (g.measureText(test).width > maxW && line) { g.fillText(line, x, y); line = w; y += lh; } else line = test; } g.fillText(line, x, y); }
-
-/* =====================================================================
-   13. MAPA (M), DIÁRIO (J), INVENTÁRIO (I), AJUSTES
-   ===================================================================== */
-let mapSel = null;
-function openMap(){
-  drawBaseMap();
-  $("mapBody").innerHTML = `<div class="map-wrap"><canvas id="bigmap" width="${mapCanvas.width}" height="${mapCanvas.height}" aria-label="Mapa completo da Costa Solar com bairros e marcadores. Use a lista abaixo para escolher uma missão."></canvas></div>
-    <div class="legend" aria-label="Legenda">${[["#ffd23f","!","Disponível"],["#2ff3ff","…","Em andamento"],["#7bf06a","✓","Concluída"],["#8c84b0","×","Bloqueada"],["#b98cff","★","Especial"],["#ffb627","P","Projeto final"],["#ff3fa4","D","Desafio diário"]].map(([c, i, t]) => `<span><i style="background:${c}">${i}</i>${t}</span>`).join("")}<span><i style="background:#2ff3ff">▲</i>Você</span></div>
-    <div id="mapSel"></div>
-    <h3 class="dh">Escolher missão sem caminhar</h3>${pointList(true)}`;
-  const c = $("bigmap"), g = c.getContext("2d");
-  const draw = () => { g.drawImage(mapCanvas, 0, 0); drawDistrictNames(g, wx, wz, 1); for (const m of POINTS) drawMarkerIcon(g, m, wx(m.pos[0]), wz(m.pos[1]), m === mapSel ? 20 : 15); drawPlayerArrow(g, wx(P.x), wz(P.z), P.rot, 16); };
-  draw();
-  c.onclick = e => { const r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * c.width, y = (e.clientY - r.top) / r.height * c.height;
-    let best = null, bd = 60; for (const m of POINTS) { const d = Math.hypot(wx(m.pos[0]) - x, wz(m.pos[1]) - y); if (d < bd) { bd = d; best = m; } }
-    mapSel = best; draw(); showSel(); };
-  function showSel(){ const m = mapSel; if (!m) { $("mapSel").innerHTML = ""; return; } const lk = look(m), rw = reward(m);
-    $("mapSel").innerHTML = `<div class="sel-card"><b>${esc(titleOf(m))}</b><span>${esc(D[m.d].name)} · ${lk.label} · +${rw.xp} XP · ${fmt(rw.cash)} · ${Math.round(Math.hypot(P.x - m.pos[0], P.z - m.pos[1]))} m</span>
-      <div class="row"><button type="button" class="btn sm" data-open="${m.id}">Abrir missão</button><button type="button" class="btn ghost sm" data-track="${m.id}">Definir como destino</button></div></div>`; }
-  openDialog($("dMap"));
-}
-function pointList(compact){
-  return Object.entries(D).filter(([, d]) => !d.soon).map(([k, d]) => `<div><h4 class="dh">${esc(d.name)} <small>${districtOpen(k) ? esc(d.sub) : "Bloqueado · conclua “" + esc(MIS.find(x => x.id === d.unlock).name) + "”"}</small></h4>
-    <ul class="list">${POINTS.filter(m => m.d === k).map(m => { const lk = look(m), rw = reward(m), n = npcOf(m);
-      return `<li class="item"><span class="ic" style="background:${lk.c}" aria-hidden="true">${lk.ic}</span><div><b>${esc(titleOf(m))}</b><small>${lk.label} · +${rw.xp} XP · ${fmt(rw.cash)}${n && !compact ? " · " + esc(n[0]) : ""}</small></div>
-        <div class="acts"><button type="button" class="btn sm" data-open="${m.id}" aria-label="Abrir ${esc(titleOf(m))}">Abrir</button>${lk.st !== "done" && lk.st !== "locked" ? `<button type="button" class="btn ghost sm" data-track="${m.id}" aria-label="Definir ${esc(titleOf(m))} como destino">Destino</button>` : ""}</div></li>`; }).join("")}</ul></div>`).join("")
-    + `<p class="note">Em breve: ${Object.values(D).filter(d => d.soon).map(d => esc(d.name) + " (" + esc(d.sub) + ")").join(" · ")}.</p>`;
-}
-function openJournal(){
-  const t = tracked(), s = DC.playerTotals(S);
-  $("jBody").innerHTML = `<div class="sel-card"><span>Missão atual</span><b>${t ? esc(titleOf(t)) + " · " + esc(D[t.d].name) : "Nenhuma pendente"}</b>
-    ${t ? `<div class="row"><button type="button" class="btn sm" data-open="${t.id}">Abrir</button></div>` : ""}</div>
-    <p style="margin:0;color:var(--muted)">${s.cityMissions} missões concluídas na cidade · ${s.missions} no total (cidade + modo clássico).</p>${pointList(false)}`;
-  openDialog($("dJournal"));
-}
-const ACH = [
-  {id:"chegada", n:"Primeiro passo", d:"Entrar na cidade", ic:"1", ok:() => true},
-  {id:"pe-na-areia", n:"Pé na areia", d:"Visitar a Orla Azul", ic:"~", ok:() => S.city.visited.includes("orla")},
-  {id:"vizinhanca", n:"Gente do bairro", d:"Visitar o Barrio Caribe", ic:"¡", ok:() => S.city.visited.includes("caribe")},
-  {id:"turista", n:"Turista", d:"Visitar 3 bairros", ic:"3", ok:() => S.city.visited.length >= 3},
-  {id:"expediente", n:"Bateu o ponto", d:"Concluir a primeira missão na cidade", ic:"✓", ok:() => !!rec("m:expediente")},
-  {id:"cinco", n:"Cidade inteira", d:"Concluir as 5 missões principais", ic:"5", ok:() => MIS.every(m => rec("m:" + m.id))},
-  {id:"diario", n:"Freguês do painel", d:"Acertar um desafio diário", ic:"D", ok:() => Object.keys(S.city.rec).some(k => k[0] === "d")},
-  {id:"obra", n:"Obra de bairro", d:"Entregar um projeto final na cidade", ic:"P", ok:() => Object.keys(S.city.rec).some(k => k[0] === "p")},
-  {id:"coruja", n:"Coruja", d:"Andar pela cidade de madrugada (0h–5h)", ic:"☾", ok:() => hourNow() < 5}
-];
-function checkAch(){ const fresh = []; for (const a of ACH) if (!S.city.ach[a.id] && a.ok()) { S.city.ach[a.id] = DC.today(); fresh.push(a.n); }
-  if (fresh.length) { save(); setTimeout(() => toast("Conquista: " + fresh.join(", ")), 400); } }
-function openInv(){
-  const s = DC.playerTotals(S), L = s.level, st = streak();
-  const opened = Object.keys(D).filter(districtOpen).length, projCity = Object.keys(S.city.rec).filter(k => k[0] === "p").length;
-  const trackName = S.sel && DC.T.find(t => t.id === S.sel) ? DC.T.find(t => t.id === S.sel).area : "—";
-  const t = tracked();
-  $("iBody").innerHTML = `<div class="tiles">
-      <div class="tile"><span>Nível</span><b>NV ${L}</b><small>${DC.RANKS[s.rank]}</small></div>
-      <div class="tile"><span>XP</span><b>${s.xp.toLocaleString("pt-BR")}</b></div>
-      <div class="tile"><span>Dinheiro virtual</span><b style="color:var(--green)">${fmt(s.cash)}</b></div>
-      <div class="tile"><span>Respeito</span><b style="color:var(--pink)">${s.respect}</b></div>
-      <div class="tile"><span>Sequência</span><b>${st} ${st === 1 ? "dia" : "dias"}</b><small>Recorde: ${Math.max(S.bestStreak || 0, st)}</small></div>
-      <div class="tile"><span>Missões concluídas</span><b>${s.missions}</b><small>${s.cityMissions} na cidade</small></div>
-      <div class="tile"><span>Bairros liberados</span><b>${opened}/7</b></div>
-      <div class="tile"><span>Projetos finalizados</span><b>${s.projects}</b><small>${projCity} na cidade</small></div>
-      <div class="tile" style="grid-column:span 2"><span>Missão atual</span><b style="font-size:20px">${t ? esc(titleOf(t)) : "—"}</b></div>
-      <div class="tile" style="grid-column:span 2"><span>Trilha atual (modo clássico)</span><b style="font-size:20px">${esc(trackName)}</b></div></div>
-    <h3 class="dh">Conquistas da cidade</h3>
-    <ul class="achs">${ACH.map(a => { const on = !!S.city.ach[a.id]; return `<li class="ach ${on ? "on" : ""}"><span class="ic" aria-hidden="true">${a.ic}</span><div><b>${esc(a.n)}</b><small>${esc(a.d)} · ${on ? "desbloqueada" : "bloqueada"}</small></div></li>`; }).join("")}</ul>
-    <h3 class="dh">Salvamento</h3>
-    <div class="row"><button type="button" class="btn cyan" id="ioExp">Exportar progresso</button><button type="button" class="btn ghost" id="ioImp">Importar progresso</button>
-      <button type="button" class="btn ghost" id="ioCont">Continuar de onde parei</button><button type="button" class="btn ghost" id="ioReset">Resetar progresso</button></div>
-    <p class="note">O progresso fica salvo neste navegador e vale também no modo clássico. Resetar apaga tudo (cidade e modo clássico).</p>`;
-  $("ioExp").onclick = () => openIO("export"); $("ioImp").onclick = () => openIO("import");
-  $("ioCont").onclick = () => { closeDialog($("dInv")); const t2 = tracked(); if (t2) toast(`De volta ao corre: ${titleOf(t2)}`); };
-  $("ioReset").onclick = function(){ if (!this.dataset.armed) { this.dataset.armed = "1"; this.textContent = "Toque de novo para apagar tudo"; setTimeout(() => { if (this.isConnected) { delete this.dataset.armed; this.textContent = "Resetar progresso"; } }, 4000); return; }
-    leaving = true; try { localStorage.removeItem(DC.KEY); localStorage.removeItem("devcity.v2"); } catch (e) {} location.reload(); };
-  openDialog($("dInv"));
-}
-function openIO(kind){
-  if (kind === "export") {
-    const json = JSON.stringify(Object.assign({exportedAt: new Date().toISOString()}, S, {city: Object.assign({}, S.city, {pos: {x:P.x, z:P.z, yaw:CAM.yaw}})}));
-    $("ioTitle").textContent = "Exportar progresso";
-    $("ioBody").innerHTML = `<p style="margin:0">Guarde este código ou o arquivo. No outro aparelho, use Importar progresso.</p><label class="sr-only" for="ioOut">Código do progresso</label><textarea id="ioOut" class="io" readonly>${esc(json)}</textarea>
-      <div class="row"><button type="button" class="btn cyan" id="ioCopy">Copiar código</button><button type="button" class="btn ghost" id="ioDown">Baixar .json</button></div><p class="fb" id="ioMsg" role="status"></p>`;
-    $("ioCopy").onclick = () => copyText(json, $("ioOut"), $("ioMsg"));
-    $("ioDown").onclick = () => { try { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([json], {type:"application/json"})); a.download = "dev-city-progresso-" + DC.today() + ".json"; document.body.appendChild(a); a.click(); a.remove(); $("ioMsg").textContent = "Se o download não começar, use Copiar código."; } catch (e) { $("ioMsg").textContent = "Download bloqueado. Use Copiar código."; } };
-  } else {
-    $("ioTitle").textContent = "Importar progresso";
-    $("ioBody").innerHTML = `<p style="margin:0">O progresso deste aparelho será substituído (cidade e modo clássico).</p>
-      <div class="field"><label for="ioFile">Arquivo .json</label><input type="file" id="ioFile" accept="application/json,.json"></div>
-      <div class="field"><label for="ioIn">Ou cole o código</label><textarea id="ioIn" class="io"></textarea></div>
-      <div class="row"><button type="button" class="btn cyan" id="ioCheck">Verificar</button><button type="button" class="btn pink" id="ioApply" disabled>Confirmar importação</button></div><p class="fb" id="ioMsg" role="status"></p>`;
-    let pending = null;
-    const check = () => { pending = null; $("ioApply").disabled = true; let o; try { o = JSON.parse($("ioIn").value); } catch (e) { $("ioMsg").className = "fb bad"; $("ioMsg").textContent = "Não consegui ler o código."; return; }
-      if (!o || typeof o !== "object" || (o.app !== "dev-city" && !o.done)) { $("ioMsg").className = "fb bad"; $("ioMsg").textContent = "Esse código não é um progresso do Dev City."; return; }
-      o.city = DC.sanitizeCity(o.city); pending = o; $("ioApply").disabled = false; const ct = DC.cityTotals(o.city);
-      $("ioMsg").className = "fb good"; $("ioMsg").textContent = `Progresso válido: ${ct.missions} missões na cidade, ${Object.values(o.done || {}).reduce((a, b) => a + (+b || 0), 0)} no modo clássico.`; };
-    $("ioFile").onchange = () => { const f = $("ioFile").files[0]; if (!f || f.size > 2e6) return; const r = new FileReader(); r.onload = () => { $("ioIn").value = r.result; check(); }; r.readAsText(f); };
-    $("ioCheck").onclick = check;
-    $("ioApply").onclick = () => { if (!pending) return; leaving = true; try { localStorage.setItem(DC.KEY, JSON.stringify(pending)); } catch (e) {} location.reload(); };
-  }
-  openDialog($("dIO"));
-}
-function openSettings(){
-  const opt = (id, label, on, desc) => `<label class="opt"><span><b>${label}</b><br><small style="color:var(--muted)">${desc}</small></span><input type="checkbox" id="${id}" ${on ? "checked" : ""}></label>`;
-  const radio = (name, val, label, cur) => `<label class="opt"><span>${label}</span><input type="radio" name="${name}" value="${val}" ${cur === val ? "checked" : ""}></label>`;
-  $("sBody").innerHTML = `<div class="set">
-    ${opt("sReduce", "Reduzir animações", SET.reduce, "Sem balanço de câmera, giro de marcadores e explosões de estrelas.")}
-    ${opt("sFx", "Efeitos visuais", SET.effects, "Feixes de luz, ondas do mar e letreiros piscando.")}
-    ${opt("sSound", "Sons", SET.sound, "Bipes curtos ao interagir e concluir missões.")}
-    <fieldset><legend>Qualidade</legend>${radio("q", "pixel", "Pixel (leve, visual retrô)", SET.quality)}${radio("q", "sharp", "Nítida (mais pesada)", SET.quality)}</fieldset>
-    <fieldset><legend>Movimento nas ruas</legend>${radio("c", "normal", "Normal", SET.crowd)}${radio("c", "low", "Poucas pessoas (aparelhos fracos)", SET.crowd)}</fieldset>
-    <fieldset><legend>Horário</legend>${radio("h", "cycle", "Ciclo de dia e noite", SET.time)}${radio("h", "day", "Sempre dia", SET.time)}${radio("h", "night", "Sempre noite", SET.time)}</fieldset>
-    ${HAS3D ? "" : `<p class="note">O 3D não está disponível neste aparelho ou navegador. Você está no modo 2D, que tem todas as missões.</p>`}</div>`;
-  $("sBody").onchange = e => { const el = e.target;
-    if (el.id === "sReduce") { SET.reduce = el.checked; document.documentElement.classList.toggle("reduce", SET.reduce); }
-    if (el.id === "sFx") SET.effects = el.checked;
-    if (el.id === "sSound") SET.sound = el.checked;
-    if (el.name === "q") { SET.quality = el.value; three && three.resize(); }
-    if (el.name === "c") SET.crowd = el.value;
-    if (el.name === "h") SET.time = el.value;
-    saveSet(); };
-  openDialog($("dSet"));
-}
-/* Botões dentro das listas (abrir missão / definir destino) */
-document.addEventListener("click", e => {
-  const o = e.target.closest("[data-open]"), t = e.target.closest("[data-track]");
-  if (o) { const d = o.closest("dialog"); if (d && d.id !== "dMission") closeDialog(d); openPoint(o.dataset.open); }
-  if (t) { S.city.track = t.dataset.track; save(); const m = POINTS.find(p => p.id === t.dataset.track); toast(`Destino: ${titleOf(m)}`); const d = t.closest("dialog"); if (d) closeDialog(d); }
-});
-
-/* =====================================================================
-   14. DIÁLOGOS, ENTRADA (teclado, mouse, toque) E SONS
-   ===================================================================== */
-let lastFocus = null;
-const anyOpen = () => [...document.querySelectorAll("dialog")].some(d => d.open);
-function openDialog(d){ if (!d.open) { lastFocus = document.activeElement; [...document.querySelectorAll("dialog")].forEach(x => x !== d && x.open && x.close()); d.showModal ? d.showModal() : d.setAttribute("open", ""); } keys.clear(); joy.active = false; }
-function closeDialog(d){ if (d.open) d.close ? d.close() : d.removeAttribute("open"); }
-document.querySelectorAll("dialog").forEach(d => {
-  d.addEventListener("click", e => { if (e.target.closest("[data-close]") || e.target === d) closeDialog(d); });
-  d.addEventListener("close", () => { if (lastFocus && document.contains(lastFocus) && lastFocus !== document.body) lastFocus.focus(); refreshAll(); });
-});
-addEventListener("keydown", e => {
-  const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName);
-  if (!$("intro").hidden) { return; }
-  if (anyOpen() || typing) return;
-  if (["KeyW","KeyA","KeyS","KeyD","ArrowUp","ArrowDown","ArrowLeft","ArrowRight","ShiftLeft","ShiftRight"].includes(e.code)) { keys.add(e.code); if (e.code.startsWith("Arrow")) e.preventDefault(); return; }
-  if (e.code === "KeyE" || (e.code === "Enter" && near && document.activeElement === document.body)) { if (near) { e.preventDefault(); openPoint(near.id); } }
-  else if (e.code === "KeyM") openMap();
-  else if (e.code === "KeyJ") openJournal();
-  else if (e.code === "KeyI") openInv();
-  else if (e.code === "KeyQ") CAM.yaw += .35; else if (e.code === "KeyR") CAM.yaw -= .35;
-});
-addEventListener("keyup", e => keys.delete(e.code));
-addEventListener("blur", () => { keys.clear(); joy.active = false; });
-/* Câmera: arrastar com mouse ou dedo; roda do mouse para zoom */
-const app = $("app");
-let drag = null;
-app.addEventListener("pointerdown", e => {
-  if (e.target.closest(".hud .card, .tools, .mlabel, .act, .joy, dialog, .intro, .objective, .mini")) return;
-  if (e.target !== $("gl") && e.target !== $("map2d") && e.target !== $("labels")) return;
-  drag = {id:e.pointerId, x:e.clientX, y:e.clientY, sx:e.clientX, sy:e.clientY, t:performance.now()};
-  try { app.setPointerCapture(e.pointerId); } catch (err) {}
-});
-app.addEventListener("pointermove", e => { if (!drag || e.pointerId !== drag.id || mode === "2d") return;
-  const k = .0055 * (SET.sens || 1); CAM.yaw -= (e.clientX - drag.x) * k; CAM.pitch = clamp(CAM.pitch + (e.clientY - drag.y) * k * .8, .12, 1.25); drag.x = e.clientX; drag.y = e.clientY; });
-app.addEventListener("pointerup", e => { if (!drag || e.pointerId !== drag.id) return;
-  const tap = Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 8 && performance.now() - drag.t < 350; drag = null;
-  if (tap) { let id = null;
-    if (mode === "3d" && three) id = three.pickAt(e.clientX, e.clientY);
-    else { let bd = 26; for (const m of POINTS) { const x = (wx(m.pos[0]) - wx(P.x)) * zoom2d + innerWidth/2, y = (wz(m.pos[1]) - wz(P.z)) * zoom2d + innerHeight/2, d = Math.hypot(x - e.clientX, y - e.clientY); if (d < bd) { bd = d; id = m.id; } } }
-    if (id) openPoint(id); } });
-app.addEventListener("pointercancel", () => drag = null);
-app.addEventListener("wheel", e => { if (e.target.closest("dialog")) return; if (mode === "2d") zoom2d = clamp(zoom2d * (e.deltaY > 0 ? .9 : 1.1), .6, 4); else CAM.dist = clamp(CAM.dist + e.deltaY * .01, 5, 22); }, {passive:true});
-/* Joystick virtual */
-const joyEl = $("joy"), knob = $("knob");
-joyEl.addEventListener("pointerdown", e => { joy.active = true; joy.id = e.pointerId; try { joyEl.setPointerCapture(e.pointerId); } catch (err) {} moveJoy(e); e.preventDefault(); });
-joyEl.addEventListener("pointermove", e => { if (joy.active && e.pointerId === joy.id) moveJoy(e); });
-const endJoy = () => { joy.active = false; joy.x = joy.y = 0; knob.style.transform = ""; };
-joyEl.addEventListener("pointerup", endJoy); joyEl.addEventListener("pointercancel", endJoy);
-function moveJoy(e){ const r = joyEl.getBoundingClientRect(), cx = r.left + r.width/2, cy = r.top + r.height/2, max = r.width/2 - 10;
-  let dx = e.clientX - cx, dy = e.clientY - cy; const d = Math.hypot(dx, dy); if (d > max) { dx = dx / d * max; dy = dy / d * max; }
-  joy.x = dx / max; joy.y = dy / max; knob.style.transform = `translate(${dx}px, ${dy}px)`; }
-$("actBtn").onclick = () => { if (near) openPoint(near.id); };
-$("tMap").onclick = openMap; $("miniBtn").onclick = openMap; $("tJournal").onclick = openJournal; $("objective").onclick = openJournal; $("tInv").onclick = openInv; $("tSet").onclick = openSettings;
-$("tMode").onclick = () => setMode(mode === "3d" ? "2d" : "3d");
-/* Sons sintetizados (nenhum arquivo de áudio) */
-let actx = null;
-function sfx(kind){
-  if (!SET.sound) return;
-  try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; }
-  const notes = {near:[660], open:[520, 780], ok:[523, 659, 784], deny:[220, 180], win:[523, 659, 784, 1046]}[kind] || [440];
-  notes.forEach((f, k) => { const o = actx.createOscillator(), g = actx.createGain(); o.type = "square"; o.frequency.value = f;
-    g.gain.setValueAtTime(.0001, actx.currentTime + k * .08); g.gain.exponentialRampToValueAtTime(.05, actx.currentTime + k * .08 + .01); g.gain.exponentialRampToValueAtTime(.0001, actx.currentTime + k * .08 + .14);
-    o.connect(g).connect(actx.destination); o.start(actx.currentTime + k * .08); o.stop(actx.currentTime + k * .08 + .16); });
-}
-const reduceNow = () => SET.reduce;
-let toastT;
-function toast(msg){ const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 3600); }
-function announce(msg){ const l = $("live"); l.textContent = ""; setTimeout(() => l.textContent = msg, 30); }
-let passedT;
-function celebrate(title, html){ sfx("win"); $("passedT").textContent = title; $("passedS").innerHTML = html; const p = $("passed"); p.hidden = true; void p.offsetWidth; p.hidden = false; clearTimeout(passedT); passedT = setTimeout(() => p.hidden = true, reduceNow() ? 1400 : 2200); }
-
-/* =====================================================================
-   15. MODOS, ABERTURA E LAÇO PRINCIPAL
-   ===================================================================== */
-function setMode(m){
-  if (m === "3d" && !HAS3D) { toast("O 3D não está disponível neste aparelho. Seguimos no modo 2D."); m = "2d"; }
-  mode = m; SET.mode = m; saveSet();
-  $("gl").hidden = m !== "3d"; $("map2d").hidden = m !== "2d";
-  $("tModeTxt").textContent = m === "3d" ? "Modo 2D" : "Modo 3D"; $("tModeSr").textContent = m === "3d" ? "Alternar para o modo 2D" : "Alternar para o modo 3D";
-  $("tMode").querySelector("kbd").textContent = m === "3d" ? "2D" : "3D";
-  if (m === "3d" && !three) { try { three = build3D(); } catch (e) { console.error(e); three = null; mode = "2d"; $("gl").hidden = true; $("map2d").hidden = false; toast("Não foi possível iniciar o 3D. Usando o modo 2D."); } }
-}
-function refreshAll(){ renderHUD(); if (three) three.refreshMarkers(); refreshLabels(); updateObjective(); }
-let started = false;
-function enter(cont, m2){
-  $("intro").hidden = true; $("hud").hidden = false; started = true;
-  if (cont && S.city.pos && !blocked(S.city.pos.x, S.city.pos.z)) { P.x = S.city.pos.x; P.z = S.city.pos.z; CAM.yaw = S.city.pos.yaw; }
-  else { P.x = 0; P.z = 30; P.rot = Math.PI; CAM.yaw = 0; }
-  $("labels").hidden = false;
-  if (isTouch) { document.body.classList.add("touch"); $("hud").classList.add("touch"); $("joy").hidden = false; }
-  setMode(m2 ? "2d" : SET.mode === "2d" ? "2d" : "3d");
-  touch(); save(); checkAch(); refreshAll(); lastDistrict = null;
-  requestAnimationFrame(measureLimits);
-  const t = tracked(); if (t) setTimeout(() => toast(`Objetivo: ${titleOf(t)} · siga a seta amarela`), 600);
-  $("gl").focus && document.body.focus();
-}
-$("enterBtn").onclick = () => enter(!!S.city.pos);
-$("continueBtn").onclick = () => enter(true);
-$("enter2d").onclick = () => enter(!!S.city.pos, true);
-if (S.city.pos) { $("continueBtn").hidden = false; $("enterBtn").textContent = "Entrar na cidade ▸"; }
-addEventListener("resize", () => { three && three.resize(); if (started) measureLimits(); });
-addEventListener("beforeunload", () => { if (started && !leaving) { S.city.pos = {x:P.x, z:P.z, yaw:CAM.yaw}; save(); } });
-document.addEventListener("visibilitychange", () => { if (document.hidden && started && !leaving) { S.city.pos = {x:P.x, z:P.z, yaw:CAM.yaw}; save(); } });
-
-drawBaseMap();
-buildLabels();
-if (HAS3D) { try { three = build3D(); } catch (e) { console.error(e); three = null; } }
-$("loading").textContent = three ? "Cidade pronta. Bom corre!" : "Seu aparelho não suporta 3D: a cidade abre no modo 2D, com todas as missões.";
-if (!three) { $("enterBtn").onclick = () => enter(!!S.city.pos, true); mode = "2d"; $("gl").hidden = true; $("map2d").hidden = false; }
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { drawBaseMap(); refreshLabels(); });
-
-let last = performance.now(), saveT = 0, slow = 0, frames = 0, fpsT = 0;
-function loop(now){
-  requestAnimationFrame(loop);
-  if (document.hidden) { last = now; return; }
-  const dt = Math.min(.05, (now - last) / 1000); last = now; const t = now / 1000;
-  if (started && !anyOpen()) movePlayer(dt);
-  simulate(dt);
-  if (!started && three && mode === "3d") CAM.yaw += dt * .05;   // abertura: câmera girando devagar sobre o Centro
-  if (mode === "3d" && three) three.update(dt, t); else draw2D();
-  if (started) {
-    placeLabels(); drawMini(); updatePrompt(); updateDistrict();
-    if ((clockT += dt) > .5) { clockT = 0; updateClock(); updateObjective(); }
-    if ((saveT += dt) > 4) { saveT = 0; S.city.pos = {x:P.x, z:P.z, yaw:CAM.yaw}; save(); }
-  }
-  /* aparelho lento: reduz pedestres automaticamente */
-  frames++; fpsT += dt; if (fpsT > 3) { const fps = frames / fpsT; frames = 0; fpsT = 0; if (fps < 24 && SET.crowd !== "low" && mode === "3d") { slow++; if (slow >= 2) { SET.crowd = "low"; saveSet(); toast("Aparelho lento: menos pedestres para ficar mais leve."); } } else slow = 0; }
-}
-requestAnimationFrame(loop);
-/* ganchos de teste e depuração (não afetam o jogo) */
-window.DEVCITY = {get P(){ return P; }, get mode(){ return mode; }, get S(){ return S; }, POINTS, teleport:(x, z) => { P.x = x; P.z = z; }, setHour:h => { gameMin = h * 60; }};
-})();
-</script>
+<script src="cidade/world.js"></script>
+<script src="cidade/game.js"></script>
 </body>
 </html>

@@ -14,4 +14,4 @@ rm -rf dist && mkdir -p dist
   cat index.html
   printf '%s\n' '</body>' '</html>'
 } > dist/index.html
-cp cidade.html data.js dist/
+cp cidade.html data.js dist/ && cp -r cidade dist/
