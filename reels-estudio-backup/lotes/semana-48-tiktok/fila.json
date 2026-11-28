@@ -204,7 +204,10 @@
       "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-09-cliente-pergunta-preco-e-some.mp4",
       "redes": {
         "tiktok": {
-          "status": "pendente"
+          "status": "postado",
+          "id": "manual-enviado",
+          "url": null,
+          "em": "2026-11-28T12:33:56.278Z"
         }
       },
       "metricas": {
