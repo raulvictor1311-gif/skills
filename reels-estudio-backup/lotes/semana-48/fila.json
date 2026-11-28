@@ -236,7 +236,11 @@
       "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-10-5-perguntas-antes-de-contratar.mp4",
       "redes": {
         "instagram": {
-          "status": "pendente"
+          "status": "postado",
+          "id": "18140508127641362",
+          "url": "https://www.instagram.com/reel/DgSNaEssds7/",
+          "em": "2026-11-28T12:04:40.096Z",
+          "confirmado": "2026-11-28T12:04:40.135Z"
         }
       },
       "metricas": {
