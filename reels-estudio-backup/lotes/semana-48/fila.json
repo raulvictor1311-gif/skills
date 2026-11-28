@@ -260,7 +260,11 @@
       "hospedado": "https://tdsamkdimbkxgbvcbfrc.supabase.co/storage/v1/object/public/reels/semana-48-11-nao-comece-pelo-design-do-app.mp4",
       "redes": {
         "instagram": {
-          "status": "pendente"
+          "status": "postado",
+          "id": "18111225542316504",
+          "url": "https://www.instagram.com/reel/DgSiZWhRaoX/",
+          "em": "2026-11-28T15:06:57.245Z",
+          "confirmado": "2026-11-28T15:06:57.279Z"
         }
       },
       "metricas": {
